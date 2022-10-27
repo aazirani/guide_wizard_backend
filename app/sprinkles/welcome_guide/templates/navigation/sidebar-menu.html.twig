@@ -1,0 +1,11 @@
+{% extends '@admin/navigation/sidebar-menu.html.twig' %}
+
+{% block navigation %}
+    {{ parent() }}
+    {% if checkAccess('view_questions') %}
+    <li>
+        <a href="{{site.uri.public}}/questions"><i class="fa fa-building"></i> <span>{{ translate("QUESTION", 2) }}</span></a>
+    </li>
+    {% endif %}
+{% endblock %}
+

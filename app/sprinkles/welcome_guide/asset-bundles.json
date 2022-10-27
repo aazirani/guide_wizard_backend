@@ -1,0 +1,16 @@
+{
+    "bundle": {
+        "js/pages/questions": {
+            "scripts": [
+                "userfrosting/js/pages/questions.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        }
+    }
+}

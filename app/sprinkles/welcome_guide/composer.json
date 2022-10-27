@@ -1,5 +1,5 @@
 {
-    "name": "collegiality/guidline_generator",
+    "name": "collegiality/welcome_guide",
     "type": "userfrosting-sprinkle",
     "description": "A software designed to show information to international students based on their answers to some questions.",
     "license" : "",
@@ -14,7 +14,7 @@
 	},
     "autoload": {
         "psr-4": {
-            "UserFrosting\\Sprinkle\\GuidlineGenerator\\": "src/"
+            "UserFrosting\\Sprinkle\\WelcomeGuide\\": "src/"
         }
     }
 }

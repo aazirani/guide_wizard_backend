@@ -14,7 +14,14 @@
 				<th class="sorter-metatext" data-column-name="title" data-column-template="#question-table-column-title" data-priority="1">{{translate("TITLE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="sub_title" data-column-template="#question-table-column-sub_title" data-priority="1">{{translate("SUB_TITLE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="type" data-column-template="#question-table-column-type" data-priority="1">{{translate("TYPE")}} <i class="fa fa-sort"></i></th>
-				{% if 'creator' in table.columns %}
+				<th class="sorter-metatext" data-column-name="axis_count" data-column-template="#question-table-column-axis_count" data-priority="1">{{translate("AXIS_COUNT")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="is_multiple_choice" data-column-template="#question-table-column-is_multiple_choice" data-priority="1">{{translate("IS_MULTIPLE_CHOICE")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="info_url" data-column-template="#question-table-column-info_url" data-priority="1">{{translate("INFO_URL")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="info_description" data-column-template="#question-table-column-info_description" data-priority="1">{{translate("INFO_DESCRIPTION")}} <i class="fa fa-sort"></i></th>
+                <th class="sorter-metatext" data-column-name="answer_required" data-column-template="#question-table-column-answer_required" data-priority="1">{{translate("ANSWER_REQUIRED")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="answers_selected_by_default" data-column-template="#question-table-column-answers_selected_by_default" data-priority="1">{{translate("ANSWERS_SELECTED_BY_DEFAULT")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="step" data-column-template="#question-table-column-step" data-priority="1">{{translate("STEP")}} <i class="fa fa-sort"></i></th>
+                {% if 'creator' in table.columns %}
                     <th class="sorter-metatext" data-column-name="creator" data-column-template="#question-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
                 {% endif %}
 				<th class="sorter-metanum" data-filter="false" data-column-name="created_at" data-column-template="#question-table-column-created-at" data-priority="1">{{translate('CREATED_AT')}} <i class="fa fa-sort"></i></th>
@@ -34,19 +41,72 @@
      # These templates require handlebars-helpers.js, moment.js
     #}
     {% verbatim %}
-	<script id="question-table-column-name" type="text/x-handlebars-template">
+    <script id="question-table-column-title" type="text/x-handlebars-template">
         <td data-id="{{row.id}}">
-				{{row.name}}
+				{{row.title}}
         </td>
     </script>
-	<script id="question-table-column-name_de" type="text/x-handlebars-template">
+	<script id="question-table-column-sub_title" type="text/x-handlebars-template">
         <td data-id="{{row.id}}">
-				{{row.name_de}}
+				{{row.sub_title}}
         </td>
     </script>
-	<script id="question-table-column-faculty" type="text/x-handlebars-template">
+	<script id="question-table-column-type" type="text/x-handlebars-template">
+        <td data-id="{{row.id}}">
+				{{row.type}}
+        </td>
+    </script>
+    <script id="question-table-column-axis_count" type="text/x-handlebars-template">
+        <td data-id="{{row.id}}">
+				{{row.axis_count}}
+        </td>
+    </script>
+	<script id="question-table-column-is_multiple_choice" type="text/x-handlebars-template">
         <td>
-            {{row.faculty.name}}
+	        {{#if row.is_multiple_choice }}
+				Yes
+	        {{ else }}
+	            No
+	        {{/if }}
+        </td>
+    </script>
+    <script id="question-table-column-info_url" type="text/x-handlebars-template">
+        <td data-id="{{row.id}}">
+				{{row.info_url}}
+        </td>
+    </script>
+	<script id="question-table-column-info_description" type="text/x-handlebars-template">
+        <td data-id="{{row.id}}">
+				{{row.info_description}}
+        </td>
+    </script>
+    <script id="question-table-column-answer_required" type="text/x-handlebars-template">
+        <td>
+	        {{#if row.answer_required }}
+				Yes
+	        {{ else }}
+	            No
+	        {{/if }}
+        </td>
+    </script>
+    <script id="question-table-column-answers_selected_by_default" type="text/x-handlebars-template">
+        <td>
+	        {{#if row.answers_selected_by_default }}
+				Yes
+	        {{ else }}
+	            No
+	        {{/if }}
+        </td>
+    </script>
+    <script id="question-table-column-step" type="text/x-handlebars-template">
+        <td data-text="{{row.step.name}}">
+            {{#if row.step }}
+                <strong>
+                    {{row.step.name}}"
+                </strong>
+            {{ else }}
+                <i>{% endverbatim %}{{translate("STEP.DELETED")}}{% verbatim %}</i>
+            {{/if }}
         </td>
     </script>
 	<script id="question-table-column-creator" type="text/x-handlebars-template">

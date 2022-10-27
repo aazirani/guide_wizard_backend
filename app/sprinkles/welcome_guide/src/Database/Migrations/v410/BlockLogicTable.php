@@ -20,7 +20,7 @@ class BlockLogicTable extends Migration
     /**
      * {@inheritDoc}
      */
-    public $dependencies = [
+    public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable',
         '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\LogicsTable',
         '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\BlocksTable'

@@ -20,7 +20,7 @@ class BlockTypesTable extends Migration
     /**
      * {@inheritDoc}
      */
-    public $dependencies = [
+    public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable'
     ];
     /**

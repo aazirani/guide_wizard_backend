@@ -10,7 +10,7 @@ use UserFrosting\Sprinkle\Core\Database\Migration;
 
 class AllPermissions extends Migration
 {
-	public $dependencies = [
+	public static $dependencies = [
 		'\UserFrosting\Sprinkle\Account\Database\Migrations\v400\PermissionsTable',
 		'\UserFrosting\Sprinkle\Account\Database\Migrations\v400\RolesTable'
 	];

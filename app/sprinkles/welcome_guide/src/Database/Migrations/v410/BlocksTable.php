@@ -23,7 +23,7 @@ class BlocksTable extends Migration
 		'\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable',
 		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TextsTable',
 		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\StepsTable',
-		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\BlockTypeTable'
+		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\BlockTypesTable'
 	];
 
 	/**

@@ -4,7 +4,7 @@ namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
-use UserFrosting\System\Bakery\Migration;
+use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
  * Block Types table migration

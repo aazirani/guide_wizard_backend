@@ -38,6 +38,7 @@ class StepsTable extends Migration
                 $table->integer('order')->unsigned();
                 $table->string('type', 1);
 
+                $table->integer('creator_id')->unsigned()->nullable();
                 $table->timestamps();
                 $table->engine = 'InnoDB';
                 $table->collation = 'utf8_unicode_ci';

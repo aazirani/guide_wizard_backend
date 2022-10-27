@@ -45,7 +45,7 @@ class TranslationsTable extends Migration
                 $table->charset = 'utf8';
                 $table->foreign('creator_id')->references('id')->on('users');
                 $table->foreign('language_id')->references('id')->on('languages');
-                $table->foreign('text_id')->references('id')->on('textx');
+                $table->foreign('text_id')->references('id')->on('texts');
             });
         }
     }

@@ -43,6 +43,7 @@ class BlocksTable extends Migration
 				$table->text('image_2')->nullable();
 				$table->string('fa_icon', 50)->nullable();
 
+				$table->integer('creator_id')->unsigned()->nullable();
 				$table->timestamps();
 				$table->engine = 'InnoDB';
 				$table->collation = 'utf8_unicode_ci';

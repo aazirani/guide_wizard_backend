@@ -15,7 +15,7 @@ use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 
-class QuestionController extends SimpleController
+class TextController extends SimpleController
 {
 	/**
      * Return the list of all objects.
@@ -33,15 +33,15 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 		
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_questions')) {
+        if (!$authorizer->checkAccess($currentUser, 'view_texts')) {
             throw new ForbiddenException();
         }
 
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this->ci->classMapper;
-        $sprunje = $classMapper->createInstance('question_sprunje', $classMapper, $params);
+        $sprunje = $classMapper->createInstance('text_sprunje', $classMapper, $params);
 		$sprunje->extendQuery(function ($query) {
-            return $query->with('creator')->with('step');
+            return $query->with('creator');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -63,11 +63,11 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_questions')) {
+        if (!$authorizer->checkAccess($currentUser, 'view_texts')) {
             throw new ForbiddenException();
         }
 
-        return $this->ci->view->render($response, 'pages/questions.html.twig');
+        return $this->ci->view->render($response, 'pages/texts.html.twig');
     }
 	
     /**
@@ -96,21 +96,21 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_question')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_text')) {
             throw new ForbiddenException();
         }
 		
         // Load validator rules
-        $schema = new RequestSchema('schema://forms/addQuestion.json');
+        $schema = new RequestSchema('schema://forms/addText.json');
         $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
         // Generate the form
         $form = new Form($schema);
         // Using custom form here to add the javascript we need fo Typeahead.
         $this->ci->view->render($response, 'FormGenerator/modal.html.twig', [
             'box_id'        => $get['box_id'],
-            'box_title'     => 'QUESTION.CREATE',
+            'box_title'     => 'TEXT.CREATE',
             'submit_button' => 'CREATE',
-            'form_action'   => 'api/questions',
+            'form_action'   => 'api/texts',
             'fields'        => $form->generate(),
             'validators'    => $validator->rules('json', true),
         ]);
@@ -138,7 +138,7 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_question')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_text')) {
             throw new ForbiddenException();
         }
 
@@ -146,7 +146,7 @@ class QuestionController extends SimpleController
         $ms = $this->ci->alerts;
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addQuestion.json');
+        $schema = new RequestSchema('schema://forms/addText.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -181,25 +181,25 @@ class QuestionController extends SimpleController
         Capsule::transaction( function() use ($classMapper, $data, $ms, $config, $currentUser) {
 			
             // Create the object
-            $question = $classMapper->createInstance('question', $data);
-            // Store new question to database
-            $question->save();
+            $text = $classMapper->createInstance('text', $data);
+            // Store new text to database
+            $textn->save();
 
             // Create activity record
-            $this->ci->userActivityLogger->info("User {$currentUser->user_name} created a new question named {$question->title}.", [
+            $this->ci->userActivityLogger->info("User {$currentUser->user_name} created a new text with the technical name {$text->technical_name}.", [
                 'type' => 'nationality_created',
                 'user_id' => $currentUser->id
             ]);
 			
-            $ms->addMessageTranslated('success', 'QUESTION.CREATED', $data);
+            $ms->addMessageTranslated('success', 'TEXT.CREATED', $data);
         });
 
         return $response->withStatus(200);
     }
 	
-	protected function getQuestionFromParams($params){
+	protected function getTextFromParams($params){
 		// Load the request schema
-		$schema = new RequestSchema('schema://requests/question-get-by-id.yaml');
+		$schema = new RequestSchema('schema://requests/text-get-by-id.yaml');
 		// Whitelist and set parameter defaults
 		$transformer = new RequestDataTransformer($schema);
 		$data = $transformer->transform($params);
@@ -219,9 +219,9 @@ class QuestionController extends SimpleController
 		/** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
 		$classMapper = $this->ci->classMapper;
 		// Get the object to delete
-		$question = $classMapper->staticMethod('question', 'where', 'id', $data['question_id'])->with('creator')->with('step')->first();
+		$text = $classMapper->staticMethod('text', 'where', 'id', $data['text_id'])->with('creator')->first();
 	
-		return $question;
+		return $text;
 	}
 	
 	/**
@@ -234,10 +234,10 @@ class QuestionController extends SimpleController
      */
     public function delete($request, $response, $args)
     {
-        $question = $this->getQuestionFromParams($args);
+        $text = $this->getTextFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$question) {
+        if (!$text) {
             throw new NotFoundException($request, $response);
         }
 
@@ -248,8 +248,8 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_question', [
-            'question' => $question
+        if (!$authorizer->checkAccess($currentUser, 'delete_text', [
+            'text' => $text
         ])) {
             throw new ForbiddenException();
         }
@@ -258,20 +258,20 @@ class QuestionController extends SimpleController
 		
         /** @var UserFrosting\Config\Config $config */
         $config = $this->ci->config;
-        $title = $question->title;
+        $title = $text->technical_name;
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction( function() use ($question, $title, $currentUser) {
-            $question->delete();
-            unset($question);
+        Capsule::transaction( function() use ($text, $title, $currentUser) {
+            $text->delete();
+            unset($text);
 
             // Create activity record
-            $this->ci->userActivityLogger->info("User {$currentUser->user_name} deleted the question {$title}.", [
-                'type' => 'question_deleted',
+            $this->ci->userActivityLogger->info("User {$currentUser->user_name} deleted the text with the technical name {$title}.", [
+                'type' => 'text_deleted',
                 'user_id' => $currentUser->id
             ]);
         });
 
-        $ms->addMessageTranslated('success', 'QUESTION.DELETION_SUCCESSFUL', [
+        $ms->addMessageTranslated('success', 'TEXT.DELETION_SUCCESSFUL', [
             'name' => $title
         ]);
 		
@@ -295,10 +295,10 @@ class QuestionController extends SimpleController
     public function editForm($request, $response, $args)
     {
 		$get = $request->getQueryParams();
-        $question = $this->getQuestionFromParams($args);
+        $text = $this->getTextFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$question) {
+        if (!$text) {
             throw new NotFoundException($request, $response);
         }
 
@@ -306,7 +306,7 @@ class QuestionController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Get the object to edit
-        $question = $classMapper->staticMethod('question', 'where', 'id', $question->id)->first();
+        $question = $classMapper->staticMethod('text', 'where', 'id', $text->id)->first();
 
         /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
         $authorizer = $this->ci->authorizer;
@@ -315,7 +315,7 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_question_field', [
+        if (!$authorizer->checkAccess($currentUser, 'update_text_field', [
             'question' => $question
         ])) {
             throw new ForbiddenException();
@@ -325,7 +325,7 @@ class QuestionController extends SimpleController
         $config = $this->ci->config;
 	
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addQuestion.json');
+        $schema = new RequestSchema('schema://forms/addText.json');
         $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
 		
         // Generate the form
@@ -334,9 +334,9 @@ class QuestionController extends SimpleController
         // Render the template / form
         $this->ci->view->render($response, 'FormGenerator/modal.html.twig', [
             'box_id'        => $get['box_id'],
-            'box_title'     => 'QUESTION.EDIT',
+            'box_title'     => 'TEXT.EDIT',
             'submit_button' => 'EDIT',
-            'form_action'   => 'api/questions/'.$args['question_id'],
+            'form_action'   => 'api/texts/'.$args['text_id'],
             //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
             'fields'        => $form->generate(),
             'validators'    => $validator->rules('json', true),
@@ -357,9 +357,9 @@ class QuestionController extends SimpleController
     {
 
         // Get the object from the URL
-        $question = $this->getQuestionFromParams($args);
+        $text = $this->getTextFromParams($args);
 
-        if (!$question) {
+        if (!$text) {
             throw new NotFoundException($request, $response);
         }
 
@@ -373,7 +373,7 @@ class QuestionController extends SimpleController
         $post = $request->getParsedBody();
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addQuestion.json');
+        $schema = new RequestSchema('schema://forms/addText.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -393,8 +393,8 @@ class QuestionController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_question_field', [
-            'question' => $question
+        if (!$authorizer->checkAccess($currentUser, 'update_text_field', [
+            'text' => $text
         ])) {
             throw new ForbiddenException();
         }
@@ -403,25 +403,25 @@ class QuestionController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction( function() use ($data, $question, $currentUser) {
+        Capsule::transaction( function() use ($data, $text, $currentUser) {
             // Update the object and generate success messages
             foreach ($data as $name => $value) {
-                if ($value != $question->$name) {
-                    $question->$name = $value;
+                if ($value != $text->$technical_name) {
+                    $text->$name = $value;
                 }
             }
 
-            $question->save();
+            $text->save();
 
             // Create activity record
-            $this->ci->userActivityLogger->info("User {$currentUser->user_name} updated basic data for question {$question->title}.", [
+            $this->ci->userActivityLogger->info("User {$currentUser->user_name} updated basic data for text with the technical name {$text->technical_name}.", [
                 'type' => 'question_updated',
                 'user_id' => $currentUser->id
             ]);
         });
 
-        $ms->addMessageTranslated('success', 'QUESTION.DETAILS_UPDATED', [
-            'name' => $question->title
+        $ms->addMessageTranslated('success', 'TEXT.DETAILS_UPDATED', [
+            'name' => $text->technical_name
         ]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }

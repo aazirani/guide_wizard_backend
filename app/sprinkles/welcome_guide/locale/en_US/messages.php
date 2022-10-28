@@ -29,6 +29,52 @@ return [
         "CLONE" => "Clone Question",
         "EDIT" => "Edit Question"
     ],
+    "TEXT" => [
+        1 => "Text",
+        2 => "Texts",
+        
+        "PAGE" => "A listing of all texts",
+        "CREATE" => "New Text",
+        "CREATED" => "Text <strong>{{name}}</strong> has been successfully created",
+        
+        "SELECTED" => [
+            1 => "Selected Text",
+            2 => "Selected Texts"
+        ],
+        "DELETE" => "Delete Text",
+        "DELETE_CONFIRM"    => "Are you sure you want to delete this text?",
+        "DELETE_YES"        => "Yes, delete text",
+        
+        "DETAILS_UPDATED"=> "Details updated for text <strong>{{name}}</strong>",
+        
+        "DELETION_SUCCESSFUL"   => "Text <strong>{{name}}</strong> has been successfully deleted.",
+        
+        "CLONE" => "Clone Text",
+        "EDIT" => "Edit Text"
+    ],
+    "STEP" => [
+        1 => "Step",
+        2 => "Steps",
+        
+        "PAGE" => "A listing of all steps",
+        "CREATE" => "New Step",
+        "CREATED" => "Step <strong>{{name}}</strong> has been successfully created",
+        
+        "SELECTED" => [
+            1 => "Selected Step",
+            2 => "Selected Steps"
+        ],
+        "DELETE" => "Delete Step",
+        "DELETE_CONFIRM"    => "Are you sure you want to delete this step?",
+        "DELETE_YES"        => "Yes, delete step",
+        
+        "DETAILS_UPDATED"=> "Details updated for step <strong>{{name}}</strong>",
+        
+        "DELETION_SUCCESSFUL"   => "Step <strong>{{name}}</strong> has been successfully deleted.",
+        
+        "CLONE" => "Clone Step",
+        "EDIT" => "Edit Step"
+    ],
     "TITLE" => "Title",
     "SUB_TITLE" => "Sub Title",
     "TYPE" => "Type",
@@ -38,5 +84,5 @@ return [
     "INFO_DESCRIPTION" => "Info Description",
     "ANSWER_REQUIRED" => "Answer is Required",
     "ANSWERS_SELECTED_BY_DEFAULT" => "Answers are selected by Default",
-    "STEP" => "Step"
+    "TECHNICAL_NAME" => "Technical Name"
     ];

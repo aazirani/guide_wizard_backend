@@ -45,6 +45,8 @@ class ServicesProvider
         $container->extend('classMapper', function ($classMapper, $c) {
             $classMapper->setClassMapping('question', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question');
 			$classMapper->setClassMapping('question_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\QuestionSprunje');
+            $classMapper->setClassMapping('text', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text');
+			$classMapper->setClassMapping('text_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TextSprunje');
             
 			return $classMapper;
         });

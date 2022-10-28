@@ -11,7 +11,6 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
  * Represents a question object as stored in the database.
  *
  * @package WelcomeGuide
- * @author Amin Akbari
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
  */

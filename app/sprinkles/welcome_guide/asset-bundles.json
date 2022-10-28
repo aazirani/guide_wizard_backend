@@ -2,7 +2,8 @@
     "bundle": {
         "js/pages/questions": {
             "scripts": [
-                "userfrosting/js/pages/questions.js"
+                "userfrosting/js/pages/questions.js",
+                "userfrosting/js/pages/texts.js"
             ],
             "options": {
                 "result": {

@@ -183,7 +183,7 @@ class TextController extends SimpleController
             // Create the object
             $text = $classMapper->createInstance('text', $data);
             // Store new text to database
-            $textn->save();
+            $text->save();
 
             // Create activity record
             $this->ci->userActivityLogger->info("User {$currentUser->user_name} created a new text with the technical name {$text->technical_name}.", [

@@ -14,7 +14,7 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
  */
-class Question extends Model
+class Text extends Model
 {
     /**
      * @var string The name of the table for the current model.

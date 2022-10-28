@@ -10,7 +10,7 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class QuestionSprunje extends Sprunje
+class TextSprunje extends Sprunje
 {
     protected $sortable = [
         "technical_name",

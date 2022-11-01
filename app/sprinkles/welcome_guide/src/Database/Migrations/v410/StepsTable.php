@@ -33,7 +33,7 @@ class StepsTable extends Migration
             $this->schema->create('steps', function (Blueprint $table) {
                 $table->increments('id');
 
-                $table->integer('text')->unsigned();
+                $table->integer('name')->unsigned();
                 $table->integer('description')->unsigned()->nullable();
                 $table->integer('order')->unsigned();
                 $table->string('type', 1);
@@ -44,7 +44,7 @@ class StepsTable extends Migration
                 $table->collation = 'utf8_unicode_ci';
                 $table->charset = 'utf8';
                 $table->foreign('creator_id')->references('id')->on('users');
-                $table->foreign('text')->references('id')->on('texts');
+                $table->foreign('name')->references('id')->on('texts');
                 $table->foreign('description')->references('id')->on('texts');
             });
         }

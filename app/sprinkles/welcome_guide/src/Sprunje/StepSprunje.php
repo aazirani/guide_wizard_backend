@@ -10,26 +10,32 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class TextSprunje extends Sprunje
+class StepSprunje extends Sprunje
 {
     protected $sortable = [
-        "technical_name",
+        "name",
+        "description",
+        "order",
+        "type",
         "creator_id"
     ];
 
     protected $filterable = [
-        "technical_name",
+        "name",
+        "description",
+        "order",
+        "type",
         "creator_id"
     ];
 
-    protected $name = 'texts';
+    protected $name = 'steps';
 
     /**
      * Set the initial query used by your Sprunje.
      */
     protected function baseQuery()
     {
-        $query = $this->classMapper->createInstance('text');
+        $query = $this->classMapper->createInstance('step');
 		
 		return $query->joinCreator();
     }

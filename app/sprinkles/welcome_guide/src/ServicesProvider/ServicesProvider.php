@@ -47,7 +47,9 @@ class ServicesProvider
 			$classMapper->setClassMapping('question_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\QuestionSprunje');
             $classMapper->setClassMapping('text', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text');
 			$classMapper->setClassMapping('text_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TextSprunje');
-            
+            $classMapper->setClassMapping('step', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step');
+			$classMapper->setClassMapping('step_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\StepSprunje');
+
 			return $classMapper;
         });
     }

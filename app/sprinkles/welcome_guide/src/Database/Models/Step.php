@@ -57,7 +57,19 @@ class Step extends Model
         return $this->belongsTo($classMapper->getClassMapping('user'), 'creator_id');
     }
 
+    /**
+     * Return the text for this object
+     */
     public function name()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('text'), 'name');
+    }
+
+
+    public function names()
     {
          /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
          $classMapper = static::$ci->classMapper;
@@ -72,7 +84,18 @@ class Step extends Model
         );
     }
 
+    /**
+     * Return the text for this object
+     */
     public function description()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('text'), 'description');
+    }
+
+    public function descriptions()
     {
          /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
          $classMapper = static::$ci->classMapper;

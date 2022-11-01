@@ -42,7 +42,7 @@ class StepController extends SimpleController
         $classMapper = $this->ci->classMapper;
         $sprunje = $classMapper->createInstance('step_sprunje', $classMapper, $params);
 		$sprunje->extendQuery(function ($query) {
-            return $query->with('creator');
+            return $query->with('creator')->with('name')->with('description');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);

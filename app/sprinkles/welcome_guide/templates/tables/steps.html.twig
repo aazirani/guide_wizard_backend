@@ -38,13 +38,13 @@
     #}
     {% verbatim %}
     <script id="step-table-column-name" type="step/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.name}}
+        <td data-id="{{row.name.id}}">
+				{{row.name.technical_name}}
         </td>
     </script>
     <script id="step-table-column-description" type="step/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.description}}
+        <td data-id="{{row.description.id}}">
+				{{row.description.technical_name}}
         </td>
     </script>
     <script id="step-table-column-order" type="step/x-handlebars-template">

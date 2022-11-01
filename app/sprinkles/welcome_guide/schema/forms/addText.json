@@ -1,0 +1,14 @@
+{
+    "technical_name" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.REQUIRED_TITLE"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "TECHNICAL_NAME",
+            "icon" : "fa-th-list",
+            "placeholder" : "TECHNICAL_NAME"
+        }
+    }
+}

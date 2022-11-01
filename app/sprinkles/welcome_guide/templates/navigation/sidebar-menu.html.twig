@@ -1,0 +1,16 @@
+{% extends '@admin/navigation/sidebar-menu.html.twig' %}
+
+{% block navigation %}
+    {{ parent() }}
+    {% if checkAccess('view_texts') %}
+    <li>
+        <a href="{{site.uri.public}}/texts"><i class="fa fa-building"></i> <span>{{ translate("TEXT", 2) }}</span></a>
+    </li>
+    {% endif %}
+    {% if checkAccess('view_questions') %}
+    <li>
+        <a href="{{site.uri.public}}/questions"><i class="fa fa-building"></i> <span>{{ translate("QUESTION", 2) }}</span></a>
+    </li>
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,28 @@
+{
+    "bundle": {
+        "js/pages/questions": {
+            "scripts": [
+                "userfrosting/js/pages/questions.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        },
+        "js/pages/texts": {
+            "scripts": [
+                "userfrosting/js/pages/texts.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        }
+    }
+}

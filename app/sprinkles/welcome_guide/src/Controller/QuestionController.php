@@ -15,6 +15,7 @@ use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 
 class QuestionController extends SimpleController
 {
@@ -117,6 +118,13 @@ class QuestionController extends SimpleController
         $form->setInputArgument('info_url', 'options', $textSelect);
         $form->setInputArgument('info_description', 'options', $textSelect);
         
+        $steps = STEP::all();
+        $stepSelect = [];
+        foreach ($steps as $step) {
+            $stepSelect += [ $step->id => $step->name ];
+        }
+        $form->setInputArgument('step_id', 'options', $stepSelect);
+        
         // Using custom form here to add the javascript we need fo Typeahead.
         $this->ci->view->render($response, 'FormGenerator/modal.html.twig', [
             'box_id'        => $get['box_id'],
@@ -199,7 +207,7 @@ class QuestionController extends SimpleController
                 
                 // Create activity record
                 $this->ci->userActivityLogger->info("User {$currentUser->user_name} created a new question named {$question->title}.", [
-                    'type' => 'nationality_created',
+                    'type' => 'question_created',
                     'user_id' => $currentUser->id
                 ]);
                 
@@ -342,6 +350,23 @@ class QuestionController extends SimpleController
                         
                         // Generate the form
                         $form = new Form($schema, $question);
+                        
+                        $texts = TEXT::all();
+                        $textSelect = [];
+                        foreach ($texts as $text) {
+                            $textSelect += [ $text->id => $text->technical_name ];
+                        }
+                        $form->setInputArgument('title', 'options', $textSelect);
+                        $form->setInputArgument('sub_title', 'options', $textSelect);
+                        $form->setInputArgument('info_url', 'options', $textSelect);
+                        $form->setInputArgument('info_description', 'options', $textSelect);   
+                        
+                        $steps = STEP::all();
+                        $stepSelect = [];
+                        foreach ($steps as $step) {
+                            $stepSelect += [ $step->id => $step->name ];
+                        }
+                        $form->setInputArgument('step_id', 'options', $stepSelect);
                         
                         // Render the template / form
                         $this->ci->view->render($response, 'FormGenerator/modal.html.twig', [

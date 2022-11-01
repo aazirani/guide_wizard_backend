@@ -1,0 +1,68 @@
+{
+    "name" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.NAME"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "NAME",
+            "icon" : "fa-th-list",
+            "placeholder" : "NAME"
+        }
+    },
+    "description" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.DESCRIPTION"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "DESCRIPTION",
+            "icon" : "fa-th-list",
+            "placeholder" : "DESCRIPTION"
+        }
+    },
+    "order" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "1", "2", "3", "4"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.ORDER"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "ORDER",
+            "options" : {
+                "1" : "1",
+                "2" : "2",
+                "3" : "3",
+                "4" : "4"
+            }
+        }
+    },
+    "type" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "1", "2"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.TYPE"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "TYPE",
+            "options" : {
+                "1" : "1",
+                "2" : "2"
+            }
+        }
+    }
+}

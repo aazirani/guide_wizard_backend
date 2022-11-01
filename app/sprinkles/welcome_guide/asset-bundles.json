@@ -23,6 +23,18 @@
                     }
                 }
             }
+        },
+        "js/pages/steps": {
+            "scripts": [
+                "userfrosting/js/pages/steps.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
         }
     }
 }

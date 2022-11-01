@@ -14,8 +14,9 @@ use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
 
-class TextController extends SimpleController
+class StepController extends SimpleController
 {
 	/**
      * Return the list of all objects.
@@ -33,13 +34,13 @@ class TextController extends SimpleController
         $currentUser = $this->ci->currentUser;
 		
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_texts')) {
+        if (!$authorizer->checkAccess($currentUser, 'view_steps')) {
             throw new ForbiddenException();
         }
 
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this->ci->classMapper;
-        $sprunje = $classMapper->createInstance('text_sprunje', $classMapper, $params);
+        $sprunje = $classMapper->createInstance('step_sprunje', $classMapper, $params);
 		$sprunje->extendQuery(function ($query) {
             return $query->with('creator');
         });
@@ -63,11 +64,11 @@ class TextController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_texts')) {
+        if (!$authorizer->checkAccess($currentUser, 'view_steps')) {
             throw new ForbiddenException();
         }
 
-        return $this->ci->view->render($response, 'pages/texts.html.twig');
+        return $this->ci->view->render($response, 'pages/steps.html.twig');
     }
 	
     /**
@@ -96,21 +97,30 @@ class TextController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_text')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_step')) {
             throw new ForbiddenException();
         }
 		
         // Load validator rules
-        $schema = new RequestSchema('schema://forms/addText.json');
+        $schema = new RequestSchema('schema://forms/addStep.json');
         $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
         // Generate the form
         $form = new Form($schema);
+
+        $texts = TEXT::all();
+        $textSelect = [];
+        foreach ($texts as $text) {
+            $textSelect += [ $text->id => $text->technical_name ];
+        }
+        $form->setInputArgument('name', 'options', $textSelect);
+        $form->setInputArgument('description', 'options', $textSelect);
+        
         // Using custom form here to add the javascript we need fo Typeahead.
         $this->ci->view->render($response, 'FormGenerator/modal.html.twig', [
             'box_id'        => $get['box_id'],
-            'box_title'     => 'TEXT.CREATE',
+            'box_title'     => 'STEP.CREATE',
             'submit_button' => 'CREATE',
-            'form_action'   => 'api/texts',
+            'form_action'   => 'api/steps',
             'fields'        => $form->generate(),
             'validators'    => $validator->rules('json', true),
         ]);
@@ -138,7 +148,7 @@ class TextController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_text')) {
+        if (!$authorizer->checkAccess($currentUser, 'create_step')) {
             throw new ForbiddenException();
         }
 
@@ -146,7 +156,7 @@ class TextController extends SimpleController
         $ms = $this->ci->alerts;
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addText.json');
+        $schema = new RequestSchema('schema://forms/addStep.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -181,25 +191,25 @@ class TextController extends SimpleController
         Capsule::transaction( function() use ($classMapper, $data, $ms, $config, $currentUser) {
 			
             // Create the object
-            $text = $classMapper->createInstance('text', $data);
-            // Store new text to database
-            $text->save();
+            $step = $classMapper->createInstance('step', $data);
+            // Store new step to database
+            $step->save();
 
             // Create activity record
-            $this->ci->userActivityLogger->info("User {$currentUser->user_name} created a new text with the technical name {$text->technical_name}.", [
-                'type' => 'text_created',
+            $this->ci->userActivityLogger->info("User {$currentUser->user_name} created a new step with the technical name {$step->name->technical_name}.", [
+                'type' => 'step_created',
                 'user_id' => $currentUser->id
             ]);
 			
-            $ms->addMessageTranslated('success', 'TEXT.CREATED', $data);
+            $ms->addMessageTranslated('success', 'STEP.CREATED', $data);
         });
 
         return $response->withStatus(200);
     }
 	
-	protected function getTextFromParams($params){
+	protected function getStepFromParams($params){
 		// Load the request schema
-		$schema = new RequestSchema('schema://requests/text-get-by-id.yaml');
+		$schema = new RequestSchema('schema://requests/step-get-by-id.yaml');
 		// Whitelist and set parameter defaults
 		$transformer = new RequestDataTransformer($schema);
 		$data = $transformer->transform($params);
@@ -219,9 +229,9 @@ class TextController extends SimpleController
 		/** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
 		$classMapper = $this->ci->classMapper;
 		// Get the object to delete
-		$text = $classMapper->staticMethod('text', 'where', 'id', $data['text_id'])->with('creator')->first();
+		$step = $classMapper->staticMethod('step', 'where', 'id', $data['step_id'])->with('creator')->first();
 	
-		return $text;
+		return $step;
 	}
 	
 	/**
@@ -234,10 +244,10 @@ class TextController extends SimpleController
      */
     public function delete($request, $response, $args)
     {
-        $text = $this->getTextFromParams($args);
+        $step = $this->getStepFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$text) {
+        if (!$step) {
             throw new NotFoundException($request, $response);
         }
 
@@ -248,8 +258,8 @@ class TextController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_text', [
-            'text' => $text
+        if (!$authorizer->checkAccess($currentUser, 'delete_step', [
+            'step' => $step
         ])) {
             throw new ForbiddenException();
         }
@@ -258,20 +268,20 @@ class TextController extends SimpleController
 		
         /** @var UserFrosting\Config\Config $config */
         $config = $this->ci->config;
-        $title = $text->technical_name;
+        $title = $step->name->technical_name;
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction( function() use ($text, $title, $currentUser) {
-            $text->delete();
-            unset($text);
+        Capsule::transaction( function() use ($step, $title, $currentUser) {
+            $step->delete();
+            unset($step);
 
             // Create activity record
-            $this->ci->userActivityLogger->info("User {$currentUser->user_name} deleted the text with the technical name {$title}.", [
-                'type' => 'text_deleted',
+            $this->ci->userActivityLogger->info("User {$currentUser->user_name} deleted the step with the technical name {$title}.", [
+                'type' => 'step_deleted',
                 'user_id' => $currentUser->id
             ]);
         });
 
-        $ms->addMessageTranslated('success', 'TEXT.DELETION_SUCCESSFUL', [
+        $ms->addMessageTranslated('success', 'STEP.DELETION_SUCCESSFUL', [
             'name' => $title
         ]);
 		
@@ -295,10 +305,10 @@ class TextController extends SimpleController
     public function editForm($request, $response, $args)
     {
 		$get = $request->getQueryParams();
-        $text = $this->getTextFromParams($args);
+        $step = $this->getStepFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$text) {
+        if (!$step) {
             throw new NotFoundException($request, $response);
         }
 
@@ -306,7 +316,7 @@ class TextController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Get the object to edit
-        $text = $classMapper->staticMethod('text', 'where', 'id', $text->id)->first();
+        $step = $classMapper->staticMethod('step', 'where', 'id', $step->id)->first();
 
         /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
         $authorizer = $this->ci->authorizer;
@@ -315,8 +325,8 @@ class TextController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_text_field', [
-            'text' => $text
+        if (!$authorizer->checkAccess($currentUser, 'update_step_field', [
+            'step' => $step
         ])) {
             throw new ForbiddenException();
         }
@@ -325,18 +335,26 @@ class TextController extends SimpleController
         $config = $this->ci->config;
 	
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addText.json');
+        $schema = new RequestSchema('schema://forms/addStep.json');
         $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
 		
         // Generate the form
-        $form = new Form($schema, $text);
+        $form = new Form($schema, $step);
 		
+        $texts = TEXT::all();
+        $textSelect = [];
+        foreach ($texts as $text) {
+            $textSelect += [ $text->id => $text->technical_name ];
+        }
+        $form->setInputArgument('name', 'options', $textSelect);
+        $form->setInputArgument('description', 'options', $textSelect);
+        
         // Render the template / form
         $this->ci->view->render($response, 'FormGenerator/modal.html.twig', [
             'box_id'        => $get['box_id'],
-            'box_title'     => 'TEXT.EDIT',
+            'box_title'     => 'STEP.EDIT',
             'submit_button' => 'EDIT',
-            'form_action'   => 'api/texts/'.$args['text_id'],
+            'form_action'   => 'api/steps/'.$args['step_id'],
             //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
             'fields'        => $form->generate(),
             'validators'    => $validator->rules('json', true),
@@ -357,9 +375,9 @@ class TextController extends SimpleController
     {
 
         // Get the object from the URL
-        $text = $this->getTextFromParams($args);
+        $step = $this->getStepFromParams($args);
 
-        if (!$text) {
+        if (!$step) {
             throw new NotFoundException($request, $response);
         }
 
@@ -373,7 +391,7 @@ class TextController extends SimpleController
         $post = $request->getParsedBody();
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addText.json');
+        $schema = new RequestSchema('schema://forms/addStep.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -393,8 +411,8 @@ class TextController extends SimpleController
         $currentUser = $this->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_text_field', [
-            'text' => $text
+        if (!$authorizer->checkAccess($currentUser, 'update_step_field', [
+            'step' => $step
         ])) {
             throw new ForbiddenException();
         }
@@ -403,25 +421,25 @@ class TextController extends SimpleController
         $classMapper = $this->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction( function() use ($data, $text, $currentUser) {
+        Capsule::transaction( function() use ($data, $step, $currentUser) {
             // Update the object and generate success messages
             foreach ($data as $name => $value) {
-                if ($value != $text->technical_name) {
-                    $text->$name = $value;
+                if ($value != $step->name->technical_name) {
+                    $step->$name = $value;
                 }
             }
 
-            $text->save();
+            $step->save();
 
             // Create activity record
-            $this->ci->userActivityLogger->info("User {$currentUser->user_name} updated basic data for text with the technical name {$text->technical_name}.", [
-                'type' => 'text_updated',
+            $this->ci->userActivityLogger->info("User {$currentUser->user_name} updated basic data for step with the technical name {$step->name->technical_name}.", [
+                'type' => 'step_updated',
                 'user_id' => $currentUser->id
             ]);
         });
 
-        $ms->addMessageTranslated('success', 'TEXT.DETAILS_UPDATED', [
-            'name' => $text->technical_name
+        $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', [
+            'name' => $step->technical_name
         ]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }

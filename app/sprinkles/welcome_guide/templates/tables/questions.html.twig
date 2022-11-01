@@ -42,13 +42,13 @@
     #}
     {% verbatim %}
     <script id="question-table-column-title" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.title}}
+        <td data-id="{{row.title.id}}">
+				{{row.title.technical_name}}
         </td>
     </script>
 	<script id="question-table-column-sub_title" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.sub_title}}
+        <td data-id="{{row.sub_title.id}}">
+				{{row.sub_title.technical_name}}
         </td>
     </script>
 	<script id="question-table-column-type" type="text/x-handlebars-template">
@@ -71,13 +71,13 @@
         </td>
     </script>
     <script id="question-table-column-info_url" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.info_url}}
+        <td data-id="{{row.info_url.id}}">
+				{{row.info_url.technical_name}}
         </td>
     </script>
 	<script id="question-table-column-info_description" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.info_description}}
+        <td data-id="{{row.info_description.id}}">
+				{{row.info_description.technical_name}}
         </td>
     </script>
     <script id="question-table-column-answer_required" type="text/x-handlebars-template">
@@ -99,10 +99,10 @@
         </td>
     </script>
     <script id="question-table-column-step" type="text/x-handlebars-template">
-        <td data-text="{{row.step.name}}">
+        <td data-text="{{row.step.name.technical_name}}">
             {{#if row.step }}
                 <strong>
-                    {{row.step.name}}"
+                    {{row.step.name.technical_name}}
                 </strong>
             {{ else }}
                 <i>{% endverbatim %}{{translate("STEP.DELETED")}}{% verbatim %}</i>

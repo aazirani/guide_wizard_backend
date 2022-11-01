@@ -91,7 +91,18 @@ class Question extends Model
         return $this->hasMany($classMapper->getClassMapping('answer'));
     }
 
+    /**
+     * Return the text for this object
+     */
     public function title()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('text'), 'title');
+    }
+
+    public function titles()
     {
          /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
          $classMapper = static::$ci->classMapper;
@@ -106,7 +117,18 @@ class Question extends Model
         );
     }
 
+    /**
+     * Return the text for this object
+     */
     public function subTitle()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('text'), 'sub_title');
+    }
+
+    public function subTitles()
     {
          /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
          $classMapper = static::$ci->classMapper;
@@ -121,7 +143,18 @@ class Question extends Model
         );
     }
 
+    /**
+     * Return the text for this object
+     */
     public function infoUrl()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('text'), 'info_url');
+    }
+
+    public function infoUrls()
     {
          /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
          $classMapper = static::$ci->classMapper;
@@ -136,7 +169,18 @@ class Question extends Model
         );
     }
 
+    /**
+     * Return the text for this object
+     */
     public function infoDescription()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('text'), 'info_description');
+    }
+    
+    public function infoDescriptions()
     {
          /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
          $classMapper = static::$ci->classMapper;

@@ -1,5 +1,4 @@
 <?php
-
 namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Models;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -50,15 +49,15 @@ class Language extends Model
     public function creator()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('user'), 'creator_id');
+        return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
     }
 
     public function translations()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
         return $this->hasMany($classMapper->getClassMapping('translation'));
     }
@@ -68,10 +67,12 @@ class Language extends Model
     {
         parent::boot();
 
-        self::deleting(function ($language) {
-            foreach ($language->translations as $translation) {
-                $translation->delete();
-            }
+        self::deleting(function ($language)
+        {
+            //foreach ($language->translations as $translation) {
+            //    $translation->delete();
+            //}
+            
         });
     }
 }

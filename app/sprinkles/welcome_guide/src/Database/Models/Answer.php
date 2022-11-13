@@ -5,26 +5,27 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
- * Step Class
+ * Answer Class
  *
- * Represents a step object as stored in the database.
+ * Represents a answer object as stored in the database.
  *
  * @package WelcomeGuide
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
  */
-class Step extends Model
+class Answer extends Model
 {
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = "steps";
+    protected $table = "answers";
 
     protected $fillable = [
-        "name", 
-        "description", 
-        "order", 
-        "type", 
+        "question_id",
+        "title",
+        "order",
+        "image",
+        "is_enabled",
         "creator_id"
     ];
 
@@ -33,9 +34,21 @@ class Step extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('steps.*');
+        $query = $query->select('answers.*');
 
-        $query = $query->leftJoin('users', 'steps.creator_id', '=', 'users.id');
+        $query = $query->leftJoin('users', 'answers.creator_id', '=', 'users.id');
+
+        return $query;
+    }
+
+    /**
+     * Joins the object's question, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinQuestion($query)
+    {
+        $query = $query->select('answers.*');
+
+        $query = $query->leftJoin('questions', 'answers.question_id', '=', 'questions.id');
 
         return $query;
     }
@@ -59,39 +72,28 @@ class Step extends Model
     /**
      * Return the text for this object
      */
-    public function name()
+    public function title()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text') , 'name');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'title');
     }
 
-    public function names()
+    public function titles()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'name', 'id');
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'title', 'id');
     }
 
-    /**
-     * Return the text for this object
-     */
-    public function description()
+    public function question()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text') , 'description');
-    }
-
-    public function descriptions()
-    {
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static ::$ci->classMapper;
-
-        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'description', 'id');
+        return $this->belongsTo($classMapper->getClassMapping('question') , 'question_id');
     }
 
     //observe this model being deleted and delete the relationships
@@ -99,9 +101,9 @@ class Step extends Model
     {
         parent::boot();
 
-        self::deleting(function ($step)
+        self::deleting(function ($answer)
         {
-            //foreach ($step->translations as $translation) {
+            //foreach ($answer->translations as $translation) {
             //    $translation->delete();
             //}
             

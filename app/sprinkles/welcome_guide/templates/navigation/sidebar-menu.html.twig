@@ -17,5 +17,10 @@
         <a href="{{site.uri.public}}/questions"><i class="fa fa-building"></i> <span>{{ translate("QUESTION", 2) }}</span></a>
     </li>
     {% endif %}
+    {% if checkAccess('view_answers') %}
+    <li>
+        <a href="{{site.uri.public}}/answers"><i class="fa fa-building"></i> <span>{{ translate("ANSWER", 2) }}</span></a>
+    </li>
+    {% endif %}
 {% endblock %}
 

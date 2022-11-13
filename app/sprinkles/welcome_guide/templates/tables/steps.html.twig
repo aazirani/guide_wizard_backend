@@ -11,14 +11,14 @@
     <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="[[0, 1]]">
         <thead>
             <tr>
-				<th class="sorter-metastep" data-column-name="name" data-column-template="#step-table-column-name" data-priority="1">{{translate("NAME")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metastep" data-column-name="description" data-column-template="#step-table-column-description" data-priority="1">{{translate("DESCRIPTION")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metastep" data-column-name="order" data-column-template="#step-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metastep" data-column-name="type" data-column-template="#step-table-column-type" data-priority="1">{{translate("TYPE")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="name" data-column-template="#step-table-column-name" data-priority="1">{{translate("NAME")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="description" data-column-template="#step-table-column-description" data-priority="1">{{translate("DESCRIPTION")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="order" data-column-template="#step-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="type" data-column-template="#step-table-column-type" data-priority="1">{{translate("TYPE")}} <i class="fa fa-sort"></i></th>
 				
 
                 {% if 'creator' in table.columns %}
-                    <th class="sorter-metastep" data-column-name="creator" data-column-template="#step-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
+                    <th class="sorter-metatext" data-column-name="creator" data-column-template="#step-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
                 {% endif %}
 				<th class="sorter-metanum" data-filter="false" data-column-name="created_at" data-column-template="#step-table-column-created-at" data-priority="1">{{translate('CREATED_AT')}} <i class="fa fa-sort"></i></th>
 				<th data-column-name="actions" data-column-template="#step-table-column-actions" data-sorter="false" data-filter="false" data-priority="1">{{translate("ACTIONS")}}</th>

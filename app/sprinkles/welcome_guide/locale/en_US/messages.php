@@ -75,6 +75,29 @@ return [
         "CLONE" => "Clone Step",
         "EDIT" => "Edit Step"
     ],
+    "ANSWER" => [
+        1 => "Answer",
+        2 => "Answers",
+        
+        "PAGE" => "A listing of all answers",
+        "CREATE" => "New Answer",
+        "CREATED" => "Answer <strong>{{name}}</strong> has been successfully created",
+        
+        "SELECTED" => [
+            1 => "Selected Answer",
+            2 => "Selected Answers"
+        ],
+        "DELETE" => "Delete Answer",
+        "DELETE_CONFIRM"    => "Are you sure you want to delete this answer?",
+        "DELETE_YES"        => "Yes, delete answer",
+        
+        "DETAILS_UPDATED"=> "Details updated for answer <strong>{{name}}</strong>",
+        
+        "DELETION_SUCCESSFUL"   => "Answer <strong>{{name}}</strong> has been successfully deleted.",
+        
+        "CLONE" => "Clone Answer",
+        "EDIT" => "Edit Answer"
+    ],
     "TITLE" => "Title",
     "SUB_TITLE" => "Sub Title",
     "TYPE" => "Type",

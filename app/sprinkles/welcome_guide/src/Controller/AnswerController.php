@@ -14,8 +14,9 @@ use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
 
-class StepController extends SimpleController
+class AnswerController extends SimpleController
 {
     /**
      * Return the list of all objects.
@@ -35,7 +36,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_steps'))
+        if (!$authorizer->checkAccess($currentUser, 'view_answers'))
         {
             throw new ForbiddenException();
         }
@@ -43,12 +44,12 @@ class StepController extends SimpleController
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this
             ->ci->classMapper;
-        $sprunje = $classMapper->createInstance('step_sprunje', $classMapper, $params);
+        $sprunje = $classMapper->createInstance('answer_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('name')
-                ->with('description');
+                ->with('title')
+                ->with('question.title');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -72,7 +73,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_steps'))
+        if (!$authorizer->checkAccess($currentUser, 'view_answers'))
         {
             throw new ForbiddenException();
         }
@@ -80,7 +81,7 @@ class StepController extends SimpleController
         return $this
             ->ci
             ->view
-            ->render($response, 'pages/steps.html.twig');
+            ->render($response, 'pages/answers.html.twig');
     }
 
     /**
@@ -112,13 +113,13 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_step'))
+        if (!$authorizer->checkAccess($currentUser, 'create_answer'))
         {
             throw new ForbiddenException();
         }
 
         // Load validator rules
-        $schema = new RequestSchema('schema://forms/addStep.json');
+        $schema = new RequestSchema('schema://forms/addAnswer.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
@@ -131,14 +132,27 @@ class StepController extends SimpleController
         {
             $textSelect += [$text->id => $text->technical_name];
         }
-        $form->setInputArgument('name', 'options', $textSelect);
-        $form->setInputArgument('description', 'options', $textSelect);
+        $form->setInputArgument('title', 'options', $textSelect);
+
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this
+            ->ci->classMapper;
+
+        $questions = QUESTION::all();
+        $questionSelect = [];
+        foreach ($questions as $question)
+        {
+            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
+                ->first();
+            $questionSelect += [$question->id => $title->technical_name];
+        }
+        $form->setInputArgument('question_id', 'options', $questionSelect);
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'STEP.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/steps', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'ANSWER.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/answers', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
 
     /**
@@ -165,7 +179,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_step'))
+        if (!$authorizer->checkAccess($currentUser, 'create_answer'))
         {
             throw new ForbiddenException();
         }
@@ -175,7 +189,7 @@ class StepController extends SimpleController
             ->ci->alerts;
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addStep.json');
+        $schema = new RequestSchema('schema://forms/addAnswer.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -217,27 +231,27 @@ class StepController extends SimpleController
         {
 
             // Create the object
-            $step = $classMapper->createInstance('step', $data);
-            // Store new step to database
-            $step->save();
+            $answer = $classMapper->createInstance('answer', $data);
+            // Store new answer to database
+            $answer->save();
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new step with the technical name {$step
-                ->name->technical_name}.", ['type' => 'step_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new answer with the technical name {$answer
+                ->title->technical_name}.", ['type' => 'answer_created', 'user_id' => $currentUser->id]);
 
-            $ms->addMessageTranslated('success', 'STEP.CREATED', $data);
+            $ms->addMessageTranslated('success', 'ANSWER.CREATED', $data);
         });
 
         return $response->withStatus(200);
     }
 
-    protected function getStepFromParams($params)
+    protected function getAnswerFromParams($params)
     {
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/step-get-by-id.yaml');
+        $schema = new RequestSchema('schema://requests/answer-get-by-id.yaml');
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($params);
@@ -263,10 +277,10 @@ class StepController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         // Get the object to delete
-        $step = $classMapper->staticMethod('step', 'where', 'id', $data['step_id'])->with('creator')
+        $answer = $classMapper->staticMethod('answer', 'where', 'id', $data['answer_id'])->with('creator')
             ->first();
 
-        return $step;
+        return $answer;
     }
 
     /**
@@ -279,10 +293,10 @@ class StepController extends SimpleController
      */
     public function delete($request, $response, $args)
     {
-        $step = $this->getStepFromParams($args);
+        $answer = $this->getAnswerFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$step)
+        if (!$answer)
         {
             throw new NotFoundException($request, $response);
         }
@@ -296,7 +310,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_step', ['step' => $step]))
+        if (!$authorizer->checkAccess($currentUser, 'delete_answer', ['answer' => $answer]))
         {
             throw new ForbiddenException();
         }
@@ -307,22 +321,22 @@ class StepController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $step
-            ->name->technical_name;
+        $title = $answer
+            ->title->technical_name;
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($step, $title, $currentUser)
+        Capsule::transaction(function () use ($answer, $title, $currentUser)
         {
-            $step->delete();
-            unset($step);
+            $answer->delete();
+            unset($answer);
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the step with the technical name {$title}.", ['type' => 'step_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the answer with the technical name {$title}.", ['type' => 'answer_deleted', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'STEP.DELETION_SUCCESSFUL', ['name' => $title]);
+        $ms->addMessageTranslated('success', 'ANSWER.DELETION_SUCCESSFUL', ['name' => $title]);
 
         //return $response->withStatus(200);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
@@ -344,10 +358,10 @@ class StepController extends SimpleController
     public function editForm($request, $response, $args)
     {
         $get = $request->getQueryParams();
-        $step = $this->getStepFromParams($args);
+        $answer = $this->getAnswerFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$step)
+        if (!$answer)
         {
             throw new NotFoundException($request, $response);
         }
@@ -357,7 +371,7 @@ class StepController extends SimpleController
             ->ci->classMapper;
 
         // Get the object to edit
-        $step = $classMapper->staticMethod('step', 'where', 'id', $step->id)
+        $answer = $classMapper->staticMethod('answer', 'where', 'id', $answer->id)
             ->first();
 
         /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
@@ -369,7 +383,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_step_field', ['step' => $step]))
+        if (!$authorizer->checkAccess($currentUser, 'update_answer_field', ['answer' => $answer]))
         {
             throw new ForbiddenException();
         }
@@ -379,13 +393,13 @@ class StepController extends SimpleController
             ->ci->config;
 
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addStep.json');
+        $schema = new RequestSchema('schema://forms/addAnswer.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
 
         // Generate the form
-        $form = new Form($schema, $step);
+        $form = new Form($schema, $answer);
 
         $texts = TEXT::all();
         $textSelect = [];
@@ -393,14 +407,23 @@ class StepController extends SimpleController
         {
             $textSelect += [$text->id => $text->technical_name];
         }
-        $form->setInputArgument('name', 'options', $textSelect);
-        $form->setInputArgument('description', 'options', $textSelect);
+        $form->setInputArgument('title', 'options', $textSelect);
+
+        $questions = QUESTION::all();
+        $questionSelect = [];
+        foreach ($questions as $question)
+        {
+            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
+                ->first();
+            $questionSelect += [$question->id => $title->technical_name];
+        }
+        $form->setInputArgument('question_id', 'options', $questionSelect);
 
         // Render the template / form
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'STEP.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/steps/' . $args['step_id'],
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'ANSWER.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/answers/' . $args['answer_id'],
         //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
         'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
@@ -419,9 +442,9 @@ class StepController extends SimpleController
     {
 
         // Get the object from the URL
-        $step = $this->getStepFromParams($args);
+        $answer = $this->getAnswerFromParams($args);
 
-        if (!$step)
+        if (!$answer)
         {
             throw new NotFoundException($request, $response);
         }
@@ -438,7 +461,7 @@ class StepController extends SimpleController
         $post = $request->getParsedBody();
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addStep.json');
+        $schema = new RequestSchema('schema://forms/addAnswer.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -463,7 +486,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_step_field', ['step' => $step]))
+        if (!$authorizer->checkAccess($currentUser, 'update_answer_field', ['answer' => $answer]))
         {
             throw new ForbiddenException();
         }
@@ -473,28 +496,28 @@ class StepController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $step, $currentUser)
+        Capsule::transaction(function () use ($data, $answer, $currentUser)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
             {
-                if ($value != $step->$name)
+                if ($value != $answer->$name)
                 {
-                    $step->$name = $value;
+                    $answer->$name = $value;
                 }
             }
 
-            $step->save();
+            $answer->save();
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for step with the technical name {$step
-                ->name->technical_name}.", ['type' => 'step_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for answer with the technical name {$answer
+                ->title->technical_name}.", ['type' => 'answer_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', ['name' => $step->technical_name]);
+        $ms->addMessageTranslated('success', 'ANSWER.DETAILS_UPDATED', ['name' => $answer->technical_name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 }

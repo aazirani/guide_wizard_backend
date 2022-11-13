@@ -1,5 +1,4 @@
 <?php
-
 namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Models;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -22,7 +21,7 @@ class Text extends Model
     protected $table = "texts";
 
     protected $fillable = [
-        "technical_name",
+        "technical_name", 
         "creator_id"
     ];
 
@@ -49,15 +48,15 @@ class Text extends Model
     public function creator()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('user'), 'creator_id');
+        return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
     }
 
     public function translations()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
         return $this->hasMany($classMapper->getClassMapping('translation'));
     }
@@ -67,10 +66,12 @@ class Text extends Model
     {
         parent::boot();
 
-        self::deleting(function ($text) {
-            foreach ($text->translations as $translation) {
-                $translation->delete();
-            }
+        self::deleting(function ($text)
+        {
+            //foreach ($text->translations as $translation) {
+            //    $translation->delete();
+            //}
+            
         });
     }
 }

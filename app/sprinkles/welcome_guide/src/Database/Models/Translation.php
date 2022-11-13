@@ -1,5 +1,4 @@
 <?php
-
 namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Models;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -22,9 +21,9 @@ class Translation extends Model
     protected $table = "translations";
 
     protected $fillable = [
-        "text_id",
-        "translated_text",
-        "language_id",
+        "text_id", 
+        "translated_text", 
+        "language_id", 
         "creator_id"
     ];
 
@@ -75,9 +74,9 @@ class Translation extends Model
     public function creator()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('user'), 'creator_id');
+        return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
     }
 
     /**
@@ -86,9 +85,9 @@ class Translation extends Model
     public function text()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text'), 'text_id');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'text_id');
     }
 
     /**
@@ -97,9 +96,9 @@ class Translation extends Model
     public function language()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('language'), 'language_id');
+        return $this->belongsTo($classMapper->getClassMapping('language') , 'language_id');
     }
 
 }

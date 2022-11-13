@@ -35,6 +35,18 @@
                     }
                 }
             }
+        },
+        "js/pages/answers": {
+            "scripts": [
+                "userfrosting/js/pages/answers.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
         }
     }
 }

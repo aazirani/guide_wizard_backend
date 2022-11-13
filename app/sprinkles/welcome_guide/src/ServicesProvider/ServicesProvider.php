@@ -53,6 +53,8 @@ class ServicesProvider
 			$classMapper->setClassMapping('language_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\LanguageSprunje');
             $classMapper->setClassMapping('translation', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation');
 			$classMapper->setClassMapping('translation_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TranslationSprunje');
+            $classMapper->setClassMapping('answer', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer');
+			$classMapper->setClassMapping('answer_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\AnswerSprunje');
 
 			return $classMapper;
         });

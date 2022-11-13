@@ -1,5 +1,4 @@
 <?php
-
 namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Models;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -22,16 +21,16 @@ class Question extends Model
     protected $table = "questions";
 
     protected $fillable = [
-        "title",
-        "sub_title",
-        "type",
+        "title", 
+        "sub_title", 
+        "type", 
         "axis_count",
-        "is_multiple_choice",
-        "info_url",
-        "info_description",
-        "answer_required",
-        "answers_selected_by_default",
-        "step_id",
+        "is_multiple_choice", 
+        "info_url", 
+        "info_description", 
+        "answer_required", 
+        "answers_selected_by_default", 
+        "step_id", 
         "creator_id"
     ];
 
@@ -70,23 +69,23 @@ class Question extends Model
     public function creator()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('user'), 'creator_id');
+        return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
     }
 
     public function step()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('step'), 'step_id');
+        return $this->belongsTo($classMapper->getClassMapping('step') , 'step_id');
     }
 
     public function answers()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
         return $this->hasMany($classMapper->getClassMapping('answer'));
     }
@@ -97,24 +96,17 @@ class Question extends Model
     public function title()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text'), 'title');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'title');
     }
 
     public function titles()
     {
-         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-         $classMapper = static::$ci->classMapper;
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->hasManyThrough(
-            $classMapper->getClassMapping('translation'),
-            $classMapper->getClassMapping('text'),
-            'id',
-            'text_id',
-            'title',
-            'id'
-        );
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'title', 'id');
     }
 
     /**
@@ -123,24 +115,17 @@ class Question extends Model
     public function subTitle()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text'), 'sub_title');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'sub_title');
     }
 
     public function subTitles()
     {
-         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-         $classMapper = static::$ci->classMapper;
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->hasManyThrough(
-            $classMapper->getClassMapping('translation'),
-            $classMapper->getClassMapping('text'),
-            'id',
-            'text_id',
-            'sub_title',
-            'id'
-        );
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'sub_title', 'id');
     }
 
     /**
@@ -149,24 +134,17 @@ class Question extends Model
     public function infoUrl()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text'), 'info_url');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'info_url');
     }
 
     public function infoUrls()
     {
-         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-         $classMapper = static::$ci->classMapper;
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->hasManyThrough(
-            $classMapper->getClassMapping('translation'),
-            $classMapper->getClassMapping('text'),
-            'id',
-            'text_id',
-            'info_url',
-            'id'
-        );
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'info_url', 'id');
     }
 
     /**
@@ -175,24 +153,17 @@ class Question extends Model
     public function infoDescription()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static::$ci->classMapper;
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text'), 'info_description');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'info_description');
     }
-    
+
     public function infoDescriptions()
     {
-         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-         $classMapper = static::$ci->classMapper;
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
 
-        return $this->hasManyThrough(
-            $classMapper->getClassMapping('translation'),
-            $classMapper->getClassMapping('text'),
-            'id',
-            'text_id',
-            'info_description',
-            'id'
-        );
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'info_description', 'id');
     }
 
     //observe this model being deleted and delete the relationships
@@ -200,10 +171,12 @@ class Question extends Model
     {
         parent::boot();
 
-        self::deleting(function ($question) {
-            foreach ($question->answers as $answer) {
-                $answer->delete();
-            }
+        self::deleting(function ($question)
+        {
+            //foreach ($question->answers as $answer) {
+            //    $answer->delete();
+            //}
+            
         });
     }
 }

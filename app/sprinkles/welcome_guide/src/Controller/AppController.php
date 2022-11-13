@@ -48,7 +48,7 @@ class AppController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query
-            ->with('step.name')
+            ->with('step.name', 'step.description')
             ->with('title')
             ->with('subTitle')
             ->with('infoUrl')

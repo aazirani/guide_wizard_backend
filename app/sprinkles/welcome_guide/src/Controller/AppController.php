@@ -36,10 +36,10 @@ class AppController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_questions'))
-        {
-            throw new ForbiddenException();
-        }
+        //if (!$authorizer->checkAccess($currentUser, 'view_questions'))
+        //{
+        //    throw new ForbiddenException();
+        //}
 
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this

@@ -1,0 +1,397 @@
+{
+  "count": 2,
+  "count_filtered": 2,
+  "rows": [
+    {
+      "id": 1,
+      "name": {
+        "id": 4,
+        "technical_name": "name_for_step_one",
+        "creator_id": 1,
+        "created_at": "2022-11-13T23:16:42.000000Z",
+        "updated_at": "2022-11-13T23:16:42.000000Z"
+      },
+      "description": {
+        "id": 1,
+        "technical_name": "description_for_step_one",
+        "creator_id": 1,
+        "created_at": "2022-11-13T23:16:24.000000Z",
+        "updated_at": "2022-11-13T23:16:24.000000Z"
+      },
+      "order": 1,
+      "image": "https://findicons.com/files/icons/1714/dropline_neu/128/dialog_question.png",
+      "tasks": [
+        {
+          "id": 1,
+          "text": {
+            "id": 2,
+            "technical_name": "text_for_questions_task",
+            "creator_id": 3,
+            "created_at": "2022-11-13T23:16:29.000000Z",
+            "updated_at": "2022-11-13T23:16:29.000000Z"
+          },
+          "description": {
+            "id": 2,
+            "technical_name": "text_for_descriptions_task",
+            "creator_id": 1,
+            "created_at": "2022-11-13T23:16:29.000000Z",
+            "updated_at": "2022-11-13T23:16:29.000000Z"
+          },
+          "image_1": "",
+          "image_2": "",
+          "fa_icon": "fa-clock-o",
+          "creator_id": 1,
+          "created_at": "2022-11-13T23:19:57.000000Z",
+          "updated_at": "2022-11-13T23:19:57.000000Z",
+          "questions": [
+            {
+              "id": 1,
+              "title": {
+                "id": 4,
+                "technical_name": "citizenship",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:42.000000Z",
+                "updated_at": "2022-11-13T23:16:42.000000Z"
+              },
+              "sub_title": {
+                "id": 1,
+                "technical_name": "what_is_your_citizenship?",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "type": "TEXT",
+              "axis_count": 1,
+              "is_multiple_choice": 0,
+              "info_url": {
+                "id": 7,
+                "technical_name": "info_url_for_citizenship_question",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:18:55.000000Z",
+                "updated_at": "2022-11-13T23:18:55.000000Z"
+              },
+              "info_description": {
+                "id": 8,
+                "technical_name": "info_description_for_citizenship_question",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:19:15.000000Z",
+                "updated_at": "2022-11-13T23:19:15.000000Z"
+              },
+              "answer_required": 0,
+              "answers_selected_by_default": 0,
+              "creator_id": 1,
+              "created_at": "2022-11-13T23:19:38.000000Z",
+              "updated_at": "2022-11-13T23:19:38.000000Z",
+              "answers": [
+                {
+                  "id": 1,
+                  "question_id": 1,
+                  "title": {
+                    "id": 2,
+                    "technical_name": "iran",
+                    "creator_id": 1,
+                    "created_at": "2022-11-13T23:16:29.000000Z",
+                    "updated_at": "2022-11-13T23:16:29.000000Z"
+                  },
+                  "order": 1,
+                  "image": "",
+                  "is_enabled": 1,
+                  "creator_id": 1,
+                  "created_at": "2022-11-13T23:19:57.000000Z",
+                  "updated_at": "2022-11-13T23:19:57.000000Z"
+                },
+                {
+                  "id": 2,
+                  "question_id": 1,
+                  "title": {
+                    "id": 3,
+                    "technical_name": "china",
+                    "creator_id": 1,
+                    "created_at": "2022-11-13T23:16:34.000000Z",
+                    "updated_at": "2022-11-13T23:16:34.000000Z"
+                  },
+                  "order": 2,
+                  "image": "",
+                  "is_enabled": 1,
+                  "creator_id": 1,
+                  "created_at": "2022-11-13T23:20:06.000000Z",
+                  "updated_at": "2022-11-13T23:20:06.000000Z"
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "title": {
+                "id": 9,
+                "technical_name": "accommodation",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:21:34.000000Z",
+                "updated_at": "2022-11-13T23:21:34.000000Z"
+              },
+              "sub_title": {
+                "id": 10,
+                "technical_name": "what_kind_of_accommodation_are_you_interested_in?",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:22:13.000000Z",
+                "updated_at": "2022-11-13T23:22:13.000000Z"
+              },
+              "type": "IMAGE",
+              "axis_count": 2,
+              "is_multiple_choice": 1,
+              "info_url": {
+                "id": 11,
+                "technical_name": "info_url_for_accommodation",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:23:25.000000Z",
+                "updated_at": "2022-11-13T23:23:25.000000Z"
+              },
+              "info_description": {
+                "id": 12,
+                "technical_name": "info_description_for_accommodation",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:23:38.000000Z",
+                "updated_at": "2022-11-13T23:23:38.000000Z"
+              },
+              "answer_required": 0,
+              "answers_selected_by_default": 0,
+              "creator_id": 1,
+              "created_at": "2022-11-13T23:24:14.000000Z",
+              "updated_at": "2022-11-13T23:24:14.000000Z",
+              "answers": [
+                {
+                  "id": 3,
+                  "question_id": 2,
+                  "title": {
+                    "id": 13,
+                    "technical_name": "dormitory",
+                    "creator_id": 1,
+                    "created_at": "2022-11-13T23:24:31.000000Z",
+                    "updated_at": "2022-11-13T23:24:31.000000Z"
+                  },
+                  "order": 1,
+                  "image": "https://www.dormitory.hr/wp-content/uploads/2018/01/caas-residence-single-room-800x600.jpg",
+                  "is_enabled": 1,
+                  "creator_id": 1,
+                  "created_at": "2022-11-13T23:25:48.000000Z",
+                  "updated_at": "2022-11-13T23:25:48.000000Z"
+                },
+                {
+                  "id": 4,
+                  "question_id": 2,
+                  "title": {
+                    "id": 14,
+                    "technical_name": "private_housing",
+                    "creator_id": 1,
+                    "created_at": "2022-11-13T23:24:45.000000Z",
+                    "updated_at": "2022-11-13T23:24:45.000000Z"
+                  },
+                  "order": 2,
+                  "image": "https://www.cleantechloops.com/wp-content/uploads/2018/09/eco-friendly-home-in-australia.png",
+                  "is_enabled": 1,
+                  "creator_id": 1,
+                  "created_at": "2022-11-13T23:26:46.000000Z",
+                  "updated_at": "2022-11-13T23:32:30.000000Z"
+                }
+              ]
+            }
+          ],
+          "sub_tasks": [
+
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": {
+        "id": 4,
+        "technical_name": "name_for_step_two",
+        "creator_id": 1,
+        "created_at": "2022-11-13T23:16:42.000000Z",
+        "updated_at": "2022-11-13T23:16:42.000000Z"
+      },
+      "description": {
+        "id": 1,
+        "technical_name": "description_for_step_two",
+        "creator_id": 1,
+        "created_at": "2022-11-13T23:16:24.000000Z",
+        "updated_at": "2022-11-13T23:16:24.000000Z"
+      },
+      "order": 2,
+      "image": "https://findicons.com/files/icons/1994/vista_style_business_and_data/128/users.png",
+      "tasks": [
+        {
+          "id": 87,
+          "text": {
+            "id": 9,
+            "technical_name": "text_for_results_task",
+            "creator_id": 3,
+            "created_at": "2022-11-13T23:16:29.000000Z",
+            "updated_at": "2022-11-13T23:16:29.000000Z"
+          },
+          "description": {
+            "id": 48,
+            "technical_name": "text_for_results_task",
+            "creator_id": 1,
+            "created_at": "2022-11-13T23:16:29.000000Z",
+            "updated_at": "2022-11-13T23:16:29.000000Z"
+          },
+          "image_1": "",
+          "image_2": "",
+          "fa_icon": "fa-certificate",
+          "creator_id": 1,
+          "created_at": "2022-11-13T23:19:57.000000Z",
+          "updated_at": "2022-11-13T23:19:57.000000Z",
+          "questions": [
+
+          ],
+          "sub_tasks": [
+            {
+              "id": 1,
+              "title": {
+                "id": 43,
+                "technical_name": "find_an_accomodation",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:42.000000Z",
+                "updated_at": "2022-11-13T23:16:42.000000Z"
+              },
+              "markdown": {
+                "id": 1,
+                "technical_name": "accomodation_markdown",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "deadline": {
+                "id": 1,
+                "technical_name": "deadline_for_accomodation",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "order": 1,
+              "creator_id": 1,
+              "created_at": "2022-11-13T23:19:38.000000Z",
+              "updated_at": "2022-11-13T23:19:38.000000Z"
+            },
+            {
+              "id": 2,
+              "title": {
+                "id": 24,
+                "technical_name": "sign_up_for_the_university",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:42.000000Z",
+                "updated_at": "2022-11-13T23:16:42.000000Z"
+              },
+              "markdown": {
+                "id": 87,
+                "technical_name": "signup_for_university_markdown",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "deadline": {
+                "id": 948,
+                "technical_name": "deadline_for_accomodation",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "order": 1,
+              "creator_id": 1,
+              "created_at": "2022-11-13T23:19:38.000000Z",
+              "updated_at": "2022-11-13T23:19:38.000000Z"
+            }
+          ]
+        },
+        {
+          "id": 182,
+          "text": {
+            "id": 112,
+            "technical_name": "text_for_second_results_task",
+            "creator_id": 3,
+            "created_at": "2022-11-13T23:16:29.000000Z",
+            "updated_at": "2022-11-13T23:16:29.000000Z"
+          },
+          "description": {
+            "id": 638,
+            "technical_name": "text_for_second_results_task",
+            "creator_id": 1,
+            "created_at": "2022-11-13T23:16:29.000000Z",
+            "updated_at": "2022-11-13T23:16:29.000000Z"
+          },
+          "image_1": "",
+          "image_2": "",
+          "fa_icon": "fa-cogs",
+          "creator_id": 1,
+          "created_at": "2022-11-13T23:19:57.000000Z",
+          "updated_at": "2022-11-13T23:19:57.000000Z",
+          "questions": [
+
+          ],
+          "sub_tasks": [
+            {
+              "id": 73,
+              "title": {
+                "id": 884,
+                "technical_name": "open_bank_account",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:42.000000Z",
+                "updated_at": "2022-11-13T23:16:42.000000Z"
+              },
+              "markdown": {
+                "id": 836,
+                "technical_name": "open_bank_account_markdown",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "deadline": {
+                "id": 743,
+                "technical_name": "deadline_for_bank_account",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "order": 1,
+              "creator_id": 1,
+              "created_at": "2022-11-13T23:19:38.000000Z",
+              "updated_at": "2022-11-13T23:19:38.000000Z"
+            },
+            {
+              "id": 384,
+              "title": {
+                "id": 24,
+                "technical_name": "find_a_job",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:42.000000Z",
+                "updated_at": "2022-11-13T23:16:42.000000Z"
+              },
+              "markdown": {
+                "id": 238,
+                "technical_name": "open_bank_account_markdown",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "deadline": {
+                "id": 332,
+                "technical_name": "deadline_for_open_bank_account",
+                "creator_id": 1,
+                "created_at": "2022-11-13T23:16:24.000000Z",
+                "updated_at": "2022-11-13T23:16:24.000000Z"
+              },
+              "order": 2,
+              "creator_id": 1,
+              "created_at": "2022-11-13T23:19:38.000000Z",
+              "updated_at": "2022-11-13T23:19:38.000000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "listable": [
+
+  ]
+}

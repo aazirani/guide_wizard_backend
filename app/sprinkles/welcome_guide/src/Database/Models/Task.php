@@ -5,26 +5,28 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
- * Step Class
+ * Task Class
  *
- * Represents a step object as stored in the database.
+ * Represents a task object as stored in the database.
  *
  * @package WelcomeGuide
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
  */
-class Step extends Model
+class Task extends Model
 {
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = "steps";
+    protected $table = "tasks";
 
     protected $fillable = [
-        "name", 
+        "step_id", 
+        "text", 
         "description", 
-        "order", 
-        "image", 
+        "image_1",
+        "image_2", 
+        "fa_icon", 
         "creator_id"
     ];
 
@@ -33,9 +35,21 @@ class Step extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('steps.*');
+        $query = $query->select('tasks.*');
 
-        $query = $query->leftJoin('users', 'steps.creator_id', '=', 'users.id');
+        $query = $query->leftJoin('users', 'tasks.creator_id', '=', 'users.id');
+
+        return $query;
+    }
+
+    /**
+     * Joins the object's step, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinStep($query)
+    {
+        $query = $query->select('tasks.*');
+
+        $query = $query->leftJoin('steps', 'tasks.step_id', '=', 'steps.id');
 
         return $query;
     }
@@ -56,23 +70,31 @@ class Step extends Model
         return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
     }
 
+    public function step()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('step') , 'step_id');
+    }
+
     /**
      * Return the text for this object
      */
-    public function name()
+    public function text()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('text') , 'name');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'text');
     }
 
-    public function names()
+    public function texts()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'name', 'id');
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'text', 'id');
     }
 
     /**
@@ -94,24 +116,31 @@ class Step extends Model
         return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'description', 'id');
     }
 
-    public function tasks()
+    public function questions()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->hasMany($classMapper->getClassMapping('taks'));
+        return $this->hasMany($classMapper->getClassMapping('question'));
     }
 
+    public function subTasks()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
+
+        return $this->hasMany($classMapper->getClassMapping('subTask'));
+    }
 
     //observe this model being deleted and delete the relationships
     public static function boot()
     {
         parent::boot();
 
-        self::deleting(function ($step)
+        self::deleting(function ($question)
         {
-            //foreach ($step->translations as $translation) {
-            //    $translation->delete();
+            //foreach ($question->answers as $answer) {
+            //    $answer->delete();
             //}
             
         });

@@ -5,27 +5,24 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
- * Answer Class
+ * Logic Class
  *
- * Represents a answer object as stored in the database.
+ * Represents a logic object as stored in the database.
  *
  * @package WelcomeGuide
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
  */
-class Answer extends Model
+class Logic extends Model
 {
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = "answers";
+    protected $table = "logics";
 
     protected $fillable = [
-        "question_id",
-        "title",
-        "order",
-        "image",
-        "is_enabled",
+        "name",
+        "expression",
         "creator_id"
     ];
 
@@ -34,21 +31,9 @@ class Answer extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('answers.*');
+        $query = $query->select('logics.*');
 
-        $query = $query->leftJoin('users', 'answers.creator_id', '=', 'users.id');
-
-        return $query;
-    }
-
-    /**
-     * Joins the object's question, so we can do things like sort, search, paginate, etc.
-     */
-    public function scopeJoinQuestion($query)
-    {
-        $query = $query->select('answers.*');
-
-        $query = $query->leftJoin('questions', 'answers.question_id', '=', 'questions.id');
+        $query = $query->leftJoin('users', 'logics.creator_id', '=', 'users.id');
 
         return $query;
     }
@@ -70,41 +55,25 @@ class Answer extends Model
     }
 
     /**
-     * Return the text for this object
+     * Return the answers of this object
      */
-    public function title()
-    {
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static ::$ci->classMapper;
-
-        return $this->belongsTo($classMapper->getClassMapping('text') , 'title');
-    }
-
-    public function titles()
-    {
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static ::$ci->classMapper;
-
-        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'title', 'id');
-    }
-
-    public function question()
-    {
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static ::$ci->classMapper;
-
-        return $this->belongsTo($classMapper->getClassMapping('question') , 'question_id');
-    }
-
-    /**
-    * Return the logics of this object
-    */
-    public function logics()
+    public function answers()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static::$ci->classMapper;
- 
-        return $this->belongsToMany($classMapper->getClassMapping('logic'));
+
+        return $this->belongsToMany($classMapper->getClassMapping('answer'));
+    }
+
+    /**
+     * Return the answers of this object
+     */
+    public function subTasks()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->belongsToMany($classMapper->getClassMapping('subTask'));
     }
 
     //observe this model being deleted and delete the relationships

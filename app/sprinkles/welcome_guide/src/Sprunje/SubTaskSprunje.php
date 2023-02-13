@@ -10,44 +10,34 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class QuestionSprunje extends Sprunje
+class SubTaskSprunje extends Sprunje
 {
     protected $sortable = [
-        "title",
-        "sub_title",
-        "type",
-        "axis_count",
-        "is_multiple_choice",
-        "info_url",
-        "info_description",
-        "answer_required",
-        "answers_selected_by_default",
-        "task_id",
+        "task_id", 
+        "title", 
+        "markdown", 
+        "deadline",
+        "order",  
         "creator_id"
     ];
 
     protected $filterable = [
-        "title",
-        "sub_title",
-        "type",
-        "axis_count",
-        "is_multiple_choice",
-        "info_url",
-        "info_description",
-        "answer_required",
-        "answers_selected_by_default",
-        "task_id",
+        "task_id", 
+        "title", 
+        "markdown", 
+        "deadline",
+        "order",  
         "creator_id"
     ];
 
-    protected $name = 'questions';
+    protected $name = 'subTasks';
 
     /**
      * Set the initial query used by your Sprunje.
      */
     protected function baseQuery()
     {
-        $query = $this->classMapper->createInstance('question');
+        $query = $this->classMapper->createInstance('subTask');
 		
 		return $query->joinCreator()->joinTask();
     }
@@ -93,7 +83,7 @@ class QuestionSprunje extends Sprunje
      * @param mixed $value
      * @return $this
      */
-    protected function filterTaks($query, $value)
+    protected function filterTask($query, $value)
     {
         // Split value on separator for OR queries
         $values = explode($this->orSeparator, $value);

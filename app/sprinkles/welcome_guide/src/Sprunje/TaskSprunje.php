@@ -10,46 +10,38 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class QuestionSprunje extends Sprunje
+class TaskSprunje extends Sprunje
 {
     protected $sortable = [
-        "title",
-        "sub_title",
-        "type",
-        "axis_count",
-        "is_multiple_choice",
-        "info_url",
-        "info_description",
-        "answer_required",
-        "answers_selected_by_default",
-        "task_id",
+        "step_id", 
+        "text", 
+        "description", 
+        "image_1",
+        "image_2", 
+        "fa_icon", 
         "creator_id"
     ];
 
     protected $filterable = [
-        "title",
-        "sub_title",
-        "type",
-        "axis_count",
-        "is_multiple_choice",
-        "info_url",
-        "info_description",
-        "answer_required",
-        "answers_selected_by_default",
-        "task_id",
+        "step_id", 
+        "text", 
+        "description", 
+        "image_1",
+        "image_2", 
+        "fa_icon", 
         "creator_id"
     ];
 
-    protected $name = 'questions';
+    protected $name = 'tasks';
 
     /**
      * Set the initial query used by your Sprunje.
      */
     protected function baseQuery()
     {
-        $query = $this->classMapper->createInstance('question');
+        $query = $this->classMapper->createInstance('task');
 		
-		return $query->joinCreator()->joinTask();
+		return $query->joinCreator()->joinStep();
     }
 	
 	 /**
@@ -87,34 +79,34 @@ class QuestionSprunje extends Sprunje
     }
 
     /**
-     * Filter LIKE the task name.
+     * Filter LIKE the step name.
      *
      * @param Builder $query
      * @param mixed $value
      * @return $this
      */
-    protected function filterTaks($query, $value)
+    protected function filterStep($query, $value)
     {
         // Split value on separator for OR queries
         $values = explode($this->orSeparator, $value);
         $query->where(function ($query) use ($values) {
             foreach ($values as $value) {
-                $query->orLike('tasks.text', $value);
+                $query->orLike('steps.name', $value);
             }
         });
         return $this;
     }
 	
     /**
-     * Sort based on task name.
+     * Sort based on step name.
      *
      * @param Builder $query
      * @param string $direction
      * @return $this
      */
-    protected function sortTask($query, $direction)
+    protected function sortStep($query, $direction)
     {
-        $query->orderBy('tasks.text', $direction);
+        $query->orderBy('steps.name', $direction);
         return $this;
     }
 	

@@ -12,9 +12,23 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  */
 class AnswerSprunje extends Sprunje
 {
-    protected $sortable = ["question_id", "title", "order", "image", "is_enabled", "creator_id"];
+    protected $sortable = [
+        "question_id",
+        "title",
+        "order",
+        "image",
+        "is_enabled",
+        "creator_id"
+    ];
 
-    protected $filterable = ["question_id", "title", "order", "image", "is_enabled", "creator_id"];
+    protected $filterable = [
+        "question_id",
+        "title",
+        "order",
+        "image",
+        "is_enabled",
+        "creator_id"
+    ];
 
     protected $name = 'answers';
 
@@ -23,12 +37,9 @@ class AnswerSprunje extends Sprunje
      */
     protected function baseQuery()
     {
-        $query = $this
-            ->classMapper
-            ->createInstance('answer');
+        $query = $this->classMapper->createInstance('answer');
 
-        return $query->joinCreator()
-            ->joinQuestion();
+        return $query->joinCreator()->joinQuestion();
     }
 
     /**
@@ -42,16 +53,16 @@ class AnswerSprunje extends Sprunje
     {
         // Split value on separator for OR queries
         $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values)
-        {
-            foreach ($values as $value)
-            {
-                $query->orLike('users.first_name', $value)->orLike('users.last_name', $value)->orLike('users.email', $value);
+        $query->where(function ($query) use ($values) {
+            foreach ($values as $value) {
+                $query->orLike('users.first_name', $value)
+                    ->orLike('users.last_name', $value)
+                    ->orLike('users.email', $value);
             }
         });
         return $this;
     }
-
+	
     /**
      * Sort based on creator last name.
      *
@@ -62,6 +73,38 @@ class AnswerSprunje extends Sprunje
     protected function sortCreator($query, $direction)
     {
         $query->orderBy('users.last_name', $direction);
+        return $this;
+    }
+
+    /**
+     * Filter LIKE the question title.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterQuestion($query, $value)
+    {
+        // Split value on separator for OR queries
+        $values = explode($this->orSeparator, $value);
+        $query->where(function ($query) use ($values) {
+            foreach ($values as $value) {
+                $query->orLike('questions.title', $value);
+            }
+        });
+        return $this;
+    }
+	
+    /**
+     * Sort based on question title.
+     *
+     * @param Builder $query
+     * @param string $direction
+     * @return $this
+     */
+    protected function sortQuestion($query, $direction)
+    {
+        $query->orderBy('questions.title', $direction);
         return $this;
     }
 

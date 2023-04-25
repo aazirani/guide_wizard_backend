@@ -36,7 +36,7 @@ class StepsTable extends Migration
                 $table->integer('name')->unsigned();
                 $table->integer('description')->unsigned()->nullable();
                 $table->integer('order')->unsigned();
-                $table->string('type', 1);
+                $table->text('image')->nullable();
 
                 $table->integer('creator_id')->unsigned()->nullable();
                 $table->timestamps();

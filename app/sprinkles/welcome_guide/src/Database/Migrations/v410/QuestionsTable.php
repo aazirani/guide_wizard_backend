@@ -23,7 +23,8 @@ class QuestionsTable extends Migration
     public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable',
         '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TextsTable',
-        '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\StepsTable'
+        '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\StepsTable',
+        '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TasksTable'
     ];
     /**
      * {@inheritDoc}
@@ -37,13 +38,13 @@ class QuestionsTable extends Migration
                 $table->integer('title')->unsigned();
                 $table->integer('sub_title')->unsigned()->nullable();
                 $table->string('type', 10);
-                $table->integer('axis_count')->unsigned()->default(2);
+                $table->integer('axis_count')->unsigned();
                 $table->boolean('is_multiple_choice')->default(false);
                 $table->integer('info_url')->unsigned()->nullable();
                 $table->integer('info_description')->unsigned()->nullable();
                 $table->boolean('answer_required')->default(false);
                 $table->boolean('answers_selected_by_default')->default(false);
-                $table->integer('step_id')->unsigned();
+                $table->integer('task_id')->unsigned();
 
                 $table->integer('creator_id')->unsigned()->nullable();
                 $table->timestamps();
@@ -51,11 +52,11 @@ class QuestionsTable extends Migration
                 $table->collation = 'utf8_unicode_ci';
                 $table->charset = 'utf8';
                 $table->foreign('creator_id')->references('id')->on('users');
-                $table->foreign('step_id')->references('id')->on('steps');
                 $table->foreign('title')->references('id')->on('texts');
                 $table->foreign('sub_title')->references('id')->on('texts');
                 $table->foreign('info_url')->references('id')->on('texts');
                 $table->foreign('info_description')->references('id')->on('texts');
+                $table->foreign('task_id')->references('id')->on('tasks');
             });
         }
     }

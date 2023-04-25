@@ -5,27 +5,27 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
- * Answer Class
+ * Sub Task Class
  *
- * Represents a answer object as stored in the database.
+ * Represents a task object as stored in the database.
  *
  * @package WelcomeGuide
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
  */
-class Answer extends Model
+class SubTask extends Model
 {
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = "answers";
+    protected $table = "sub_tasks";
 
     protected $fillable = [
-        "question_id",
-        "title",
-        "order",
-        "image",
-        "is_enabled",
+        "task_id", 
+        "title", 
+        "markdown", 
+        "deadline",
+        "order",  
         "creator_id"
     ];
 
@@ -34,21 +34,21 @@ class Answer extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('answers.*');
+        $query = $query->select('tasks.*');
 
-        $query = $query->leftJoin('users', 'answers.creator_id', '=', 'users.id');
+        $query = $query->leftJoin('users', 'tasks.creator_id', '=', 'users.id');
 
         return $query;
     }
 
     /**
-     * Joins the object's question, so we can do things like sort, search, paginate, etc.
+     * Joins the object's task, so we can do things like sort, search, paginate, etc.
      */
-    public function scopeJoinQuestion($query)
+    public function scopeJoinTask($query)
     {
-        $query = $query->select('answers.*');
+        $query = $query->select('sub_tasks.*');
 
-        $query = $query->leftJoin('questions', 'answers.question_id', '=', 'questions.id');
+        $query = $query->leftJoin('tasks', 'sub_tasks.task_id', '=', 'tasks.id');
 
         return $query;
     }
@@ -67,6 +67,14 @@ class Answer extends Model
         $classMapper = static ::$ci->classMapper;
 
         return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
+    }
+
+    public function task()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('task') , 'task_id');
     }
 
     /**
@@ -88,12 +96,42 @@ class Answer extends Model
         return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'title', 'id');
     }
 
-    public function question()
+    /**
+     * Return the text for this object
+     */
+    public function markdown()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('question') , 'question_id');
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'markdown');
+    }
+
+    public function markdowns()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
+
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'markdown', 'id');
+    }
+
+    /**
+     * Return the text for this object
+     */
+    public function deadline()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
+
+        return $this->belongsTo($classMapper->getClassMapping('text') , 'deadline');
+    }
+
+    public function deadlines()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static ::$ci->classMapper;
+
+        return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'deadline', 'id');
     }
 
     /**
@@ -112,10 +150,10 @@ class Answer extends Model
     {
         parent::boot();
 
-        self::deleting(function ($answer)
+        self::deleting(function ($question)
         {
-            //foreach ($answer->translations as $translation) {
-            //    $translation->delete();
+            //foreach ($question->answers as $answer) {
+            //    $answer->delete();
             //}
             
         });

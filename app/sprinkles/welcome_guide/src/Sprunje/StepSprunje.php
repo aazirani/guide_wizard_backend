@@ -16,7 +16,7 @@ class StepSprunje extends Sprunje
         "name",
         "description",
         "order",
-        "type",
+        "image",
         "creator_id"
     ];
 
@@ -24,7 +24,7 @@ class StepSprunje extends Sprunje
         "name",
         "description",
         "order",
-        "type",
+        "image",
         "creator_id"
     ];
 
@@ -40,7 +40,7 @@ class StepSprunje extends Sprunje
 		return $query->joinCreator();
     }
 	
-	 /**
+	/**
      * Filter LIKE the creator info.
      *
      * @param Builder $query

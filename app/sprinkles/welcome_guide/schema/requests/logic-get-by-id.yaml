@@ -1,0 +1,6 @@
+---
+logic_id:
+  validators:
+    required:
+      label: "&LOGIC"
+      message: VALIDATE.REQUIRED

@@ -494,7 +494,7 @@ class StepController extends SimpleController
                 ->name->technical_name}.", ['type' => 'step_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', ['name' => $step->technical_name]);
+        $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', ['name' => $step->name->technical_name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 }

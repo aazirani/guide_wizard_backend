@@ -47,6 +47,66 @@
                     }
                 }
             }
+        },
+        "js/pages/languages": {
+            "scripts": [
+                "userfrosting/js/pages/languages.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        },
+        "js/pages/translations": {
+            "scripts": [
+                "userfrosting/js/pages/translations.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        },
+        "js/pages/logics": {
+            "scripts": [
+                "userfrosting/js/pages/logics.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        },
+        "js/pages/subTasks": {
+            "scripts": [
+                "userfrosting/js/pages/subTasks.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        },
+        "js/pages/tasks": {
+            "scripts": [
+                "userfrosting/js/pages/tasks.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
         }
     }
 }

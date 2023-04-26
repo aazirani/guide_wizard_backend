@@ -1,0 +1,26 @@
+{
+    "name" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.NAME"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "NAME",
+            "icon" : "fa-th-list",
+            "placeholder" : "NAME"
+        }
+    },
+    "expression" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.EXPRESSION"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "EXPRESSION",
+            "icon" : "fa-th-list",
+            "placeholder" : "EXPRESSION"
+        }
+    }
+}

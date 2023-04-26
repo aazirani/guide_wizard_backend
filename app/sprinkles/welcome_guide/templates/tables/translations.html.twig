@@ -11,17 +11,16 @@
     <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="[[0, 1]]">
         <thead>
             <tr>
-				<th class="sorter-metatext" data-column-name="name" data-column-template="#step-table-column-name" data-priority="1">{{translate("NAME")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="description" data-column-template="#step-table-column-description" data-priority="1">{{translate("DESCRIPTION")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="order" data-column-template="#step-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="type" data-column-template="#step-table-column-type" data-priority="1">{{translate("TYPE")}} <i class="fa fa-sort"></i></th>
-				
+                <th class="sorter-metatext" data-column-name="translated_text" data-column-template="#translation-table-column-translated_text" data-priority="1">{{translate("TRANSLATED_TEXT")}} <i class="fa fa-sort"></i></th>
+				<th class="sorter-metatext" data-column-name="text" data-column-template="#translation-table-column-text" data-priority="1">{{translate("TEXT")}} <i class="fa fa-sort"></i></th>
+                <th class="sorter-metatext" data-column-name="order" data-column-template="#translation-table-column-language" data-priority="1">{{translate("LANGUAGE")}} <i class="fa fa-sort"></i></th>
 
+                
                 {% if 'creator' in table.columns %}
-                    <th class="sorter-metatext" data-column-name="creator" data-column-template="#step-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
+                    <th class="sorter-metatext" data-column-name="creator" data-column-template="#translation-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
                 {% endif %}
-				<th class="sorter-metanum" data-filter="false" data-column-name="created_at" data-column-template="#step-table-column-created-at" data-priority="1">{{translate('CREATED_AT')}} <i class="fa fa-sort"></i></th>
-				<th data-column-name="actions" data-column-template="#step-table-column-actions" data-sorter="false" data-filter="false" data-priority="1">{{translate("ACTIONS")}}</th>
+				<th class="sorter-metanum" data-filter="false" data-column-name="created_at" data-column-template="#translation-table-column-created-at" data-priority="1">{{translate('CREATED_AT')}} <i class="fa fa-sort"></i></th>
+				<th data-column-name="actions" data-column-template="#translation-table-column-actions" data-sorter="false" data-filter="false" data-priority="1">{{translate("ACTIONS")}}</th>
             </tr>
         </thead>
         <tbody>
@@ -37,28 +36,23 @@
      # These templates require handlebars-helpers.js, moment.js
     #}
     {% verbatim %}
-    <script id="step-table-column-name" type="text/x-handlebars-template">
-        <td data-id="{{row.name.id}}">
-				{{row.name.technical_name}}
-        </td>
-    </script>
-    <script id="step-table-column-description" type="text/x-handlebars-template">
-        <td data-id="{{row.description.id}}">
-				{{row.description.technical_name}}
-        </td>
-    </script>
-    <script id="step-table-column-order" type="text/x-handlebars-template">
+    <script id="translation-table-column-text" type="text/x-handlebars-template">
         <td data-id="{{row.id}}">
-				{{row.order}}
+				{{row.text.technical_name}}
         </td>
     </script>
-    <script id="step-table-column-type" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.type}}
+    <script id="translation-table-column-translated_text" type="text/x-handlebars-template">
+        <td>
+            {{row.translated_text}}
         </td>
     </script>
-	<script id="step-table-column-creator" type="text/x-handlebars-template">
-        <td data-step="{{row.creator.last_name}}">
+    <script id="translation-table-column-language" type="text/x-handlebars-template">
+        <td data-id="{{row.language.id}}">
+            {{row.language.language_code}}
+        </td>
+    </script>
+	<script id="translation-table-column-creator" type="text/x-handlebars-template">
+        <td data-translation="{{row.creator.last_name}}">
             {{#if row.creator }}
                 <strong>
                     <a href="{{site.uri.public}}/users/u/{{row.creator.user_name}}">{{row.creator.first_name}} {{row.creator.last_name}} ({{row.creator.user_name}})</a>
@@ -72,7 +66,7 @@
             {{/if }}
         </td>
     </script>
-	<script id="step-table-column-created-at" type="text/x-handlebars-template">
+	<script id="translation-table-column-created-at" type="text/x-handlebars-template">
         {{#if row.created_at }}
         <td data-num="{{dateFormat row.created_at format='x'}}">
             {{dateFormat row.created_at format="dddd"}}<br>{{dateFormat row.created_at format="MMM Do, YYYY h:mm a"}}
@@ -83,22 +77,22 @@
         </td>
         {{/if }}
     </script>
-    <script id="step-table-column-actions" type="text/x-handlebars-template">
+    <script id="translation-table-column-actions" type="text/x-handlebars-template">
         <td class="uf-table-fit-width">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">{% endverbatim %}{{translate("ACTIONS")}}{% verbatim %}<span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right-responsive" role="menu">
                     <li>
-		<a href="#" class="js-displayForm-table" data-toggle="modal" data-formUrl="api/steps/{{row.id}}/edit"><i class="fa fa-edit"></i> {% endverbatim %}{{translate("STEP.EDIT")}}{% verbatim %}</a>
+		<a href="#" class="js-displayForm-table" data-toggle="modal" data-formUrl="api/translations/{{row.id}}/edit"><i class="fa fa-edit"></i> {% endverbatim %}{{translate("TRANSLATION.EDIT")}}{% verbatim %}</a>
                     </li>
                     <li>
-						<a href="#" class="js-displayConfirm-table" data-confirm-title="{% endverbatim %}{{translate("STEP.DELETE")}}{% verbatim %}" data-confirm-message="{% endverbatim %}{{translate("STEP.DELETE_CONFIRM")}}{% verbatim %}" data-confirm-button="{% endverbatim %}{{translate("STEP.DELETE_YES")}}{% verbatim %}" data-post-url="api/steps/{{row.id}}" data-post-method="DELETE" data-toggle="modal">
-						<i class="fa fa-trash-alt"></i> {% endverbatim %}{{translate("STEP.DELETE")}}{% verbatim %}
-						</a>
+						<a href="#" class="js-displayConfirm-table" data-confirm-title="{% endverbatim %}{{translate("TRANSLATION.DELETE")}}{% verbatim %}" data-confirm-message="{% endverbatim %}{{translate("TRANSLATION.DELETE_CONFIRM")}}{% verbatim %}" data-confirm-button="{% endverbatim %}{{translate("TRANSLATION.DELETE_YES")}}{% verbatim %}" data-post-url="api/translations/{{row.id}}" data-post-method="DELETE" data-toggle="modal">
+                            <i class="fa fa-trash-alt"></i> {% endverbatim %}{{translate("TRANSLATION.DELETE")}}{% verbatim %}
+                        </a>
                     </li>
                 </ul>
             </div>
         </td>			
     </script>
     {% endverbatim %}
-{% endblock %}
+    {% endblock %}

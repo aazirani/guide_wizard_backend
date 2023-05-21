@@ -23,7 +23,7 @@
             "placeholder" : "TRANSLATED_TEXT"
         }
     },
-    "language" : {
+    "language_id" : {
         "validators" : {},
         "required" : {
             "message" : "VALIDATE.LANGUAGE"

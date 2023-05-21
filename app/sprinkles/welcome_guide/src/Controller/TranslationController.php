@@ -132,7 +132,7 @@ class TranslationController extends SimpleController
         {
             $textSelect += [$text->id => $text->technical_name];
         }
-        $form->setInputArgument('text', 'options', $textSelect);
+        $form->setInputArgument('text_id', 'options', $textSelect);
         
         $languages = LANGUAGE::all();
         $languageSelect = [];
@@ -140,7 +140,7 @@ class TranslationController extends SimpleController
         {
             $languageSelect += [$language->id => $language->language_code];
         }
-        $form->setInputArgument('language', 'options', $languageSelect);
+        $form->setInputArgument('language_id', 'options', $languageSelect);
         
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -401,7 +401,7 @@ class TranslationController extends SimpleController
         {
             $textSelect += [$text->id => $text->technical_name];
         }
-        $form->setInputArgument('text', 'options', $textSelect);
+        $form->setInputArgument('text_id', 'options', $textSelect);
         
         $languages = LANGUAGE::all();
         $languageSelect = [];
@@ -409,7 +409,7 @@ class TranslationController extends SimpleController
         {
             $languageSelect += [$language->id => $language->language_code];
         }
-        $form->setInputArgument('language', 'options', $languageSelect);
+        $form->setInputArgument('language_id', 'options', $languageSelect);
 
         // Render the template / form
         $this

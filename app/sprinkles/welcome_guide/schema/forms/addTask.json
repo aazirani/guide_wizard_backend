@@ -14,13 +14,13 @@
     "step_id" : {
         "validators" : {},
         "required" : {
-            "message" : "VALIDATE.STEP_ID"
+            "message" : "VALIDATE.STEP"
         },
         "form" : {
             "type" : "select",
-            "label" : "STEP_ID",
+            "label" : "STEP",
             "icon" : "fa-th-list",
-            "placeholder" : "STEP_ID"
+            "placeholder" : "STEP"
         }
     },
     "description" : {
@@ -41,7 +41,7 @@
             "message" : "VALIDATE.IMAGE_1"
         },
         "form" : {
-            "type" : "select",
+            "type" : "text",
             "label" : "IMAGE_1",
             "icon" : "fa-th-list",
             "placeholder" : "IMAGE_1"
@@ -53,7 +53,7 @@
             "message" : "VALIDATE.IMAGE_2"
         },
         "form" : {
-            "type" : "select",
+            "type" : "text",
             "label" : "IMAGE_2",
             "icon" : "fa-th-list",
             "placeholder" : "IMAGE_2"
@@ -65,7 +65,7 @@
             "message" : "VALIDATE.FA_ICON"
         },
         "form" : {
-            "type" : "select",
+            "type" : "text",
             "label" : "FA_ICON",
             "icon" : "fa-th-list",
             "placeholder" : "FA_ICON"

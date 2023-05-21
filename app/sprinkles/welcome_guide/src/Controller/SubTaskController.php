@@ -48,6 +48,7 @@ class SubTaskController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
+                ->with('task.text')
                 ->with('title')
                 ->with('task')
                 ->with('markdown')
@@ -138,13 +139,19 @@ class SubTaskController extends SimpleController
         $form->setInputArgument('markdown', 'options', $textSelect);
         $form->setInputArgument('deadline', 'options', $textSelect);
         
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this
+            ->ci->classMapper;
+
         $tasks = TASK::all();
         $taskSelect = [];
         foreach ($tasks as $task)
         {
-            $taskSelect += [$task->id => $task->text->technical_name];
+            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
+                ->first();
+            $taskSelect += [$task->id => $name->technical_name];
         }
-        $form->setInputArgument('task', 'options', $taskSelect);
+        $form->setInputArgument('task_id', 'options', $taskSelect);
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this

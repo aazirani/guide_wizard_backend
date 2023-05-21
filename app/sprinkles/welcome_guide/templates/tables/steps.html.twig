@@ -14,8 +14,6 @@
 				<th class="sorter-metatext" data-column-name="name" data-column-template="#step-table-column-name" data-priority="1">{{translate("NAME")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="description" data-column-template="#step-table-column-description" data-priority="1">{{translate("DESCRIPTION")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="order" data-column-template="#step-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="type" data-column-template="#step-table-column-type" data-priority="1">{{translate("TYPE")}} <i class="fa fa-sort"></i></th>
-				
 
                 {% if 'creator' in table.columns %}
                     <th class="sorter-metatext" data-column-name="creator" data-column-template="#step-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
@@ -50,11 +48,6 @@
     <script id="step-table-column-order" type="text/x-handlebars-template">
         <td data-id="{{row.id}}">
 				{{row.order}}
-        </td>
-    </script>
-    <script id="step-table-column-type" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.type}}
         </td>
     </script>
 	<script id="step-table-column-creator" type="text/x-handlebars-template">

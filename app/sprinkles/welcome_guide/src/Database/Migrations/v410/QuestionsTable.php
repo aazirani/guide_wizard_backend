@@ -23,7 +23,6 @@ class QuestionsTable extends Migration
     public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable',
         '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TextsTable',
-        '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\StepsTable',
         '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TasksTable'
     ];
     /**
@@ -44,7 +43,7 @@ class QuestionsTable extends Migration
                 $table->integer('info_description')->unsigned()->nullable();
                 $table->boolean('answer_required')->default(false);
                 $table->boolean('answers_selected_by_default')->default(false);
-                $table->integer('task_id')->unsigned();
+                $table->integer('step_id')->unsigned();
 
                 $table->integer('creator_id')->unsigned()->nullable();
                 $table->timestamps();
@@ -56,7 +55,7 @@ class QuestionsTable extends Migration
                 $table->foreign('sub_title')->references('id')->on('texts');
                 $table->foreign('info_url')->references('id')->on('texts');
                 $table->foreign('info_description')->references('id')->on('texts');
-                $table->foreign('task_id')->references('id')->on('tasks');
+                $table->foreign('step_id')->references('id')->on('steps');
             });
         }
     }

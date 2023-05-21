@@ -1,16 +1,4 @@
 {
-    "text_id" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.TEXT"
-        },
-        "form" : {
-            "type" : "select",
-            "label" : "TEXT",
-            "icon" : "fa-th-list",
-            "placeholder" : "TEXT"
-        }
-    },
     "title" : {
         "validators" : {},
         "required" : {
@@ -21,6 +9,18 @@
             "label" : "TITLE",
             "icon" : "fa-th-list",
             "placeholder" : "TITLE"
+        }
+    },
+    "task_id" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.TASK"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "TASK",
+            "icon" : "fa-th-list",
+            "placeholder" : "TASK"
         }
     },
     "markdown" : {

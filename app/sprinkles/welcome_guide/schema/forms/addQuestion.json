@@ -25,19 +25,22 @@
     },
     "type" : {
         "validators" : {
-            "length" : {
-                "min" : 1,
-                "max" : 10
+            "member_of" : {
+                "values" : [
+                    "TEXT", "IMAGE"
+                ]
             },
             "required" : {
                 "message" : "VALIDATE.TYPE"
             }
         },
         "form" : {
-            "type" : "text",
+            "type" : "select",
             "label" : "TYPE",
-            "icon" : "fa-globe-americas",
-            "placeholder" : "TYPE"
+            "options" : {
+                "TEXT" : "Text",
+                "IMAGE" : "Image"
+            }
         }
     },
     "axis_count" : {

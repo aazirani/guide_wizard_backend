@@ -22,8 +22,7 @@ class SubTasksTable extends Migration
 	public static $dependencies = [
 		'\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable',
 		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TextsTable',
-		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TasksTable',
-		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\SubTaskLogicTable'
+		'\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TasksTable'
 	];
 
 	/**
@@ -48,7 +47,7 @@ class SubTasksTable extends Migration
 				$table->charset = 'utf8';
 				$table->foreign('creator_id')->references('id')->on('users');
 				$table->foreign('task_id')->references('id')->on('tasks');
-				$table->foreign('text')->references('id')->on('texts');
+				$table->foreign('title')->references('id')->on('texts');
 				$table->foreign('markdown')->references('id')->on('texts');
 				$table->foreign('deadline')->references('id')->on('texts');
 			});

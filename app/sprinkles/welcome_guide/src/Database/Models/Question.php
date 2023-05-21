@@ -30,7 +30,7 @@ class Question extends Model
         "info_description", 
         "answer_required", 
         "answers_selected_by_default", 
-        "task_id", 
+        "step_id",
         "creator_id"
     ];
 
@@ -47,13 +47,13 @@ class Question extends Model
     }
 
     /**
-     * Joins the object's task, so we can do things like sort, search, paginate, etc.
+     * Joins the object's step, so we can do things like sort, search, paginate, etc.
      */
-    public function scopeJoinTask($query)
+    public function scopeJoinStep($query)
     {
         $query = $query->select('questions.*');
 
-        $query = $query->leftJoin('tasks', 'questions.task_id', '=', 'tasks.id');
+        $query = $query->leftJoin('steps', 'questions.step_id', '=', 'steps.id');
 
         return $query;
     }
@@ -74,12 +74,12 @@ class Question extends Model
         return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
     }
 
-    public function task()
+    public function step()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('task') , 'task_id');
+        return $this->belongsTo($classMapper->getClassMapping('step') , 'step_id');
     }
 
     public function answers()

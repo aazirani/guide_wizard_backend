@@ -36,7 +36,7 @@ class SubTask extends Model
     {
         $query = $query->select('tasks.*');
 
-        $query = $query->leftJoin('users', 'tasks.creator_id', '=', 'users.id');
+        $query = $query->leftJoin('users', 'sub_tasks.creator_id', '=', 'users.id');
 
         return $query;
     }

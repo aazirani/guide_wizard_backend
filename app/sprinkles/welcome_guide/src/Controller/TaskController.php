@@ -14,6 +14,7 @@ use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 
 class TaskController extends SimpleController
 {
@@ -49,7 +50,7 @@ class TaskController extends SimpleController
             return $query->with('creator')
                 ->with('text')
                 ->with('description')
-                ->with('step');
+                ->with('step.name');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -135,13 +136,19 @@ class TaskController extends SimpleController
         $form->setInputArgument('text', 'options', $textSelect);
         $form->setInputArgument('description', 'options', $textSelect);
         
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this
+            ->ci->classMapper;
+
         $steps = STEP::all();
         $stepSelect = [];
         foreach ($steps as $step)
         {
-            $stepSelect += [$step->id => $step->name->technical_name];
+            $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
+                ->first();
+            $stepSelect += [$step->id => $name->technical_name];
         }
-        $form->setInputArgument('step', 'options', $stepSelect);
+        $form->setInputArgument('step_id', 'options', $stepSelect);
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -404,14 +411,16 @@ class TaskController extends SimpleController
         }
         $form->setInputArgument('text', 'options', $textSelect);
         $form->setInputArgument('description', 'options', $textSelect);
-        
+
         $steps = STEP::all();
         $stepSelect = [];
         foreach ($steps as $step)
         {
-            $stepSelect += [$step->id => $step->name->technical_name];
+            $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
+                ->first();
+            $stepSelect += [$step->id => $name->technical_name];
         }
-        $form->setInputArgument('step', 'options', $stepSelect);
+        $form->setInputArgument('step_id', 'options', $stepSelect);
         
         // Render the template / form
         $this

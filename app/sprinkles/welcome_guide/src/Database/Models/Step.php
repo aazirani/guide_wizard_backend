@@ -99,7 +99,7 @@ class Step extends Model
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->hasMany($classMapper->getClassMapping('taks'));
+        return $this->hasMany($classMapper->getClassMapping('task'));
     }
 
 

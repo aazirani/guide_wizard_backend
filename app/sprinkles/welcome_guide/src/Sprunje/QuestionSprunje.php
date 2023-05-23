@@ -22,7 +22,7 @@ class QuestionSprunje extends Sprunje
         "info_description",
         "answer_required",
         "answers_selected_by_default",
-        "step_id",
+        "task_id",
         "creator_id"
     ];
 
@@ -36,7 +36,7 @@ class QuestionSprunje extends Sprunje
         "info_description",
         "answer_required",
         "answers_selected_by_default",
-        "step_id",
+        "task_id",
         "creator_id"
     ];
 
@@ -49,7 +49,7 @@ class QuestionSprunje extends Sprunje
     {
         $query = $this->classMapper->createInstance('question');
 		
-		return $query->joinCreator()->joinStep();
+		return $query->joinCreator()->joinTask();
     }
 	
 	 /**
@@ -87,34 +87,34 @@ class QuestionSprunje extends Sprunje
     }
 
     /**
-     * Filter LIKE the step name.
+     * Filter LIKE the task name.
      *
      * @param Builder $query
      * @param mixed $value
      * @return $this
      */
-    protected function filterSteps($query, $value)
+    protected function filterTasks($query, $value)
     {
         // Split value on separator for OR queries
         $values = explode($this->orSeparator, $value);
         $query->where(function ($query) use ($values) {
             foreach ($values as $value) {
-                $query->orLike('steps.name', $value);
+                $query->orLike('tasks.text', $value);
             }
         });
         return $this;
     }
 	
     /**
-     * Sort based on step name.
+     * Sort based on task name.
      *
      * @param Builder $query
      * @param string $direction
      * @return $this
      */
-    protected function sortStep($query, $direction)
+    protected function sortTask($query, $direction)
     {
-        $query->orderBy('steps.name', $direction);
+        $query->orderBy('tasks.name', $direction);
         return $this;
     }
 	

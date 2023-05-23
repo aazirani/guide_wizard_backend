@@ -43,7 +43,7 @@ class QuestionsTable extends Migration
                 $table->integer('info_description')->unsigned()->nullable();
                 $table->boolean('answer_required')->default(false);
                 $table->boolean('answers_selected_by_default')->default(false);
-                $table->integer('step_id')->unsigned();
+                $table->integer('task_id')->unsigned();
 
                 $table->integer('creator_id')->unsigned()->nullable();
                 $table->timestamps();
@@ -55,7 +55,7 @@ class QuestionsTable extends Migration
                 $table->foreign('sub_title')->references('id')->on('texts');
                 $table->foreign('info_url')->references('id')->on('texts');
                 $table->foreign('info_description')->references('id')->on('texts');
-                $table->foreign('step_id')->references('id')->on('steps');
+                $table->foreign('task_id')->references('id')->on('tasks');
             });
         }
     }

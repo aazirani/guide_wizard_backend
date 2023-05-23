@@ -420,9 +420,11 @@ class SubTaskController extends SimpleController
         $taskSelect = [];
         foreach ($tasks as $task)
         {
-            $taskSelect += [$task->id => $task->text->technical_name];
+            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
+                ->first();
+            $taskSelect += [$task->id => $name->technical_name];
         }
-        $form->setInputArgument('task', 'options', $taskSelect);
+        $form->setInputArgument('task_id', 'options', $taskSelect);
         
         // Render the template / form
         $this

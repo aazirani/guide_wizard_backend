@@ -14,7 +14,7 @@ use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Task;
 
 class QuestionController extends SimpleController
 {
@@ -48,7 +48,7 @@ class QuestionController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('step.name')
+                ->with('task.name')
                 ->with('title')
                 ->with('subTitle')
                 ->with('infoUrl')
@@ -144,15 +144,16 @@ class QuestionController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
-        $steps = STEP::all();
-        $stepSelect = [];
-        foreach ($steps as $step)
+        $tasks = TASK::all();
+        $taskSelect = [];
+        foreach ($tasks as $task)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
+            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
                 ->first();
-            $stepSelect += [$step->id => $name->technical_name];
+            $taskSelect += [$task->id => $name->technical_name];
         }
-        $form->setInputArgument('step_id', 'options', $stepSelect);
+
+        $form->setInputArgument('task_id', 'options', $taskSelect);
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -283,7 +284,7 @@ class QuestionController extends SimpleController
             ->ci->classMapper;
         // Get the object to delete
         $question = $classMapper->staticMethod('question', 'where', 'id', $data['question_id'])->with('creator')
-            ->with('step')
+            ->with('task')
             ->first();
 
         return $question;
@@ -412,20 +413,21 @@ class QuestionController extends SimpleController
         {
             $textSelect += [$text->id => $text->technical_name];
         }
+
         $form->setInputArgument('title', 'options', $textSelect);
         $form->setInputArgument('sub_title', 'options', $textSelect);
         $form->setInputArgument('info_url', 'options', $textSelect);
         $form->setInputArgument('info_description', 'options', $textSelect);
 
-        $steps = STEP::all();
-        $stepSelect = [];
-        foreach ($steps as $step)
+        $tasks = TASK::all();
+        $taskSelect = [];
+        foreach ($tasks as $task)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
+            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
                 ->first();
-            $stepSelect += [$step->id => $name->technical_name];
+            $taskSelect += [$task->id => $name->technical_name];
         }
-        $form->setInputArgument('step_id', 'options', $stepSelect);
+        $form->setInputArgument('task_id', 'options', $taskSelect);
 
         // Render the template / form
         $this

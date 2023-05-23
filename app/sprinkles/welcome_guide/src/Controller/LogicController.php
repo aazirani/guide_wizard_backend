@@ -14,9 +14,8 @@ use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
 
-class AnswerController extends SimpleController
+class LogicController extends SimpleController
 {
     /**
      * Return the list of all objects.
@@ -36,7 +35,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_answers'))
+        if (!$authorizer->checkAccess($currentUser, 'view_logics'))
         {
             throw new ForbiddenException();
         }
@@ -44,12 +43,10 @@ class AnswerController extends SimpleController
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this
             ->ci->classMapper;
-        $sprunje = $classMapper->createInstance('answer_sprunje', $classMapper, $params);
+        $sprunje = $classMapper->createInstance('logic_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query)
         {
-            return $query->with('creator')
-                ->with('title')
-                ->with('question.title');
+            return $query->with('creator');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -73,7 +70,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_answers'))
+        if (!$authorizer->checkAccess($currentUser, 'view_logics'))
         {
             throw new ForbiddenException();
         }
@@ -81,7 +78,7 @@ class AnswerController extends SimpleController
         return $this
             ->ci
             ->view
-            ->render($response, 'pages/answers.html.twig');
+            ->render($response, 'pages/logics.html.twig');
     }
 
     /**
@@ -113,46 +110,24 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_answer'))
+        if (!$authorizer->checkAccess($currentUser, 'create_logic'))
         {
             throw new ForbiddenException();
         }
 
         // Load validator rules
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addLogic.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
         // Generate the form
         $form = new Form($schema);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('title', 'options', $textSelect);
-
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this
-            ->ci->classMapper;
-
-        $questions = QUESTION::all();
-        $questionSelect = [];
-        foreach ($questions as $question)
-        {
-            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
-                ->first();
-            $questionSelect += [$question->id => $title->technical_name];
-        }
-        $form->setInputArgument('question_id', 'options', $questionSelect);
-
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'ANSWER.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/answers', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'LOGIC.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/logics', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
 
     /**
@@ -179,7 +154,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_answer'))
+        if (!$authorizer->checkAccess($currentUser, 'create_logic'))
         {
             throw new ForbiddenException();
         }
@@ -189,7 +164,7 @@ class AnswerController extends SimpleController
             ->ci->alerts;
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addLogic.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -231,27 +206,27 @@ class AnswerController extends SimpleController
         {
 
             // Create the object
-            $answer = $classMapper->createInstance('answer', $data);
-            // Store new answer to database
-            $answer->save();
+            $logic = $classMapper->createInstance('logic', $data);
+            // Store new logic to database
+            $logic->save();
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new answer with the technical name {$answer
-                ->title->technical_name}.", ['type' => 'answer_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new logic with the name {$logic
+                ->name}.", ['type' => 'logic_created', 'user_id' => $currentUser->id]);
 
-            $ms->addMessageTranslated('success', 'ANSWER.CREATED', $data);
+            $ms->addMessageTranslated('success', 'LOGIC.CREATED', $data);
         });
 
         return $response->withStatus(200);
     }
 
-    protected function getAnswerFromParams($params)
+    protected function getLogicFromParams($params)
     {
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/answer-get-by-id.yaml');
+        $schema = new RequestSchema('schema://requests/logic-get-by-id.yaml');
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($params);
@@ -277,10 +252,10 @@ class AnswerController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         // Get the object to delete
-        $answer = $classMapper->staticMethod('answer', 'where', 'id', $data['answer_id'])->with('creator')
+        $logic = $classMapper->staticMethod('logic', 'where', 'id', $data['logic_id'])->with('creator')
             ->first();
 
-        return $answer;
+        return $logic;
     }
 
     /**
@@ -293,10 +268,10 @@ class AnswerController extends SimpleController
      */
     public function delete($request, $response, $args)
     {
-        $answer = $this->getAnswerFromParams($args);
+        $logic = $this->getLogicFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$answer)
+        if (!$logic)
         {
             throw new NotFoundException($request, $response);
         }
@@ -310,7 +285,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_answer', ['answer' => $answer]))
+        if (!$authorizer->checkAccess($currentUser, 'delete_logic', ['logic' => $logic]))
         {
             throw new ForbiddenException();
         }
@@ -321,22 +296,22 @@ class AnswerController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $answer
-            ->title->technical_name;
+        $name = $logic
+            ->name;
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($answer, $title, $currentUser)
+        Capsule::transaction(function () use ($logic, $name, $currentUser)
         {
-            $answer->delete();
-            unset($answer);
+            $logic->delete();
+            unset($logic);
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the answer with the technical name {$title}.", ['type' => 'answer_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the logic with the name {$name}.", ['type' => 'logic_deleted', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'ANSWER.DELETION_SUCCESSFUL', ['name' => $title]);
+        $ms->addMessageTranslated('success', 'LOGIC.DELETION_SUCCESSFUL', ['name' => $name]);
 
         //return $response->withStatus(200);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
@@ -358,10 +333,10 @@ class AnswerController extends SimpleController
     public function editForm($request, $response, $args)
     {
         $get = $request->getQueryParams();
-        $answer = $this->getAnswerFromParams($args);
+        $logic = $this->getLogicFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$answer)
+        if (!$logic)
         {
             throw new NotFoundException($request, $response);
         }
@@ -371,7 +346,7 @@ class AnswerController extends SimpleController
             ->ci->classMapper;
 
         // Get the object to edit
-        $answer = $classMapper->staticMethod('answer', 'where', 'id', $answer->id)
+        $logic = $classMapper->staticMethod('logic', 'where', 'id', $logic->id)
             ->first();
 
         /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
@@ -383,7 +358,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_answer_field', ['answer' => $answer]))
+        if (!$authorizer->checkAccess($currentUser, 'update_logic_field', ['logic' => $logic]))
         {
             throw new ForbiddenException();
         }
@@ -393,37 +368,19 @@ class AnswerController extends SimpleController
             ->ci->config;
 
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addLogic.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
 
         // Generate the form
-        $form = new Form($schema, $answer);
-
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('title', 'options', $textSelect);
-
-        $questions = QUESTION::all();
-        $questionSelect = [];
-        foreach ($questions as $question)
-        {
-            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
-                ->first();
-            $questionSelect += [$question->id => $title->technical_name];
-        }
-        $form->setInputArgument('question_id', 'options', $questionSelect);
+        $form = new Form($schema, $logic);
 
         // Render the template / form
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'ANSWER.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/answers/' . $args['answer_id'],
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'LOGIC.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/logics/' . $args['logic_id'],
         //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
         'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
@@ -442,9 +399,9 @@ class AnswerController extends SimpleController
     {
 
         // Get the object from the URL
-        $answer = $this->getAnswerFromParams($args);
+        $logic = $this->getLogicFromParams($args);
 
-        if (!$answer)
+        if (!$logic)
         {
             throw new NotFoundException($request, $response);
         }
@@ -461,7 +418,7 @@ class AnswerController extends SimpleController
         $post = $request->getParsedBody();
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addLogic.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -486,7 +443,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_answer_field', ['answer' => $answer]))
+        if (!$authorizer->checkAccess($currentUser, 'update_logic_field', ['logic' => $logic]))
         {
             throw new ForbiddenException();
         }
@@ -496,28 +453,28 @@ class AnswerController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $answer, $currentUser)
+        Capsule::transaction(function () use ($data, $logic, $currentUser)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
             {
-                if ($value != $answer->$name)
+                if ($value != $logic->$name)
                 {
-                    $answer->$name = $value;
+                    $logic->$name = $value;
                 }
             }
 
-            $answer->save();
+            $logic->save();
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for answer with the technical name {$answer
-                ->title->technical_name}.", ['type' => 'answer_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for logic with the name {$logic
+                ->name}.", ['type' => 'logic_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'ANSWER.DETAILS_UPDATED', ['name' => $answer->title->technical_name]);
+        $ms->addMessageTranslated('success', 'LOGIC.DETAILS_UPDATED', ['name' => $logic->name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 }

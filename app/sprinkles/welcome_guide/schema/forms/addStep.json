@@ -44,25 +44,5 @@
                 "4" : "4"
             }
         }
-    },
-    "type" : {
-        "validators" : {
-            "member_of" : {
-                "values" : [
-                    "1", "2"
-                ]
-            },
-            "required" : {
-                "message" : "VALIDATE.TYPE"
-            }
-        },
-        "form" : {
-            "type" : "select",
-            "label" : "TYPE",
-            "options" : {
-                "1" : "1",
-                "2" : "2"
-            }
-        }
     }
 }

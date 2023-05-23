@@ -1,0 +1,6 @@
+---
+task_id:
+  validators:
+    required:
+      label: "&TASK"
+      message: VALIDATE.REQUIRED

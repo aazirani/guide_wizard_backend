@@ -93,7 +93,7 @@ class QuestionSprunje extends Sprunje
      * @param mixed $value
      * @return $this
      */
-    protected function filterTaks($query, $value)
+    protected function filterTasks($query, $value)
     {
         // Split value on separator for OR queries
         $values = explode($this->orSeparator, $value);
@@ -114,7 +114,7 @@ class QuestionSprunje extends Sprunje
      */
     protected function sortTask($query, $direction)
     {
-        $query->orderBy('tasks.text', $direction);
+        $query->orderBy('tasks.name', $direction);
         return $this;
     }
 	

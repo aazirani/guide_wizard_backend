@@ -1,0 +1,6 @@
+---
+subTask_id:
+  validators:
+    required:
+      label: "&SUB_TASK"
+      message: VALIDATE.REQUIRED

@@ -55,32 +55,6 @@ class AllPermissions extends Migration
 				'description' => 'Delete answer.'
 			]),
 
-			//questions
-			'view_questions' => new Permission([
-				'slug' => 'view_questions',
-				'name' => 'View view_questions',
-				'conditions' => 'always()',
-				'description' => 'View a page containing a list of all questions.'
-			]),
-			'create_question' => new Permission([
-				'slug' => 'create_question',
-				'name' => 'Create create_question',
-				'conditions' => 'always()',
-				'description' => 'Create a new question.'
-			]),
-			'update_question_field' => new Permission([
-				'slug' => 'update_question_field',
-				'name' => 'Update update_question_field',
-				'conditions' => 'always()',
-				'description' => 'Edit question.'
-			]),
-			'delete_question' => new Permission([
-				'slug' => 'delete_question',
-				'name' => 'Delete delete_question',
-				'conditions' => 'always()',
-				'description' => 'Delete question.'
-			]),
-
 			//languages
 			'view_languages' => new Permission([
 				'slug' => 'view_languages',
@@ -133,6 +107,32 @@ class AllPermissions extends Migration
 				'description' => 'Delete logic.'
 			]),
 
+			//questions
+			'view_questions' => new Permission([
+				'slug' => 'view_questions',
+				'name' => 'View view_questions',
+				'conditions' => 'always()',
+				'description' => 'View a page containing a list of all questions.'
+			]),
+			'create_question' => new Permission([
+				'slug' => 'create_question',
+				'name' => 'Create create_question',
+				'conditions' => 'always()',
+				'description' => 'Create a new question.'
+			]),
+			'update_question_field' => new Permission([
+				'slug' => 'update_question_field',
+				'name' => 'Update update_question_field',
+				'conditions' => 'always()',
+				'description' => 'Edit question.'
+			]),
+			'delete_question' => new Permission([
+				'slug' => 'delete_question',
+				'name' => 'Delete delete_question',
+				'conditions' => 'always()',
+				'description' => 'Delete question.'
+			]),
+
 			//steps
 			'view_steps' => new Permission([
 				'slug' => 'view_steps',
@@ -159,30 +159,56 @@ class AllPermissions extends Migration
 				'description' => 'Delete step.'
 			]),
 
-			//blocks
-			'view_blocks' => new Permission([
-				'slug' => 'view_blocks',
-				'name' => 'View view_blocks',
+			//subTasks
+			'view_subTasks' => new Permission([
+				'slug' => 'view_subTasks',
+				'name' => 'View view_subTasks',
 				'conditions' => 'always()',
-				'description' => 'View a page containing a list of all blocks.'
+				'description' => 'View a page containing a list of all subTasks.'
 			]),
-			'create_block' => new Permission([
-				'slug' => 'create_block',
-				'name' => 'Create create_block',
+			'create_subTask' => new Permission([
+				'slug' => 'create_subTask',
+				'name' => 'Create create_subTask',
 				'conditions' => 'always()',
-				'description' => 'Create a new block.'
+				'description' => 'Create a new subTask.'
 			]),
-			'update_block_field' => new Permission([
-				'slug' => 'update_block_field',
-				'name' => 'Update update_block_field',
+			'update_subTask_field' => new Permission([
+				'slug' => 'update_subTask_field',
+				'name' => 'Update update_subTask_field',
 				'conditions' => 'always()',
-				'description' => 'Edit block.'
+				'description' => 'Edit subTask.'
 			]),
-			'delete_block' => new Permission([
-				'slug' => 'delete_block',
-				'name' => 'Delete delete_block',
+			'delete_subTask' => new Permission([
+				'slug' => 'delete_subTask',
+				'name' => 'Delete delete_subTask',
 				'conditions' => 'always()',
-				'description' => 'Delete block.'
+				'description' => 'Delete subTask.'
+			]),
+
+			//tasks
+			'view_tasks' => new Permission([
+				'slug' => 'view_tasks',
+				'name' => 'View view_tasks',
+				'conditions' => 'always()',
+				'description' => 'View a page containing a list of all tasks.'
+			]),
+			'create_task' => new Permission([
+				'slug' => 'create_task',
+				'name' => 'Create create_task',
+				'conditions' => 'always()',
+				'description' => 'Create a new task.'
+			]),
+			'update_task_field' => new Permission([
+				'slug' => 'update_task_field',
+				'name' => 'Update update_task_field',
+				'conditions' => 'always()',
+				'description' => 'Edit task.'
+			]),
+			'delete_task' => new Permission([
+				'slug' => 'delete_task',
+				'name' => 'Delete delete_task',
+				'conditions' => 'always()',
+				'description' => 'Delete task.'
 			]),
 
 			//texts
@@ -235,33 +261,7 @@ class AllPermissions extends Migration
 				'name' => 'Delete delete_translation',
 				'conditions' => 'always()',
 				'description' => 'Delete translation.'
-			]),
-
-			//block_types
-			'view_block_types' => new Permission([
-				'slug' => 'view_block_types',
-				'name' => 'View view_block_types',
-				'conditions' => 'always()',
-				'description' => 'View a page containing a list of all block_types.'
-			]),
-			'create_block_type' => new Permission([
-				'slug' => 'create_block_type',
-				'name' => 'Create create_block_type',
-				'conditions' => 'always()',
-				'description' => 'Create a new block_type.'
-			]),
-			'update_block_type_field' => new Permission([
-				'slug' => 'update_block_type_field',
-				'name' => 'Update update_block_type_field',
-				'conditions' => 'always()',
-				'description' => 'Edit block_type.'
-			]),
-			'delete_block_type' => new Permission([
-				'slug' => 'delete_block_type',
-				'name' => 'Delete delete_block_type',
-				'conditions' => 'always()',
-				'description' => 'Delete block_type.'
-			]),
+			])
 			
 		];
 
@@ -286,13 +286,6 @@ class AllPermissions extends Migration
 			]);
 
 			$roleAdmin->permissions()->sync([
-				$permissions['view_questions']->id,
-				$permissions['create_question']->id,
-				$permissions['update_question_field']->id,
-				$permissions['delete_question']->id
-			]);
-
-			$roleAdmin->permissions()->sync([
 				$permissions['view_languages']->id,
 				$permissions['create_language']->id,
 				$permissions['update_language_field']->id,
@@ -307,6 +300,13 @@ class AllPermissions extends Migration
 			]);
 
 			$roleAdmin->permissions()->sync([
+				$permissions['view_questions']->id,
+				$permissions['create_question']->id,
+				$permissions['update_question_field']->id,
+				$permissions['delete_question']->id
+			]);
+
+			$roleAdmin->permissions()->sync([
 				$permissions['view_steps']->id,
 				$permissions['create_step']->id,
 				$permissions['update_step_field']->id,
@@ -314,10 +314,17 @@ class AllPermissions extends Migration
 			]);
 
 			$roleAdmin->permissions()->sync([
-				$permissions['view_blocks']->id,
-				$permissions['create_block']->id,
-				$permissions['update_block_field']->id,
-				$permissions['delete_block']->id
+				$permissions['view_subTasks']->id,
+				$permissions['create_subTask']->id,
+				$permissions['update_subTask_field']->id,
+				$permissions['delete_subTask']->id
+			]);
+
+			$roleAdmin->permissions()->sync([
+				$permissions['view_tasks']->id,
+				$permissions['create_task']->id,
+				$permissions['update_task_field']->id,
+				$permissions['delete_task']->id
 			]);
 
 			$roleAdmin->permissions()->sync([
@@ -332,13 +339,6 @@ class AllPermissions extends Migration
 				$permissions['create_translation']->id,
 				$permissions['update_translation_field']->id,
 				$permissions['delete_translation']->id
-			]);
-
-			$roleAdmin->permissions()->sync([
-				$permissions['view_block_types']->id,
-				$permissions['create_block_type']->id,
-				$permissions['update_block_type_field']->id,
-				$permissions['delete_block_type']->id
 			]);
 		}
 	}

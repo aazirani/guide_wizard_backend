@@ -1,0 +1,74 @@
+{
+    "text" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.TEXT"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "TEXT",
+            "icon" : "fa-th-list",
+            "placeholder" : "TEXT"
+        }
+    },
+    "step_id" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.STEP"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "STEP",
+            "icon" : "fa-th-list",
+            "placeholder" : "STEP"
+        }
+    },
+    "description" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.DESCRIPTION"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "DESCRIPTION",
+            "icon" : "fa-th-list",
+            "placeholder" : "DESCRIPTION"
+        }
+    },
+    "image_1" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.IMAGE_1"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "IMAGE_1",
+            "icon" : "fa-th-list",
+            "placeholder" : "IMAGE_1"
+        }
+    },
+    "image_2" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.IMAGE_2"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "IMAGE_2",
+            "icon" : "fa-th-list",
+            "placeholder" : "IMAGE_2"
+        }
+    },
+    "fa_icon" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.FA_ICON"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "FA_ICON",
+            "icon" : "fa-th-list",
+            "placeholder" : "FA_ICON"
+        }
+    }
+}

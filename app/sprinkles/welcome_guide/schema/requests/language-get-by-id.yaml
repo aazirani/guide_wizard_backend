@@ -1,0 +1,6 @@
+---
+language_id:
+  validators:
+    required:
+      label: "&LANGUAGE"
+      message: VALIDATE.REQUIRED

@@ -23,7 +23,6 @@ class QuestionsTable extends Migration
     public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable',
         '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TextsTable',
-        '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\StepsTable',
         '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TasksTable'
     ];
     /**

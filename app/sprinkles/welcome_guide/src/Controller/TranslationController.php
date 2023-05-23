@@ -14,9 +14,9 @@ use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 
-class AnswerController extends SimpleController
+class TranslationController extends SimpleController
 {
     /**
      * Return the list of all objects.
@@ -36,7 +36,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_answers'))
+        if (!$authorizer->checkAccess($currentUser, 'view_translations'))
         {
             throw new ForbiddenException();
         }
@@ -44,12 +44,12 @@ class AnswerController extends SimpleController
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this
             ->ci->classMapper;
-        $sprunje = $classMapper->createInstance('answer_sprunje', $classMapper, $params);
+        $sprunje = $classMapper->createInstance('translation_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('title')
-                ->with('question.title');
+                ->with('text')
+                ->with('language');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -73,7 +73,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_answers'))
+        if (!$authorizer->checkAccess($currentUser, 'view_translations'))
         {
             throw new ForbiddenException();
         }
@@ -81,7 +81,7 @@ class AnswerController extends SimpleController
         return $this
             ->ci
             ->view
-            ->render($response, 'pages/answers.html.twig');
+            ->render($response, 'pages/translations.html.twig');
     }
 
     /**
@@ -113,13 +113,13 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_answer'))
+        if (!$authorizer->checkAccess($currentUser, 'create_translation'))
         {
             throw new ForbiddenException();
         }
 
         // Load validator rules
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addTranslation.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
@@ -132,27 +132,21 @@ class AnswerController extends SimpleController
         {
             $textSelect += [$text->id => $text->technical_name];
         }
-        $form->setInputArgument('title', 'options', $textSelect);
-
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this
-            ->ci->classMapper;
-
-        $questions = QUESTION::all();
-        $questionSelect = [];
-        foreach ($questions as $question)
+        $form->setInputArgument('text_id', 'options', $textSelect);
+        
+        $languages = LANGUAGE::all();
+        $languageSelect = [];
+        foreach ($languages as $language)
         {
-            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
-                ->first();
-            $questionSelect += [$question->id => $title->technical_name];
+            $languageSelect += [$language->id => $language->language_code];
         }
-        $form->setInputArgument('question_id', 'options', $questionSelect);
-
+        $form->setInputArgument('language_id', 'options', $languageSelect);
+        
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'ANSWER.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/answers', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TRANSLATION.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/translations', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
 
     /**
@@ -179,7 +173,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_answer'))
+        if (!$authorizer->checkAccess($currentUser, 'create_translation'))
         {
             throw new ForbiddenException();
         }
@@ -189,7 +183,7 @@ class AnswerController extends SimpleController
             ->ci->alerts;
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addTranslation.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -231,27 +225,27 @@ class AnswerController extends SimpleController
         {
 
             // Create the object
-            $answer = $classMapper->createInstance('answer', $data);
-            // Store new answer to database
-            $answer->save();
+            $translation = $classMapper->createInstance('translation', $data);
+            // Store new translation to database
+            $translation->save();
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new answer with the technical name {$answer
-                ->title->technical_name}.", ['type' => 'answer_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new translation for the technical name {$translation
+                ->text->technical_name}.", ['type' => 'translation_created', 'user_id' => $currentUser->id]);
 
-            $ms->addMessageTranslated('success', 'ANSWER.CREATED', $data);
+            $ms->addMessageTranslated('success', 'TRANSLATION.CREATED', $data);
         });
 
         return $response->withStatus(200);
     }
 
-    protected function getAnswerFromParams($params)
+    protected function getTranslationFromParams($params)
     {
         // Load the request schema
-        $schema = new RequestSchema('schema://requests/answer-get-by-id.yaml');
+        $schema = new RequestSchema('schema://requests/translation-get-by-id.yaml');
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($params);
@@ -277,10 +271,10 @@ class AnswerController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         // Get the object to delete
-        $answer = $classMapper->staticMethod('answer', 'where', 'id', $data['answer_id'])->with('creator')
+        $translation = $classMapper->staticMethod('translation', 'where', 'id', $data['translation_id'])->with('creator')
             ->first();
 
-        return $answer;
+        return $translation;
     }
 
     /**
@@ -293,10 +287,10 @@ class AnswerController extends SimpleController
      */
     public function delete($request, $response, $args)
     {
-        $answer = $this->getAnswerFromParams($args);
+        $translation = $this->getTranslationFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$answer)
+        if (!$translation)
         {
             throw new NotFoundException($request, $response);
         }
@@ -310,7 +304,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_answer', ['answer' => $answer]))
+        if (!$authorizer->checkAccess($currentUser, 'delete_translation', ['translation' => $translation]))
         {
             throw new ForbiddenException();
         }
@@ -321,22 +315,22 @@ class AnswerController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $answer
-            ->title->technical_name;
+        $text = $translation
+            ->text->technical_name;
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($answer, $title, $currentUser)
+        Capsule::transaction(function () use ($translation, $text, $currentUser)
         {
-            $answer->delete();
-            unset($answer);
+            $translation->delete();
+            unset($translation);
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the answer with the technical name {$title}.", ['type' => 'answer_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the translation for the technical name {$text}.", ['type' => 'translation_deleted', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'ANSWER.DELETION_SUCCESSFUL', ['name' => $title]);
+        $ms->addMessageTranslated('success', 'TRANSLATION.DELETION_SUCCESSFUL', ['name' => $text]);
 
         //return $response->withStatus(200);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
@@ -358,10 +352,10 @@ class AnswerController extends SimpleController
     public function editForm($request, $response, $args)
     {
         $get = $request->getQueryParams();
-        $answer = $this->getAnswerFromParams($args);
+        $translation = $this->getTranslationFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$answer)
+        if (!$translation)
         {
             throw new NotFoundException($request, $response);
         }
@@ -371,7 +365,7 @@ class AnswerController extends SimpleController
             ->ci->classMapper;
 
         // Get the object to edit
-        $answer = $classMapper->staticMethod('answer', 'where', 'id', $answer->id)
+        $translation = $classMapper->staticMethod('translation', 'where', 'id', $translation->id)
             ->first();
 
         /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
@@ -383,7 +377,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_answer_field', ['answer' => $answer]))
+        if (!$authorizer->checkAccess($currentUser, 'update_translation_field', ['translation' => $translation]))
         {
             throw new ForbiddenException();
         }
@@ -393,13 +387,13 @@ class AnswerController extends SimpleController
             ->ci->config;
 
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addTranslation.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
 
         // Generate the form
-        $form = new Form($schema, $answer);
+        $form = new Form($schema, $translation);
 
         $texts = TEXT::all();
         $textSelect = [];
@@ -407,23 +401,21 @@ class AnswerController extends SimpleController
         {
             $textSelect += [$text->id => $text->technical_name];
         }
-        $form->setInputArgument('title', 'options', $textSelect);
-
-        $questions = QUESTION::all();
-        $questionSelect = [];
-        foreach ($questions as $question)
+        $form->setInputArgument('text_id', 'options', $textSelect);
+        
+        $languages = LANGUAGE::all();
+        $languageSelect = [];
+        foreach ($languages as $language)
         {
-            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
-                ->first();
-            $questionSelect += [$question->id => $title->technical_name];
+            $languageSelect += [$language->id => $language->language_code];
         }
-        $form->setInputArgument('question_id', 'options', $questionSelect);
+        $form->setInputArgument('language_id', 'options', $languageSelect);
 
         // Render the template / form
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'ANSWER.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/answers/' . $args['answer_id'],
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TRANSLATION.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/translations/' . $args['translation_id'],
         //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
         'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
@@ -442,9 +434,9 @@ class AnswerController extends SimpleController
     {
 
         // Get the object from the URL
-        $answer = $this->getAnswerFromParams($args);
+        $translation = $this->getTranslationFromParams($args);
 
-        if (!$answer)
+        if (!$translation)
         {
             throw new NotFoundException($request, $response);
         }
@@ -461,7 +453,7 @@ class AnswerController extends SimpleController
         $post = $request->getParsedBody();
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addAnswer.json');
+        $schema = new RequestSchema('schema://forms/addTranslation.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -486,7 +478,7 @@ class AnswerController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_answer_field', ['answer' => $answer]))
+        if (!$authorizer->checkAccess($currentUser, 'update_translation_field', ['translation' => $translation]))
         {
             throw new ForbiddenException();
         }
@@ -496,28 +488,28 @@ class AnswerController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $answer, $currentUser)
+        Capsule::transaction(function () use ($data, $translation, $currentUser)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
             {
-                if ($value != $answer->$name)
+                if ($value != $translation->$name)
                 {
-                    $answer->$name = $value;
+                    $translation->$name = $value;
                 }
             }
 
-            $answer->save();
+            $translation->save();
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for answer with the technical name {$answer
-                ->title->technical_name}.", ['type' => 'answer_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for translation for the technical name {$translation
+                ->text->technical_name}.", ['type' => 'translation_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'ANSWER.DETAILS_UPDATED', ['name' => $answer->title->technical_name]);
+        $ms->addMessageTranslated('success', 'TRANSLATION.DETAILS_UPDATED', ['name' => $translation->text->technical_name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 }

@@ -30,7 +30,7 @@ class Question extends Model
         "info_description", 
         "answer_required", 
         "answers_selected_by_default", 
-        "task_id", 
+        "task_id",
         "creator_id"
     ];
 
@@ -79,7 +79,7 @@ class Question extends Model
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('task') , 'task_id');
+        return $this->belongsTo($classMapper->getClassMapping('tast') , 'task_id');
     }
 
     public function answers()

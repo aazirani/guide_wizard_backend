@@ -58,4 +58,42 @@ class AppController extends SimpleController
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
     }
+
+    /**
+     * Return the list of all steps.
+     */
+    public function getStepList($request, $response, $args)
+    {
+
+        // GET parameters
+        $params = $request->getQueryParams();
+
+        /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+        $authorizer = $this
+            ->ci->authorizer;
+
+        /** @var UserFrosting\Sprinkle\Account\Database\Models\User $currentUser */
+        $currentUser = $this
+            ->ci->currentUser;
+
+        // Access-controlled page
+        //if (!$authorizer->checkAccess($currentUser, 'view_questions'))
+        //{
+        //    throw new ForbiddenException();
+        //}
+
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this
+            ->ci->classMapper;
+        $sprunje = $classMapper->createInstance('step_sprunje', $classMapper, $params);
+        $sprunje->extendQuery(function ($query)
+        {
+            return $query
+            ->with('tasks.questions')
+            ->with('tasks.subTasks');
+        });
+        //set cache headers in order to stop specially IE to cache the result
+        return $sprunje->toResponse($response);
+    }
+
 }

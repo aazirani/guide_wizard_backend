@@ -1,0 +1,62 @@
+{
+    "title" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.TITLE"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "TITLE",
+            "icon" : "fa-th-list",
+            "placeholder" : "TITLE"
+        }
+    },
+    "task_id" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.TASK"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "TASK",
+            "icon" : "fa-th-list",
+            "placeholder" : "TASK"
+        }
+    },
+    "markdown" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.MARKDOWN"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "MARKDOWN",
+            "icon" : "fa-th-list",
+            "placeholder" : "MARKDOWN"
+        }
+    },
+    "deadline" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.DEADLINE"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "DEADLINE",
+            "icon" : "fa-th-list",
+            "placeholder" : "DEADLINE"
+        }
+    },
+    "order" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.ORDER"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "ORDER",
+            "icon" : "fa-th-list",
+            "placeholder" : "ORDER"
+        }
+    }
+}

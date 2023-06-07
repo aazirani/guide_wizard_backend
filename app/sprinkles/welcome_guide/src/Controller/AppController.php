@@ -89,7 +89,7 @@ class AppController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query
-            ->with('tasks.questions')
+            ->with('tasks.questions.answers')
             ->with('tasks.subTasks');
         });
         //set cache headers in order to stop specially IE to cache the result

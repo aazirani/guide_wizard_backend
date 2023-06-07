@@ -1,14 +1,28 @@
 {
     "language_code" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.NAME"
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.LANGUAGE_CODE"
+            }
         },
         "form" : {
             "type" : "text",
             "label" : "LANGUAGE_CODE",
             "icon" : "fa-th-list",
             "placeholder" : "LANGUAGE_CODE"
+        }
+    },
+    "language_name" : {
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.LANGUAGE_NAME"
+            }
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "LANGUAGE_NAME",
+            "icon" : "fa-th-list",
+            "placeholder" : "LANGUAGE_NAME"
         }
     },
     "is_active" : {

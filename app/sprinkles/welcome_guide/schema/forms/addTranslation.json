@@ -1,8 +1,9 @@
 {
     "text_id" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.TEXT"
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.TEXT"
+            }
         },
         "form" : {
             "type" : "select",

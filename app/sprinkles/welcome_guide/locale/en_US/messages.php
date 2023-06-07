@@ -234,5 +234,6 @@ return [
     "DEADLINE" => "Deadline",
     "IMAGE_1" => "1st Image",
     "IMAGE_2" => "2nd Image",
-    "FA_ICON" => "Icon"
+    "FA_ICON" => "Icon",
+    "LANGUAGE_NAME" => "Language Name"
     ];

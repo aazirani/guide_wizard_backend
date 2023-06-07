@@ -12,9 +12,10 @@
         }
     },
     "task_id" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.TASK"
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.TASK"
+            }
         },
         "form" : {
             "type" : "select",

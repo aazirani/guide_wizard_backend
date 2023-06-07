@@ -22,6 +22,9 @@
             ]
         ],
         'php' => [
-            'timezone' => 'Europe/Berlin'
+            'timezone' => 'Europe/Berlin',
+            'log_errors'      => 'true',
+            // Let PHP itself render errors natively.  Useful if a fatal error is raised in our custom shutdown handler.
+            'display_errors_native' => 'true'
         ]
     ];

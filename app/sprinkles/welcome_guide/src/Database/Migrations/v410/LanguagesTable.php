@@ -32,6 +32,7 @@ class LanguagesTable extends Migration
             $this->schema->create('languages', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('language_code', 10);
+                $table->text('language_name');
                 $table->boolean('is_active')->default(true);
 
                 $table->integer('creator_id')->unsigned()->nullable();

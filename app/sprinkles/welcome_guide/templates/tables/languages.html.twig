@@ -12,6 +12,7 @@
         <thead>
             <tr>
                 <th class="sorter-metatext" data-column-name="language_code" data-column-template="#language-table-column-language_code" data-priority="1">{{translate("LANGUAGE_CODE")}} <i class="fa fa-sort"></i></th>
+                <th class="sorter-metatext" data-column-name="language_name" data-column-template="#language-table-column-language_name" data-priority="1">{{translate("LANGUAGE_NAME")}} <i class="fa fa-sort"></i></th>
                 <th class="sorter-metatext" data-column-name="is_active" data-column-template="#language-table-column-is_active" data-priority="1">{{translate("IS_ACTIVE")}} <i class="fa fa-sort"></i></th>
 				
 
@@ -38,6 +39,11 @@
     <script id="language-table-column-language_code" type="text/x-handlebars-template">
         <td data-id="{{row.language_code.id}}">
             {{row.language_code}}
+        </td>
+    </script>
+    <script id="language-table-column-language_name" type="text/x-handlebars-template">
+        <td data-id="{{row.language_code.id}}">
+            {{row.language_name}}
         </td>
     </script>
     <script id="language-table-column-is_active" type="text/x-handlebars-template">

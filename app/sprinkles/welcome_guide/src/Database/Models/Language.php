@@ -22,6 +22,7 @@ class Language extends Model
 
     protected $fillable = [
         "language_code",
+        "language_name",
         "is_active",
         "creator_id"
     ];
@@ -69,9 +70,9 @@ class Language extends Model
 
         self::deleting(function ($language)
         {
-            //foreach ($language->translations as $translation) {
-            //    $translation->delete();
-            //}
+            foreach ($language->translations as $translation) {
+                $translation->delete();
+            }
             
         });
     }

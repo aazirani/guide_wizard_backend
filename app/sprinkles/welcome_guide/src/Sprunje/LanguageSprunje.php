@@ -14,12 +14,14 @@ class LanguageSprunje extends Sprunje
 {
     protected $sortable = [
         "language_code",
+        "language_name",
         "is_active",
         "creator_id"
     ];
 
     protected $filterable = [
         "language_code",
+        "language_name",
         "is_active",
         "creator_id"
     ];

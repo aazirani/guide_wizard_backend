@@ -12,11 +12,6 @@
         <a href="{{site.uri.public}}/texts"><i class="fa fa-building"></i> <span>{{ translate("TEXT", 2) }}</span></a>
     </li>
     {% endif %}
-    {% if checkAccess('view_translations') %}
-    <li>
-        <a href="{{site.uri.public}}/translations"><i class="fa fa-building"></i> <span>{{ translate("TRANSLATION", 2) }}</span></a>
-    </li>
-    {% endif %}
     {% if checkAccess('view_steps') %}
     <li>
         <a href="{{site.uri.public}}/steps"><i class="fa fa-building"></i> <span>{{ translate("STEP", 2) }}</span></a>

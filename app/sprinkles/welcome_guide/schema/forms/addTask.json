@@ -12,9 +12,10 @@
         }
     },
     "step_id" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.STEP"
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.STEP"
+            }
         },
         "form" : {
             "type" : "select",

@@ -1,8 +1,9 @@
 {
     "question_id" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.QUESTION"
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.QUESTION"
+            }
         },
         "form" : {
             "type" : "select",

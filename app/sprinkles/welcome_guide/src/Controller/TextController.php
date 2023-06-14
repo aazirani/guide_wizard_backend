@@ -1,5 +1,7 @@
 <?php
+
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
+
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,6 +15,9 @@ use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\FormGenerator\Form;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation;
 
 class TextController extends SimpleController
 {
@@ -34,8 +39,7 @@ class TextController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_texts'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_texts')) {
             throw new ForbiddenException();
         }
 
@@ -43,8 +47,7 @@ class TextController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         $sprunje = $classMapper->createInstance('text_sprunje', $classMapper, $params);
-        $sprunje->extendQuery(function ($query)
-        {
+        $sprunje->extendQuery(function ($query) {
             return $query->with('creator');
         });
         //set cache headers in order to stop specially IE to cache the result
@@ -69,8 +72,7 @@ class TextController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_texts'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_texts')) {
             throw new ForbiddenException();
         }
 
@@ -109,8 +111,7 @@ class TextController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_text'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_text')) {
             throw new ForbiddenException();
         }
 
@@ -119,13 +120,26 @@ class TextController extends SimpleController
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
+
         // Generate the form
         $form = new Form($schema);
+
+
+        /* */
+        $languages = LANGUAGE::all();
+        $languageSelect = [];
+        foreach ($languages as $language) {
+            $languageSelect += [$language->id => $language->language_name];
+        }
+        $form->setInputArgument('translations', 'options', $languageSelect);
+        /* */
+
+
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TEXT.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/texts', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TEXT.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/texts', 'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -152,8 +166,7 @@ class TextController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_text'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_text')) {
             throw new ForbiddenException();
         }
 
@@ -167,15 +180,13 @@ class TextController extends SimpleController
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($params);
-
         $error = false;
 
         // Validate request data
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             $error = true;
         }
@@ -187,8 +198,7 @@ class TextController extends SimpleController
         //Add the creator id to the sent data
         $data['creator_id'] = $currentUser->id;
 
-        if ($error)
-        {
+        if ($error) {
             return $response->withStatus(400);
         }
 
@@ -200,14 +210,26 @@ class TextController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
-        {
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params) {
 
             // Create the object
             $text = $classMapper->createInstance('text', $data);
             // Store new text to database
             $text->save();
 
+            // Set the values for the translations
+            foreach ($params as $key => $value) {
+                if ($key != 'csrf_name' && $key != 'csrf_value' && $key != 'technical_name') {
+                    $translation = $classMapper->createInstance('translation');
+                    $translation->language_id = $key;
+                    $translation->translated_text = $value;
+                    $translation->text_id = $text->id;
+                    //only save the object if there really is a text to save
+                    if (!empty(trim($value))) {
+                        $translation->save();
+                    }
+                }
+            }
             // Create activity record
             $this
                 ->ci
@@ -231,14 +253,11 @@ class TextController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
             $e = new BadRequestException();
-            foreach ($validator->errors() as $idx => $field)
-            {
-                foreach ($field as $eidx => $error)
-                {
+            foreach ($validator->errors() as $idx => $field) {
+                foreach ($field as $eidx => $error) {
                     $e->addUserMessage($error);
                 }
             }
@@ -268,8 +287,7 @@ class TextController extends SimpleController
         $text = $this->getTextFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$text)
-        {
+        if (!$text) {
             throw new NotFoundException($request, $response);
         }
 
@@ -282,8 +300,7 @@ class TextController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_text', ['text' => $text]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'delete_text', ['text' => $text])) {
             throw new ForbiddenException();
         }
         /** @var UserFrosting\Sprinkle\Core\MessageStream $ms */
@@ -295,8 +312,7 @@ class TextController extends SimpleController
             ->ci->config;
         $title = $text->technical_name;
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($text, $title, $currentUser)
-        {
+        Capsule::transaction(function () use ($text, $title, $currentUser) {
             $text->delete();
             unset($text);
 
@@ -332,8 +348,7 @@ class TextController extends SimpleController
         $text = $this->getTextFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$text)
-        {
+        if (!$text) {
             throw new NotFoundException($request, $response);
         }
 
@@ -354,8 +369,7 @@ class TextController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_text_field', ['text' => $text]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_text_field', ['text' => $text])) {
             throw new ForbiddenException();
         }
 
@@ -372,13 +386,29 @@ class TextController extends SimpleController
         // Generate the form
         $form = new Form($schema, $text);
 
+        //Set all the languages for the modal dialog
+        $languages = LANGUAGE::all();
+        $languageSelect = [];
+        foreach ($languages as $language) {
+            $languageSelect += [$language->id => $language->language_name];
+        }
+        $form->setInputArgument('translations', 'options', $languageSelect);
+
+        //Set all the current translations for the modal dialog
+        $translations = $text->translations;
+        $translationSelect = [];
+        foreach ($translations as $translation) {
+            $translationSelect += [$translation->language_id => $translation->translated_text];
+        }
+        $form->setInputArgument('translations', 'translations', $translationSelect);
+
         // Render the template / form
         $this
             ->ci
             ->view
             ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TEXT.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/texts/' . $args['text_id'],
-        //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
-        'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+                //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
+                'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -394,11 +424,13 @@ class TextController extends SimpleController
     public function update($request, $response, $args)
     {
 
+        // Get POST parameters
+        $params = $request->getParsedBody();
+
         // Get the object from the URL
         $text = $this->getTextFromParams($args);
 
-        if (!$text)
-        {
+        if (!$text) {
             throw new NotFoundException($request, $response);
         }
 
@@ -420,12 +452,12 @@ class TextController extends SimpleController
         $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($post);
 
+
         // Validate, and halt on validation errors.
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             return $response->withStatus(400);
         }
@@ -439,8 +471,7 @@ class TextController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_text_field', ['text' => $text]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_text_field', ['text' => $text])) {
             throw new ForbiddenException();
         }
 
@@ -449,18 +480,36 @@ class TextController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $text, $currentUser)
-        {
+        Capsule::transaction(function () use ($data, $text, $currentUser, $classMapper, $params) {
             // Update the object and generate success messages
-            foreach ($data as $name => $value)
-            {
-                if ($value != $text->technical_name)
-                {
+            foreach ($data as $name => $value) {
+                if ($value != $text->technical_name) {
                     $text->$name = $value;
                 }
             }
 
             $text->save();
+
+            //process the translation
+            foreach ($params as $key => $value) {
+                if ($key != 'csrf_name' && $key != 'csrf_value' && $key != 'technical_name') {
+                    $translation = $text->translations()->where('language_id', $key)->with('creator')->first();
+                    //create translation object if not available
+                    if ($translation == null) {
+                        $translation = $classMapper->createInstance('translation');
+                        $translation->language_id = $key;
+                        $translation->text_id = $text->id;
+                    }
+                    //only save the object if there is actually a value to be saved
+                    if (!empty(trim($value))) {
+                        $translation->translated_text = $value;
+                        $translation->save();
+                    } else {
+                        //delete it if no value was set
+                        $translation->delete();
+                    }
+                }
+            }
 
             // Create activity record
             $this
@@ -468,7 +517,6 @@ class TextController extends SimpleController
                 ->userActivityLogger
                 ->info("User {$currentUser->user_name} updated basic data for text with the technical name {$text->technical_name}.", ['type' => 'text_updated', 'user_id' => $currentUser->id]);
         });
-
         $ms->addMessageTranslated('success', 'TEXT.DETAILS_UPDATED', ['name' => $text->technical_name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }

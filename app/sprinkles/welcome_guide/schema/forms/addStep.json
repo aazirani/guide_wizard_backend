@@ -1,8 +1,9 @@
 {
     "name" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.NAME"
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.NAME"
+            }
         },
         "form" : {
             "type" : "select",

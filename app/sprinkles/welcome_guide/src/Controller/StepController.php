@@ -211,6 +211,19 @@ class StepController extends SimpleController
 
         $data['creator_id'] = $currentUser->id;
 
+
+        //uploading images
+		$storage = new \Upload\Storage\FileSystem($this->getFullImagePath(''));
+        if (isset($_FILES['image'])) {
+            $file = new \Upload\File('image', $storage);
+            $succUp = $this->uploadImageFile($file);
+            if (isset($succUp['name'])) {
+                $data['image'] = $succUp['name'];
+            }
+        }
+
+
+
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
@@ -307,11 +320,17 @@ class StepController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $step
-            ->name->technical_name;
+        $title = $step->name;
+
+
+
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($step, $title, $currentUser)
         {
+            //delete image files associated with this block
+            if (isset($step->image)) {
+                $this->deleteImageFile($step->image);
+            }
             $step->delete();
             unset($step);
 
@@ -475,6 +494,19 @@ class StepController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($data, $step, $currentUser)
         {
+
+            $storage = new \Upload\Storage\FileSystem($this->getFullImagePath(''));
+            if (isset($_FILES['image'])) {
+                //upload new file
+                $file1 = new \Upload\File('image', $storage);
+                $succUp = $this->uploadImageFile($file1);
+                if (isset($succUp['name'])) {
+                    //delete previous file
+                    $this->deleteImageFile($step->image);
+                    $step->image = $succUp['name'];
+                }
+            }
+
             // Update the object and generate success messages
             foreach ($data as $name => $value)
             {
@@ -496,5 +528,102 @@ class StepController extends SimpleController
 
         $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', ['name' => $step->name->technical_name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
+    }
+
+    protected function getFullImagePath($filename){
+        return "../app/sprinkles/welcome_guide/uploads/images/".$filename;
+    }
+
+    protected function uploadImageFile($file){
+        //generate unique file name
+		$new_filename = md5(uniqid(rand(), true).microtime());
+        $file->setName($new_filename);
+        // Validate file upload
+		$file->addValidations(array(
+            // Ensure file is an image
+		    //new \Upload\Validation\Mimetype('image/png', 'image/jpeg', 'image/gif', 'image/bmp'),
+			new \Upload\Validation\Mimetype(array('image/png', 'image/jpeg', 'image/gif', 'image/bmp')),
+		    // Ensure file is no larger than 5M
+		    new \Upload\Validation\Size('5M')
+		));
+        // Access data about the file that has been uploaded
+		$file_data = array(
+            'name'       => $file->getNameWithExtension(),
+		    'extension'  => $file->getExtension(),
+		    'mime'       => $file->getMimetype(),
+		    'size'       => $file->getSize(),
+		    'md5'        => $file->getMd5(),
+		    'dimensions' => $file->getDimensions()
+		);
+        // Try to upload file
+		try {
+            // Success!
+		    $file->upload();
+            return $file_data;
+        } catch (\Exception $e) {
+            // Fail!
+		    $errors = $file->getErrors();
+            return $errors;
+        }
+    }
+
+    public function deliverImageFile($request, $response, $args){
+        // Load the request schema
+		$schema = new RequestSchema('schema://requests/image-get-by-name.yaml');
+        // Whitelist and set parameter defaults
+		$transformer = new RequestDataTransformer($schema);
+        $data = $transformer->transform($args);
+        // Validate, and throw exception on validation errors.
+		$validator = new ServerSideValidator($schema, $this->ci->translator);
+        if (!$validator->validate($data)) {
+            // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
+			$e = new BadRequestException();
+            foreach ($validator->errors() as $idx => $field) {
+                foreach($field as $eidx => $error) {
+                    $e->addUserMessage($error);
+                }
+            }
+			throw $e;
+        }
+
+		$filename = $this->getFullImagePath($data['image_name']);
+
+
+        if(file_exists($filename)){
+            //Get file type and set it as Content Type
+		    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $finfomime = finfo_file($finfo, $filename);
+            if ( $finfomime == ( "image/png" ) ||
+			        $finfomime == ( "image/jpeg" ) ||
+			        $finfomime == ( "image/gif" ) ||
+			        $finfomime == ( "image/bmp" ) ) {
+
+                header('Content-Type: ' . finfo_file($finfo, $filename));
+                finfo_close($finfo);
+
+                //Use Content-Disposition: attachment to specify the filename
+					    header('Content-Disposition: attachment; filename='.basename($filename));
+
+                        //No cache
+					    header('Expires: 0');
+                        header('Cache-Control: must-revalidate');
+                        header('Pragma: public');
+
+                        //Define file size
+					    header('Content-Length: ' . filesize($filename));
+
+                        ob_clean();
+                        flush();
+                        readfile($filename);
+                        exit;
+            }
+
+        }
+		return $response->withStatus(200);
+    }
+
+    protected function deleteImageFile($filename){
+        $fileToBeDeleted = $this->getFullImagePath($filename);
+        unlink($fileToBeDeleted);
     }
 }

@@ -13,6 +13,7 @@
             <tr>
 				<th class="sorter-metatext" data-column-name="name" data-column-template="#step-table-column-name" data-priority="1">{{translate("NAME")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="description" data-column-template="#step-table-column-description" data-priority="1">{{translate("DESCRIPTION")}} <i class="fa fa-sort"></i></th>
+                <th class="sorter-metatext" data-column-name="image" data-column-template="#step-table-column-image" data-priority="1">{{translate("IMAGE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="order" data-column-template="#step-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
 
                 {% if 'creator' in table.columns %}
@@ -43,6 +44,13 @@
     <script id="step-table-column-description" type="text/x-handlebars-template">
         <td data-id="{{row.description.id}}">
 				{{row.description.technical_name}}
+        </td>
+    </script>
+    <script id="step-table-column-image" type="text/x-handlebars-template">
+        <td valign="middle" align="center">
+            {{#if row.image }}
+            <img src="steps/image/{{row.image}}" width="100" />
+            {{/if }}
         </td>
     </script>
     <script id="step-table-column-order" type="text/x-handlebars-template">

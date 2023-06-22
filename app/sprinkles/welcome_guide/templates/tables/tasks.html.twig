@@ -59,13 +59,17 @@
             </td>
         </script>
         <script id="task-table-column-image_1" type="text/x-handlebars-template">
-            <td>
-                {{row.image_1}}
+            <td valign="middle" align="center">
+                {{#if row.image_1 }}
+                <img src="tasks/image/{{row.image_1}}" width="100" />
+                {{/if }}
             </td>
         </script>
         <script id="task-table-column-image_2" type="text/x-handlebars-template">
-            <td>
-                {{row.image_2}}
+            <td valign="middle" align="center">
+                {{#if row.image_2 }}
+                <img src="tasks/image/{{row.image_2}}" width="100" />
+                {{/if }}
             </td>
         </script>
         <script id="task-table-column-fa_icon" type="text/x-handlebars-template">

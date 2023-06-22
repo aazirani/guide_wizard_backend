@@ -8,6 +8,7 @@ use Slim\Exception\NotFoundException as NotFoundException;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -213,16 +214,7 @@ class StepController extends SimpleController
 
 
         //uploading images
-		$storage = new \Upload\Storage\FileSystem($this->getFullImagePath(''));
-        if (isset($_FILES['image'])) {
-            $file = new \Upload\File('image', $storage);
-            $succUp = $this->uploadImageFile($file);
-            if (isset($succUp['name'])) {
-                $data['image'] = $succUp['name'];
-            }
-        }
-
-
+        $data['image'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', null);
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
@@ -327,9 +319,9 @@ class StepController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($step, $title, $currentUser)
         {
-            //delete image files associated with this block
+            //delete image files associated with this object
             if (isset($step->image)) {
-                $this->deleteImageFile($step->image);
+                ImageUploadAndDelivery::deleteImageFile($step->image);
             }
             $step->delete();
             unset($step);
@@ -495,17 +487,7 @@ class StepController extends SimpleController
         Capsule::transaction(function () use ($data, $step, $currentUser)
         {
 
-            $storage = new \Upload\Storage\FileSystem($this->getFullImagePath(''));
-            if (isset($_FILES['image'])) {
-                //upload new file
-                $file1 = new \Upload\File('image', $storage);
-                $succUp = $this->uploadImageFile($file1);
-                if (isset($succUp['name'])) {
-                    //delete previous file
-                    $this->deleteImageFile($step->image);
-                    $step->image = $succUp['name'];
-                }
-            }
+            $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image);
 
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -530,42 +512,6 @@ class StepController extends SimpleController
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 
-    protected function getFullImagePath($filename){
-        return "../app/sprinkles/welcome_guide/uploads/images/".$filename;
-    }
-
-    protected function uploadImageFile($file){
-        //generate unique file name
-		$new_filename = md5(uniqid(rand(), true).microtime());
-        $file->setName($new_filename);
-        // Validate file upload
-		$file->addValidations(array(
-            // Ensure file is an image
-		    //new \Upload\Validation\Mimetype('image/png', 'image/jpeg', 'image/gif', 'image/bmp'),
-			new \Upload\Validation\Mimetype(array('image/png', 'image/jpeg', 'image/gif', 'image/bmp')),
-		    // Ensure file is no larger than 5M
-		    new \Upload\Validation\Size('5M')
-		));
-        // Access data about the file that has been uploaded
-		$file_data = array(
-            'name'       => $file->getNameWithExtension(),
-		    'extension'  => $file->getExtension(),
-		    'mime'       => $file->getMimetype(),
-		    'size'       => $file->getSize(),
-		    'md5'        => $file->getMd5(),
-		    'dimensions' => $file->getDimensions()
-		);
-        // Try to upload file
-		try {
-            // Success!
-		    $file->upload();
-            return $file_data;
-        } catch (\Exception $e) {
-            // Fail!
-		    $errors = $file->getErrors();
-            return $errors;
-        }
-    }
 
     public function deliverImageFile($request, $response, $args){
         // Load the request schema
@@ -586,7 +532,7 @@ class StepController extends SimpleController
 			throw $e;
         }
 
-		$filename = $this->getFullImagePath($data['image_name']);
+		$filename = ImageUploadAndDelivery::getFullImagePath($data['image_name']);
 
 
         if(file_exists($filename)){
@@ -620,10 +566,5 @@ class StepController extends SimpleController
 
         }
 		return $response->withStatus(200);
-    }
-
-    protected function deleteImageFile($filename){
-        $fileToBeDeleted = $this->getFullImagePath($filename);
-        unlink($fileToBeDeleted);
     }
 }

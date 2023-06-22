@@ -3,6 +3,7 @@
 $app->group('/answers', function () {
     $this->get('', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\AnswerController:pageList')
         ->setName('view_answers');
+    $this->get('/image/{image_name}', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\AnswerController:deliverImageFile');
 })->add('authGuard');
 
 $app->group('/api/answers', function () {

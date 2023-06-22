@@ -38,25 +38,19 @@
     },
     "image_1" : {
         "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.IMAGE_1"
-        },
         "form" : {
-            "type" : "text",
+            "type" : "file",
             "label" : "IMAGE_1",
-            "icon" : "fa-th-list",
+            "icon" : "fa-image",
             "placeholder" : "IMAGE_1"
         }
     },
     "image_2" : {
         "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.IMAGE_2"
-        },
         "form" : {
-            "type" : "text",
+            "type" : "file",
             "label" : "IMAGE_2",
-            "icon" : "fa-th-list",
+            "icon" : "fa-image",
             "placeholder" : "IMAGE_2"
         }
     },

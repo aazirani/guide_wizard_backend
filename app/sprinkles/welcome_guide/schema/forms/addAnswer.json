@@ -43,13 +43,10 @@
     },
     "image" : {
         "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.IMAGE"
-        },
         "form" : {
-            "type" : "text",
+            "type" : "file",
             "label" : "IMAGE",
-            "icon" : "fa-th-list",
+            "icon" : "fa-image",
             "placeholder" : "IMAGE"
         }
     },

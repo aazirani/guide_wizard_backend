@@ -3,6 +3,7 @@
 $app->group('/tasks', function () {
     $this->get('', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\TaskController:pageList')
         ->setName('view_tasks');
+    $this->get('/image/{image_name}', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\TaskController:deliverImageFile');
 })->add('authGuard');
 
 $app->group('/api/tasks', function () {

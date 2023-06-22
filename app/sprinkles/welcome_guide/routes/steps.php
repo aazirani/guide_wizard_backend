@@ -3,6 +3,7 @@
 $app->group('/steps', function () {
     $this->get('', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\StepController:pageList')
         ->setName('view_steps');
+    $this->get('/image/{image_name}', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\StepController:deliverImageFile');
 })->add('authGuard');
 
 $app->group('/api/steps', function () {

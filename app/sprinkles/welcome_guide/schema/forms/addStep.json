@@ -24,6 +24,15 @@
             "placeholder" : "DESCRIPTION"
         }
     },
+    "image" : {
+        "validators" : {},
+        "form" : {
+            "type" : "file",
+            "label" : "IMAGE",
+            "icon" : "fa-image",
+            "placeholder" : "IMAGE"
+        }
+    },
     "order" : {
         "validators" : {
             "member_of" : {

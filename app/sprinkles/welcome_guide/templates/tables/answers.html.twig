@@ -53,8 +53,10 @@
         </td>
     </script>
     <script id="answer-table-column-image" type="answer/x-handlebars-template">
-        <td data-id="{{row.image}}">
-				{{row.image}}
+        <td valign="middle" align="center">
+            {{#if row.image }}
+            <img src="answers/image/{{row.image}}" width="100" />
+            {{/if }}
         </td>
     </script>
     <script id="answer-table-column-is_enabled" type="text/x-handlebars-template">

@@ -8,6 +8,7 @@ use Slim\Exception\NotFoundException as NotFoundException;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -211,6 +212,10 @@ class StepController extends SimpleController
 
         $data['creator_id'] = $currentUser->id;
 
+
+        //uploading images
+        $data['image'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', null);
+
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
@@ -307,11 +312,17 @@ class StepController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $step
-            ->name->technical_name;
+        $title = $step->name;
+
+
+
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($step, $title, $currentUser)
         {
+            //delete image files associated with this object
+            if (isset($step->image)) {
+                ImageUploadAndDelivery::deleteImageFile($step->image);
+            }
             $step->delete();
             unset($step);
 
@@ -475,6 +486,9 @@ class StepController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($data, $step, $currentUser)
         {
+
+            $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image);
+
             // Update the object and generate success messages
             foreach ($data as $name => $value)
             {
@@ -496,5 +510,61 @@ class StepController extends SimpleController
 
         $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', ['name' => $step->name->technical_name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
+    }
+
+
+    public function deliverImageFile($request, $response, $args){
+        // Load the request schema
+		$schema = new RequestSchema('schema://requests/image-get-by-name.yaml');
+        // Whitelist and set parameter defaults
+		$transformer = new RequestDataTransformer($schema);
+        $data = $transformer->transform($args);
+        // Validate, and throw exception on validation errors.
+		$validator = new ServerSideValidator($schema, $this->ci->translator);
+        if (!$validator->validate($data)) {
+            // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
+			$e = new BadRequestException();
+            foreach ($validator->errors() as $idx => $field) {
+                foreach($field as $eidx => $error) {
+                    $e->addUserMessage($error);
+                }
+            }
+			throw $e;
+        }
+
+		$filename = ImageUploadAndDelivery::getFullImagePath($data['image_name']);
+
+
+        if(file_exists($filename)){
+            //Get file type and set it as Content Type
+		    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $finfomime = finfo_file($finfo, $filename);
+            if ( $finfomime == ( "image/png" ) ||
+			        $finfomime == ( "image/jpeg" ) ||
+			        $finfomime == ( "image/gif" ) ||
+			        $finfomime == ( "image/bmp" ) ) {
+
+                header('Content-Type: ' . finfo_file($finfo, $filename));
+                finfo_close($finfo);
+
+                //Use Content-Disposition: attachment to specify the filename
+					    header('Content-Disposition: attachment; filename='.basename($filename));
+
+                        //No cache
+					    header('Expires: 0');
+                        header('Cache-Control: must-revalidate');
+                        header('Pragma: public');
+
+                        //Define file size
+					    header('Content-Length: ' . filesize($filename));
+
+                        ob_clean();
+                        flush();
+                        readfile($filename);
+                        exit;
+            }
+
+        }
+		return $response->withStatus(200);
     }
 }

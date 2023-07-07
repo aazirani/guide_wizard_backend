@@ -9,6 +9,9 @@ use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -126,14 +129,13 @@ class StepController extends SimpleController
         // Generate the form
         $form = new Form($schema);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
+        $languages = LANGUAGE::all();
+        $languageSelect = [];
+        foreach ($languages as $language) {
+            $languageSelect += [$language->id => $language->language_name];
         }
-        $form->setInputArgument('name', 'options', $textSelect);
-        $form->setInputArgument('description', 'options', $textSelect);
+        $form->setInputArgument('name', 'options', $languageSelect);
+        $form->setInputArgument('description', 'options', $languageSelect);
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -218,13 +220,12 @@ class StepController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
         {
-
             // Create the object
             $step = $classMapper->createInstance('step', $data);
-            // Store new step to database
             $step->save();
+            $this->saveTranslations($step, $params, $classMapper, $currentUser);
 
             // Create activity record
             $this
@@ -314,16 +315,19 @@ class StepController extends SimpleController
             ->ci->config;
         $title = $step->name;
 
-
+        $classMapper = $this->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($step, $title, $currentUser)
+        Capsule::transaction(function () use ($step, $title, $currentUser, $classMapper)
         {
+            $step->delete();
+
+            StepController::deleteTranslations($step, $classMapper);
+
             //delete image files associated with this object
             if (isset($step->image)) {
                 ImageUploadAndDelivery::deleteImageFile($step->image);
             }
-            $step->delete();
             unset($step);
 
             // Create activity record
@@ -398,14 +402,41 @@ class StepController extends SimpleController
         // Generate the form
         $form = new Form($schema, $step);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
+        //Set all the languages for the modal dialog
+        $languages = LANGUAGE::all();
+        $languageSelect = [];
+        foreach ($languages as $language) {
+            $languageSelect += [$language->id => $language->language_name];
         }
-        $form->setInputArgument('name', 'options', $textSelect);
-        $form->setInputArgument('description', 'options', $textSelect);
+        $form->setInputArgument('name', 'options', $languageSelect);
+        $form->setInputArgument('description', 'options', $languageSelect);
+
+        //Set all the current translations for the modal dialog
+        $translations = $classMapper->staticMethod('text', 'where', 'id', $step->name)->with('translations')
+            ->first()->translations;
+        //$translations = Text::where('id' , '=' , 17)->with('translations')->first()->translations;
+
+        $translationSelect = [];
+        if($translations){
+            foreach ($translations as $translation) {
+                $translationSelect += ['name_'.$translation->language_id => $translation->translated_text];
+            }
+        }
+        $form->setInputArgument('name', 'translations', $translationSelect);
+
+
+        $descriptions = $classMapper->staticMethod('text', 'where', 'id', $step->description)->with('translations')
+            ->first();
+        if($descriptions){
+            $translations = $descriptions->translations;
+        }
+        $translationSelect = [];
+        if($translations){
+            foreach ($translations as $translation) {
+                $translationSelect += ['description_'.$translation->language_id => $translation->translated_text];
+            }
+        }
+        $form->setInputArgument('description', 'translations', $translationSelect);
 
         // Render the template / form
         $this
@@ -483,8 +514,12 @@ class StepController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        //var_dump($post);
+
+        //return $response->withJson([], 504, JSON_PRETTY_PRINT);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $step, $currentUser)
+        Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post)
         {
 
             $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image);
@@ -498,7 +533,7 @@ class StepController extends SimpleController
                 }
             }
 
-            $step->save();
+            $this->saveTranslations($step, $post, $classMapper, $currentUser);
 
             // Create activity record
             $this
@@ -567,4 +602,42 @@ class StepController extends SimpleController
         }
 		return $response->withStatus(200);
     }
+
+    /**
+     * @param $step
+     * @param $params
+     * @param $classMapper
+     * @param UserFrosting\Sprinkle\Account\Database\Models\User $currentUser
+     * @return void
+     */
+    private static function saveTranslations($step, $params, $classMapper, $currentUser)
+    {
+        $arrayOfObjectWithKeyAsKey = array();
+        $arrayOfObjectWithKeyAsKey['name'] = $step->name;
+        $arrayOfObjectWithKeyAsKey['description'] = $step->description;
+
+        $textIds = TranslationsUtilities::addTranslations($params, array('name', 'description'), $arrayOfObjectWithKeyAsKey, $classMapper, $currentUser->id, "Step", $step);
+
+        // Store new step to database
+        $step->name = $textIds['name'];
+        $step->description = $textIds['description'];
+
+        $step->save();
+    }
+
+    private static function deleteTranslations($step, $classMapper){
+        $translations = $classMapper->staticMethod('translation', 'where', 'text_id', $step->name)->get();
+        foreach ($translations as $translation) {
+            $translation->delete();
+        }
+        $translations = $classMapper->staticMethod('translation', 'where', 'text_id', $step->description)->get();
+        foreach ($translations as $translation) {
+            $translation->delete();
+        }
+        $text = $classMapper->staticMethod('text', 'where', 'id', $step->name)->first();
+        $text->delete();
+        $text = $classMapper->staticMethod('text', 'where', 'id', $step->description)->first();
+        $text->delete();
+    }
+
 }

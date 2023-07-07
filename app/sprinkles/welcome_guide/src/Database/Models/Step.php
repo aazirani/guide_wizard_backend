@@ -102,18 +102,4 @@ class Step extends Model
         return $this->hasMany($classMapper->getClassMapping('task'));
     }
 
-
-    //observe this model being deleted and delete the relationships
-    public static function boot()
-    {
-        parent::boot();
-
-        self::deleting(function ($step)
-        {
-            //foreach ($step->translations as $translation) {
-            //    $translation->delete();
-            //}
-            
-        });
-    }
 }

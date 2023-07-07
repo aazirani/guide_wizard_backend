@@ -33,9 +33,9 @@ class StepsTable extends Migration
             $this->schema->create('steps', function (Blueprint $table) {
                 $table->increments('id');
 
-                $table->integer('name')->unsigned();
+                $table->integer('name')->unsigned()->nullable();
                 $table->integer('description')->unsigned()->nullable();
-                $table->integer('order')->unsigned();
+                $table->integer('order')->unsigned()->nullable();
                 $table->text('image')->nullable();
 
                 $table->integer('creator_id')->unsigned()->nullable();

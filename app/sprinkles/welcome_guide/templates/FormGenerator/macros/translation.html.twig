@@ -1,11 +1,10 @@
 {% macro generate(input) %}
 
-
 {% for option, label in input.options %}
 
 <div class="form-group has-feedback">
-    <label for="field_files_{{option}}">{{label}}</label>
-    <input autocomplete="off" class="form-control" value="{{ input.translations[option] }}" name="{{option}}" id="field_translations_{{option}}" type="text" label="{{label}}" icon="fa-th-list" placeholder="{{label}}">    
+    <label for="field_files_{{option}}"´>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{label}}</label>
+    <input autocomplete="off" class="form-control" value="{{attribute(input.translations, input.name ~ '_' ~ option)}}" name="{{input.name}}_{{option}}" id="field_translations_{{option}}" type="text" label="{{label}}" icon="fa-th-list" placeholder="{{label}}">
 </div>
 
 {% endfor %}

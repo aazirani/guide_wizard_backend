@@ -61,17 +61,4 @@ class Text extends Model
         return $this->hasMany($classMapper->getClassMapping('translation'));
     }
 
-    //observe this model being deleted and delete the relationships
-    public static function boot()
-    {
-        parent::boot();
-
-        self::deleting(function ($text)
-        {
-            //foreach ($text->translations as $translation) {
-            //    $translation->delete();
-            //}
-            
-        });
-    }
 }

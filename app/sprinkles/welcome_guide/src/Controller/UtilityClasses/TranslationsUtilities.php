@@ -19,11 +19,14 @@ class TranslationsUtilities{
             $valuesFromKeyThatStartsWithString = TranslationsUtilities::getValuesFromKeyThatStartsWithString($params, $key);
 
             foreach ($valuesFromKeyThatStartsWithString as $languageId => $value) {
-                if (empty(trim($value))) {
-                    continue;
-                }
                 $matchThese = ['text_id' => $text->id, 'language_id' => $languageId];
                 $translation = Translation::where($matchThese)->with('creator')->first();
+                if (empty(trim($value))) {
+                    if($translation){
+                        $translation->delete();
+                    }
+                    continue;
+                }
                 if(!$translation){
                     $translation = $classMapper->createInstance('translation');
                 }

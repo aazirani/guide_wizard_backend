@@ -131,7 +131,7 @@ class StepController extends SimpleController
         $form = new Form($schema);
 
         $classMapper = $this->ci->classMapper;
-        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables(null));
+        TranslationsUtilities::setFormValues($form, $classMapper, StepController::getTranslationsVariables(null));
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -557,8 +557,8 @@ class StepController extends SimpleController
 
     private static function getTranslationsVariables($step){
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['name'] = &$step->name;
-        $arrayOfObjectWithKeyAsKey['description'] = &$step->description;
+        $arrayOfObjectWithKeyAsKey['name'] = $step->name;
+        $arrayOfObjectWithKeyAsKey['description'] = $step->description;
 
         return $arrayOfObjectWithKeyAsKey;
     }

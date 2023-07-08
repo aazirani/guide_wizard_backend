@@ -132,7 +132,7 @@ class SubTaskController extends SimpleController
         $form = new Form($schema);
 
         $classMapper = $this->ci->classMapper;
-        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables(null));
+        TranslationsUtilities::setFormValues($form, $classMapper, SubTaskController::getTranslationsVariables(null));
 
         $tasks = TASK::all();
         $taskSelect = [];

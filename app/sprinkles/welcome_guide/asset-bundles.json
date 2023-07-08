@@ -86,7 +86,8 @@
         },
         "js/pages/subTasks": {
             "scripts": [
-                "userfrosting/js/pages/subTasks.js"
+                "userfrosting/js/pages/subTasks.js",
+                "vendor/simplemde/dist/simplemde.min.js"
             ],
             "options": {
                 "result": {
@@ -107,6 +108,11 @@
                     }
                 }
             }
+        },
+        "css/markdown": {
+            "styles": [
+                "vendor/simplemde/dist/simplemde.min.css"
+            ]
         }
     }
 }

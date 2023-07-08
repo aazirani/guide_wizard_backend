@@ -148,7 +148,7 @@ class SubTaskController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'SUB_TASK.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/subTasks', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal-large.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'SUB_TASK.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/subTasks', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
 
     /**
@@ -418,7 +418,7 @@ class SubTaskController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'SUB_TASK.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/subTasks/' . $args['subTask_id'],
+            ->render($response, 'FormGenerator/modal-large.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'SUB_TASK.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/subTasks/' . $args['subTask_id'],
         //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
         'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }

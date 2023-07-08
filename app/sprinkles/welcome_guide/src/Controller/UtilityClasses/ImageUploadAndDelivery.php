@@ -45,7 +45,7 @@ class ImageUploadAndDelivery{
     }
     
     public static function uploadImageAndRemovePreviousOne($nameOfFileInPostObject, $nameOfPreviousImageFile){
-        if (isset($_FILES[$nameOfFileInPostObject])) {
+        if (!empty($_FILES[$nameOfFileInPostObject]) && !empty($_FILES[$nameOfFileInPostObject]['name'])) {
             $storage = new \Upload\Storage\FileSystem(ImageUploadAndDelivery::getFullImagePath(''));
             //upload new file
                 $file1 = new \Upload\File($nameOfFileInPostObject, $storage);

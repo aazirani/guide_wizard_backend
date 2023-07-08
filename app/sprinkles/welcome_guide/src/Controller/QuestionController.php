@@ -8,6 +8,9 @@ use Slim\Exception\NotFoundException as NotFoundException;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -48,7 +51,7 @@ class QuestionController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('task.name')
+                ->with('task.text')
                 ->with('title')
                 ->with('subTitle')
                 ->with('infoUrl')
@@ -129,20 +132,8 @@ class QuestionController extends SimpleController
         // Generate the form
         $form = new Form($schema);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('title', 'options', $textSelect);
-        $form->setInputArgument('sub_title', 'options', $textSelect);
-        $form->setInputArgument('info_url', 'options', $textSelect);
-        $form->setInputArgument('info_description', 'options', $textSelect);
-
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this
-            ->ci->classMapper;
+        $classMapper = $this->ci->classMapper;
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables(null));
 
         $tasks = TASK::all();
         $taskSelect = [];
@@ -234,13 +225,14 @@ class QuestionController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
         {
 
             // Create the object
             $question = $classMapper->createInstance('question', $data);
             // Store new question to database
             $question->save();
+            TranslationsUtilities::saveTranslations($question, "Question", $params, $classMapper, $currentUser, $this->getTranslationsVariables($question));
 
             // Create activity record
             $this
@@ -329,10 +321,15 @@ class QuestionController extends SimpleController
         $config = $this
             ->ci->config;
         $title = $question->title;
+
+        $classMapper = $this->ci->classMapper;
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($question, $title, $currentUser)
+        Capsule::transaction(function () use ($question, $title, $currentUser, $classMapper)
         {
-            $question->delete();
+
+            QuestionController::deleteObject($question, $classMapper);
+
             unset($question);
 
             // Create activity record
@@ -407,17 +404,7 @@ class QuestionController extends SimpleController
         // Generate the form
         $form = new Form($schema, $question);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-
-        $form->setInputArgument('title', 'options', $textSelect);
-        $form->setInputArgument('sub_title', 'options', $textSelect);
-        $form->setInputArgument('info_url', 'options', $textSelect);
-        $form->setInputArgument('info_description', 'options', $textSelect);
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($question));
 
         $tasks = TASK::all();
         $taskSelect = [];
@@ -505,7 +492,7 @@ class QuestionController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $question, $currentUser)
+        Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -516,7 +503,7 @@ class QuestionController extends SimpleController
                 }
             }
 
-            $question->save();
+            TranslationsUtilities::saveTranslations($question, "Question", $post, $classMapper, $currentUser, $this->getTranslationsVariables($question));
 
             // Create activity record
             $this
@@ -528,4 +515,26 @@ class QuestionController extends SimpleController
         $ms->addMessageTranslated('success', 'QUESTION.DETAILS_UPDATED', ['name' => $question->title]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
+
+    private static function getTranslationsVariables($question){
+        $arrayOfObjectWithKeyAsKey = array();
+        $arrayOfObjectWithKeyAsKey['title'] = $question->title;
+        $arrayOfObjectWithKeyAsKey['sub_title'] = $question->sub_title;
+        $arrayOfObjectWithKeyAsKey['info_url'] = $question->info_url;
+        $arrayOfObjectWithKeyAsKey['info_description'] = $question->info_description;
+
+        return $arrayOfObjectWithKeyAsKey;
+    }
+
+    public static function deleteObject($question, $classMapper){
+        $answers = $classMapper->staticMethod('answer', 'where', 'question_id', $question->id)->get();
+        foreach ($answers as $answer) {
+            AnswerController::deleteObject($answer, $classMapper);
+        }
+
+        $question->delete();
+
+        TranslationsUtilities::deleteTranslations($question, $classMapper, QuestionController::getTranslationsVariables($question));
+    }
+
 }

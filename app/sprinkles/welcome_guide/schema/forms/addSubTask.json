@@ -1,11 +1,7 @@
 {
     "title" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.TITLE"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "TITLE",
             "icon" : "fa-th-list",
             "placeholder" : "TITLE"
@@ -25,24 +21,16 @@
         }
     },
     "markdown" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.MARKDOWN"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "MARKDOWN",
             "icon" : "fa-th-list",
             "placeholder" : "MARKDOWN"
         }
     },
     "deadline" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.DEADLINE"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "DEADLINE",
             "icon" : "fa-th-list",
             "placeholder" : "DEADLINE"

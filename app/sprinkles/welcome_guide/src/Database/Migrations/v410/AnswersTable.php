@@ -35,7 +35,7 @@ class AnswersTable extends Migration
                 $table->increments('id');
 
                 $table->integer('question_id')->unsigned();
-                $table->integer('title')->unsigned();
+                $table->integer('title')->unsigned()->nullable();
                 $table->integer('order')->unsigned();
                 $table->string('image', 300)->nullable();
                 $table->boolean('is_enabled')->default(true);

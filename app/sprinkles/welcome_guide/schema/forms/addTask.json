@@ -1,11 +1,7 @@
 {
     "text" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.TEXT"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "TEXT",
             "icon" : "fa-th-list",
             "placeholder" : "TEXT"
@@ -25,12 +21,8 @@
         }
     },
     "description" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.DESCRIPTION"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "DESCRIPTION",
             "icon" : "fa-th-list",
             "placeholder" : "DESCRIPTION"

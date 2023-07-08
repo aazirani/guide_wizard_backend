@@ -1,24 +1,15 @@
 {
     "name" : {
-        "validators" : {
-            "required" : {
-                "message" : "VALIDATE.NAME"
-            }
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "NAME",
             "icon" : "fa-th-list",
             "placeholder" : "NAME"
         }
     },
     "description" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.DESCRIPTION"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "DESCRIPTION",
             "icon" : "fa-th-list",
             "placeholder" : "DESCRIPTION"

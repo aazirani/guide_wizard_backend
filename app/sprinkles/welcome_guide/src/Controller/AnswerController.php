@@ -9,6 +9,8 @@ use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -19,6 +21,7 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
 
 class AnswerController extends SimpleController
 {
+
     /**
      * Return the list of all objects.
      */
@@ -127,17 +130,8 @@ class AnswerController extends SimpleController
         // Generate the form
         $form = new Form($schema);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('title', 'options', $textSelect);
-
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this
-            ->ci->classMapper;
+        $classMapper = $this->ci->classMapper;
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables(null));
 
         $questions = QUESTION::all();
         $questionSelect = [];
@@ -231,13 +225,14 @@ class AnswerController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
         {
 
             // Create the object
             $answer = $classMapper->createInstance('answer', $data);
             // Store new answer to database
             $answer->save();
+            TranslationsUtilities::saveTranslations($answer, "Answer", $params, $classMapper, $currentUser, $this->getTranslationsVariables($answer));
 
             // Create activity record
             $this
@@ -327,14 +322,15 @@ class AnswerController extends SimpleController
             ->ci->config;
         $title = $answer
             ->title->technical_name;
+
+        $classMapper = $this->ci->classMapper;
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($answer, $title, $currentUser)
+        Capsule::transaction(function () use ($answer, $title, $currentUser, $classMapper)
         {
-            //delete image files associated with this object
-            if (isset($answer->image)) {
-                ImageUploadAndDelivery::deleteImageFile($answer->image);
-            }
-            $answer->delete();
+
+            AnswerController::deleteObject($answer, $classMapper);
+
             unset($answer);
 
             // Create activity record
@@ -409,13 +405,7 @@ class AnswerController extends SimpleController
         // Generate the form
         $form = new Form($schema, $answer);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('title', 'options', $textSelect);
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($answer));
 
         $questions = QUESTION::all();
         $questionSelect = [];
@@ -504,7 +494,7 @@ class AnswerController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $answer, $currentUser)
+        Capsule::transaction(function () use ($data, $answer, $currentUser, $classMapper, $post)
         {
 
             $answer->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $answer->image);
@@ -518,7 +508,7 @@ class AnswerController extends SimpleController
                 }
             }
 
-            $answer->save();
+            TranslationsUtilities::saveTranslations($answer, "Answer", $post, $classMapper, $currentUser, $this->getTranslationsVariables($answer));
 
             // Create activity record
             $this
@@ -585,5 +575,23 @@ class AnswerController extends SimpleController
 
         }
 		return $response->withStatus(200);
+    }
+
+    private static function getTranslationsVariables($answer){
+        $arrayOfObjectWithKeyAsKey = array();
+        $arrayOfObjectWithKeyAsKey['title'] = $answer->title;
+
+        return $arrayOfObjectWithKeyAsKey;
+    }
+
+    public static function deleteObject($answer, $classMapper){
+        $answer->delete();
+
+        TranslationsUtilities::deleteTranslations($answer, $classMapper, AnswerController::getTranslationsVariables($answer));
+
+        //delete image files associated with this object
+        if (isset($answer->image)) {
+            ImageUploadAndDelivery::deleteImageFile($answer->image);
+        }
     }
 }

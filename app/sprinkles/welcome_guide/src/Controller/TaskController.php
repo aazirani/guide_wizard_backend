@@ -9,6 +9,8 @@ use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -19,6 +21,7 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 
 class TaskController extends SimpleController
 {
+
     /**
      * Return the list of all objects.
      */
@@ -128,18 +131,8 @@ class TaskController extends SimpleController
         // Generate the form
         $form = new Form($schema);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('text', 'options', $textSelect);
-        $form->setInputArgument('description', 'options', $textSelect);
-        
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this
-            ->ci->classMapper;
+        $classMapper = $this->ci->classMapper;
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables(null));
 
         $steps = STEP::all();
         $stepSelect = [];
@@ -234,13 +227,14 @@ class TaskController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
         {
 
             // Create the object
             $task = $classMapper->createInstance('task', $data);
             // Store new task to database
             $task->save();
+            TranslationsUtilities::saveTranslations($task, "Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($task));
 
             // Create activity record
             $this
@@ -330,17 +324,15 @@ class TaskController extends SimpleController
             ->ci->config;
         $text = $task
             ->text->technical_name;
+
+        $classMapper = $this->ci->classMapper;
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($task, $text, $currentUser)
+        Capsule::transaction(function () use ($task, $text, $currentUser, $classMapper)
         {
-            //delete image files associated with this object
-            if (isset($task->image_1)) {
-                ImageUploadAndDelivery::deleteImageFile($task->image_1);
-            }
-            if (isset($task->image_2)) {
-                ImageUploadAndDelivery::deleteImageFile($task->image_2);
-            }
-            $task->delete();
+
+            TaskController::deleteObject($task, $classMapper);
+
             unset($task);
 
             // Create activity record
@@ -415,14 +407,7 @@ class TaskController extends SimpleController
         // Generate the form
         $form = new Form($schema, $task);
         
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('text', 'options', $textSelect);
-        $form->setInputArgument('description', 'options', $textSelect);
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($task));
 
         $steps = STEP::all();
         $stepSelect = [];
@@ -511,7 +496,7 @@ class TaskController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $task, $currentUser)
+        Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post)
         {
 
             $task->image_1 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', $task->image_1);
@@ -526,7 +511,7 @@ class TaskController extends SimpleController
                 }
             }
 
-            $task->save();
+            TranslationsUtilities::saveTranslations($task, "Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($task));
 
             // Create activity record
             $this
@@ -593,5 +578,37 @@ class TaskController extends SimpleController
 
         }
 		return $response->withStatus(200);
+    }
+
+    private static function getTranslationsVariables($task){
+        $arrayOfObjectWithKeyAsKey = array();
+        $arrayOfObjectWithKeyAsKey['text'] = $task->text;
+        $arrayOfObjectWithKeyAsKey['description'] = $task->description;
+
+        return $arrayOfObjectWithKeyAsKey;
+    }
+
+    public static function deleteObject($task, $classMapper){
+
+        $questions = $classMapper->staticMethod('question', 'where', 'task_id', $task->id)->get();
+        foreach ($questions as $question) {
+            QuestionController::deleteObject($question, $classMapper);
+        }
+        $subTasks = $classMapper->staticMethod('subTask', 'where', 'task_id', $task->id)->get();
+        foreach ($subTasks as $subTask) {
+            SubTaskController::deleteObject($subTask, $classMapper);
+        }
+
+        $task->delete();
+
+        TranslationsUtilities::deleteTranslations($task, $classMapper, TaskController::getTranslationsVariables($task));
+
+        //delete image files associated with this object
+            if (isset($task->image_1)) {
+                ImageUploadAndDelivery::deleteImageFile($task->image_1);
+            }
+            if (isset($task->image_2)) {
+                ImageUploadAndDelivery::deleteImageFile($task->image_2);
+            }
     }
 }

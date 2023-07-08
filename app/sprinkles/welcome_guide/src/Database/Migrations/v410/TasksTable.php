@@ -35,7 +35,7 @@ class TasksTable extends Migration
 				$table->increments('id');
 
 				$table->integer('step_id')->unsigned();
-				$table->integer('text')->unsigned();
+				$table->integer('text')->unsigned()->nullable();
 				$table->integer('description')->unsigned()->nullable();
 				$table->text('image_1')->nullable();
 				$table->text('image_2')->nullable();

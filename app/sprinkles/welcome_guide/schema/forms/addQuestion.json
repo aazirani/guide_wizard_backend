@@ -1,23 +1,15 @@
 {
     "title" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.REQUIRED_TITLE"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "TITLE",
             "icon" : "fa-th-list",
             "placeholder" : "TITLE"
         }
     },
     "sub_title" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.REQUIRED_SUB_TITLE"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "SUB_TITLE",
             "icon" : "fa-th-list",
             "placeholder" : "SUB_TITLE"
@@ -86,24 +78,16 @@
         }
     },
     "info_url" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.INFO_URL"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "INFO_URL",
             "icon" : "fa-th-list",
             "placeholder" : "INFO_URL"
         }
     },
     "info_description" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.INFO_DESCRIPTION"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "INFO_DESCRIPTION",
             "icon" : "fa-th-list",
             "placeholder" : "INFO_DESCRIPTION"

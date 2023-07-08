@@ -34,7 +34,7 @@ class QuestionsTable extends Migration
             $this->schema->create('questions', function (Blueprint $table) {
                 $table->increments('id');
 
-                $table->integer('title')->unsigned();
+                $table->integer('title')->unsigned()->nullable();
                 $table->integer('sub_title')->unsigned()->nullable();
                 $table->string('type', 10);
                 $table->integer('axis_count')->unsigned();

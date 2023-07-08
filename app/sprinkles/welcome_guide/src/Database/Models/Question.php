@@ -165,18 +165,4 @@ class Question extends Model
 
         return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'info_description', 'id');
     }
-
-    //observe this model being deleted and delete the relationships
-    public static function boot()
-    {
-        parent::boot();
-
-        self::deleting(function ($question)
-        {
-            //foreach ($question->answers as $answer) {
-            //    $answer->delete();
-            //}
-            
-        });
-    }
 }

@@ -35,8 +35,8 @@ class SubTasksTable extends Migration
 				$table->increments('id');
 
 				$table->integer('task_id')->unsigned();
-				$table->integer('title')->unsigned();
-				$table->integer('markdown')->unsigned();
+				$table->integer('title')->unsigned()->nullable();
+				$table->integer('markdown')->unsigned()->nullable();
 				$table->integer('deadline')->unsigned()->nullable();
 				$table->integer('order')->unsigned();
 

@@ -13,12 +13,8 @@
         }
     },
     "title" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.REQUIRED_TITLE"
-        },
         "form" : {
-            "type" : "select",
+            "type" : "translation",
             "label" : "TITLE",
             "icon" : "fa-th-list",
             "placeholder" : "TITLE"
@@ -28,7 +24,7 @@
         "validators" : {
             "length" : {
                 "min" : 1,
-                "max" : 10
+                "max" : 99
             },
             "required" : {
                 "message" : "VALIDATE.ORDER"

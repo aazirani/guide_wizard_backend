@@ -129,13 +129,8 @@ class StepController extends SimpleController
         // Generate the form
         $form = new Form($schema);
 
-        $languages = LANGUAGE::all();
-        $languageSelect = [];
-        foreach ($languages as $language) {
-            $languageSelect += [$language->id => $language->language_name];
-        }
-        $form->setInputArgument('name', 'options', $languageSelect);
-        $form->setInputArgument('description', 'options', $languageSelect);
+        $classMapper = $this->ci->classMapper;
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables(null));
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -225,7 +220,8 @@ class StepController extends SimpleController
             // Create the object
             $step = $classMapper->createInstance('step', $data);
             $step->save();
-            $this->saveTranslations($step, $params, $classMapper, $currentUser);
+
+            TranslationsUtilities::saveTranslations($step, "Step", $params, $classMapper, $currentUser, $this->getTranslationsVariables($step));
 
             // Create activity record
             $this
@@ -322,7 +318,7 @@ class StepController extends SimpleController
         {
             $step->delete();
 
-            StepController::deleteTranslations($step, $classMapper);
+            TranslationsUtilities::deleteTranslations($step, $classMapper, $this->getTranslationsVariables($step));
 
             //delete image files associated with this object
             if (isset($step->image)) {
@@ -402,41 +398,7 @@ class StepController extends SimpleController
         // Generate the form
         $form = new Form($schema, $step);
 
-        //Set all the languages for the modal dialog
-        $languages = LANGUAGE::all();
-        $languageSelect = [];
-        foreach ($languages as $language) {
-            $languageSelect += [$language->id => $language->language_name];
-        }
-        $form->setInputArgument('name', 'options', $languageSelect);
-        $form->setInputArgument('description', 'options', $languageSelect);
-
-        //Set all the current translations for the modal dialog
-        $translations = $classMapper->staticMethod('text', 'where', 'id', $step->name)->with('translations')
-            ->first()->translations;
-        //$translations = Text::where('id' , '=' , 17)->with('translations')->first()->translations;
-
-        $translationSelect = [];
-        if($translations){
-            foreach ($translations as $translation) {
-                $translationSelect += ['name_'.$translation->language_id => $translation->translated_text];
-            }
-        }
-        $form->setInputArgument('name', 'translations', $translationSelect);
-
-
-        $descriptions = $classMapper->staticMethod('text', 'where', 'id', $step->description)->with('translations')
-            ->first();
-        if($descriptions){
-            $translations = $descriptions->translations;
-        }
-        $translationSelect = [];
-        if($translations){
-            foreach ($translations as $translation) {
-                $translationSelect += ['description_'.$translation->language_id => $translation->translated_text];
-            }
-        }
-        $form->setInputArgument('description', 'translations', $translationSelect);
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($step));
 
         // Render the template / form
         $this
@@ -514,10 +476,6 @@ class StepController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
-        //var_dump($post);
-
-        //return $response->withJson([], 504, JSON_PRETTY_PRINT);
-
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post)
         {
@@ -533,7 +491,7 @@ class StepController extends SimpleController
                 }
             }
 
-            $this->saveTranslations($step, $post, $classMapper, $currentUser);
+            TranslationsUtilities::saveTranslations($step, "Step", $post, $classMapper, $currentUser, $this->getTranslationsVariables($step));
 
             // Create activity record
             $this
@@ -603,41 +561,12 @@ class StepController extends SimpleController
 		return $response->withStatus(200);
     }
 
-    /**
-     * @param $step
-     * @param $params
-     * @param $classMapper
-     * @param UserFrosting\Sprinkle\Account\Database\Models\User $currentUser
-     * @return void
-     */
-    private static function saveTranslations($step, $params, $classMapper, $currentUser)
-    {
+    private function getTranslationsVariables($step){
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['name'] = $step->name;
-        $arrayOfObjectWithKeyAsKey['description'] = $step->description;
+        $arrayOfObjectWithKeyAsKey['name'] = &$step->name;
+        $arrayOfObjectWithKeyAsKey['description'] = &$step->description;
 
-        $textIds = TranslationsUtilities::addTranslations($params, array('name', 'description'), $arrayOfObjectWithKeyAsKey, $classMapper, $currentUser->id, "Step", $step);
-
-        // Store new step to database
-        $step->name = $textIds['name'];
-        $step->description = $textIds['description'];
-
-        $step->save();
-    }
-
-    private static function deleteTranslations($step, $classMapper){
-        $translations = $classMapper->staticMethod('translation', 'where', 'text_id', $step->name)->get();
-        foreach ($translations as $translation) {
-            $translation->delete();
-        }
-        $translations = $classMapper->staticMethod('translation', 'where', 'text_id', $step->description)->get();
-        foreach ($translations as $translation) {
-            $translation->delete();
-        }
-        $text = $classMapper->staticMethod('text', 'where', 'id', $step->name)->first();
-        $text->delete();
-        $text = $classMapper->staticMethod('text', 'where', 'id', $step->description)->first();
-        $text->delete();
+        return $arrayOfObjectWithKeyAsKey;
     }
 
 }

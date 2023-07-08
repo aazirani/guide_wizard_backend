@@ -8,6 +8,7 @@ use Slim\Exception\NotFoundException as NotFoundException;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -129,19 +130,8 @@ class SubTaskController extends SimpleController
         // Generate the form
         $form = new Form($schema);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('title', 'options', $textSelect);
-        $form->setInputArgument('markdown', 'options', $textSelect);
-        $form->setInputArgument('deadline', 'options', $textSelect);
-        
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this
-            ->ci->classMapper;
+        $classMapper = $this->ci->classMapper;
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables(null));
 
         $tasks = TASK::all();
         $taskSelect = [];
@@ -232,13 +222,14 @@ class SubTaskController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
         {
 
             // Create the object
             $subTask = $classMapper->createInstance('subTask', $data);
             // Store new subTask to database
             $subTask->save();
+            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($subTask));
 
             // Create activity record
             $this
@@ -328,10 +319,16 @@ class SubTaskController extends SimpleController
             ->ci->config;
         $title = $subTask
             ->title->technical_name;
+
+        $classMapper = $this->ci->classMapper;
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($subTask, $title, $currentUser)
+        Capsule::transaction(function () use ($subTask, $title, $currentUser, $classMapper)
         {
             $subTask->delete();
+
+            TranslationsUtilities::deleteTranslations($subTask, $classMapper, $this->getTranslationsVariables($subTask));
+
             unset($subTask);
 
             // Create activity record
@@ -406,15 +403,7 @@ class SubTaskController extends SimpleController
         // Generate the form
         $form = new Form($schema, $subTask);
 
-        $texts = TEXT::all();
-        $textSelect = [];
-        foreach ($texts as $text)
-        {
-            $textSelect += [$text->id => $text->technical_name];
-        }
-        $form->setInputArgument('title', 'options', $textSelect);
-        $form->setInputArgument('markdown', 'options', $textSelect);
-        $form->setInputArgument('deadline', 'options', $textSelect);
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($subTask));
         
         $tasks = TASK::all();
         $taskSelect = [];
@@ -503,7 +492,7 @@ class SubTaskController extends SimpleController
             ->ci->classMapper;
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $subTask, $currentUser)
+        Capsule::transaction(function () use ($data, $subTask, $currentUser, $classMapper, $post)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -514,7 +503,7 @@ class SubTaskController extends SimpleController
                 }
             }
 
-            $subTask->save();
+            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($subTask));
 
             // Create activity record
             $this
@@ -526,5 +515,14 @@ class SubTaskController extends SimpleController
 
         $ms->addMessageTranslated('success', 'SUB_TASK.DETAILS_UPDATED', ['name' => $subTask->name->technical_name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
+    }
+
+    private function getTranslationsVariables($subTask){
+        $arrayOfObjectWithKeyAsKey = array();
+        $arrayOfObjectWithKeyAsKey['title'] = $subTask->title;
+        $arrayOfObjectWithKeyAsKey['markdown'] = $subTask->markdown;
+        $arrayOfObjectWithKeyAsKey['deadline'] = $subTask->deadline;
+
+        return $arrayOfObjectWithKeyAsKey;
     }
 }

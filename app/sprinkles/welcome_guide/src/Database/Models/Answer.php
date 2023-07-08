@@ -106,18 +106,4 @@ class Answer extends Model
  
         return $this->belongsToMany($classMapper->getClassMapping('logic'));
     }
-
-    //observe this model being deleted and delete the relationships
-    public static function boot()
-    {
-        parent::boot();
-
-        self::deleting(function ($answer)
-        {
-            //foreach ($answer->translations as $translation) {
-            //    $translation->delete();
-            //}
-            
-        });
-    }
 }

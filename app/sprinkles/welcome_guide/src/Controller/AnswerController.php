@@ -21,6 +21,7 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
 
 class AnswerController extends SimpleController
 {
+
     /**
      * Return the list of all objects.
      */
@@ -327,14 +328,8 @@ class AnswerController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($answer, $title, $currentUser, $classMapper)
         {
-            $answer->delete();
 
-            TranslationsUtilities::deleteTranslations($answer, $classMapper, $this->getTranslationsVariables($answer));
-
-            //delete image files associated with this object
-            if (isset($answer->image)) {
-                ImageUploadAndDelivery::deleteImageFile($answer->image);
-            }
+            AnswerController::deleteObject($answer, $classMapper);
 
             unset($answer);
 
@@ -582,10 +577,21 @@ class AnswerController extends SimpleController
 		return $response->withStatus(200);
     }
 
-    private function getTranslationsVariables($answer){
+    private static function getTranslationsVariables($answer){
         $arrayOfObjectWithKeyAsKey = array();
         $arrayOfObjectWithKeyAsKey['title'] = $answer->title;
 
         return $arrayOfObjectWithKeyAsKey;
+    }
+
+    public static function deleteObject($answer, $classMapper){
+        $answer->delete();
+
+        TranslationsUtilities::deleteTranslations($answer, $classMapper, AnswerController::getTranslationsVariables($answer));
+
+        //delete image files associated with this object
+        if (isset($answer->image)) {
+            ImageUploadAndDelivery::deleteImageFile($answer->image);
+        }
     }
 }

@@ -19,6 +19,7 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Task;
 
 class SubTaskController extends SimpleController
 {
+
     /**
      * Return the list of all objects.
      */
@@ -325,10 +326,8 @@ class SubTaskController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($subTask, $title, $currentUser, $classMapper)
         {
-            $subTask->delete();
-
-            TranslationsUtilities::deleteTranslations($subTask, $classMapper, $this->getTranslationsVariables($subTask));
-
+            SubTaskController::deleteObject($subTask, $classMapper);
+            
             unset($subTask);
 
             // Create activity record
@@ -517,12 +516,20 @@ class SubTaskController extends SimpleController
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 
-    private function getTranslationsVariables($subTask){
+    private static function getTranslationsVariables($subTask){
         $arrayOfObjectWithKeyAsKey = array();
         $arrayOfObjectWithKeyAsKey['title'] = $subTask->title;
         $arrayOfObjectWithKeyAsKey['markdown'] = $subTask->markdown;
         $arrayOfObjectWithKeyAsKey['deadline'] = $subTask->deadline;
 
         return $arrayOfObjectWithKeyAsKey;
+    }
+
+    public static function deleteObject($subTask, $classMapper){
+
+        $subTask->delete();
+
+        TranslationsUtilities::deleteTranslations($subTask, $classMapper, SubTaskController::getTranslationsVariables($subTask));
+
     }
 }

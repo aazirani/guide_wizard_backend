@@ -21,6 +21,7 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
 
 class StepController extends SimpleController
 {
+
     /**
      * Return the list of all objects.
      */
@@ -316,14 +317,7 @@ class StepController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($step, $title, $currentUser, $classMapper)
         {
-            $step->delete();
-
-            TranslationsUtilities::deleteTranslations($step, $classMapper, $this->getTranslationsVariables($step));
-
-            //delete image files associated with this object
-            if (isset($step->image)) {
-                ImageUploadAndDelivery::deleteImageFile($step->image);
-            }
+            StepController::deleteObject($step, $classMapper);
             unset($step);
 
             // Create activity record
@@ -561,7 +555,7 @@ class StepController extends SimpleController
 		return $response->withStatus(200);
     }
 
-    private function getTranslationsVariables($step){
+    private static function getTranslationsVariables($step){
         $arrayOfObjectWithKeyAsKey = array();
         $arrayOfObjectWithKeyAsKey['name'] = &$step->name;
         $arrayOfObjectWithKeyAsKey['description'] = &$step->description;
@@ -569,4 +563,20 @@ class StepController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
+    public static function deleteObject($step, $classMapper){
+
+        $tasks = $classMapper->staticMethod('task', 'where', 'step_id', $step->id)->get();
+        foreach ($tasks as $task) {
+            TaskController::deleteObject($task, $classMapper);
+        }
+
+        $step->delete();
+
+        TranslationsUtilities::deleteTranslations($step, $classMapper, StepController::getTranslationsVariables($step));
+
+        //delete image files associated with this object
+            if (isset($step->image)) {
+                ImageUploadAndDelivery::deleteImageFile($step->image);
+            }
+    }
 }

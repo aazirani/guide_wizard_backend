@@ -21,6 +21,7 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 
 class TaskController extends SimpleController
 {
+
     /**
      * Return the list of all objects.
      */
@@ -329,17 +330,8 @@ class TaskController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($task, $text, $currentUser, $classMapper)
         {
-            $task->delete();
 
-            TranslationsUtilities::deleteTranslations($task, $classMapper, $this->getTranslationsVariables($task));
-
-            //delete image files associated with this object
-            if (isset($task->image_1)) {
-                ImageUploadAndDelivery::deleteImageFile($task->image_1);
-            }
-            if (isset($task->image_2)) {
-                ImageUploadAndDelivery::deleteImageFile($task->image_2);
-            }
+            TaskController::deleteObject($task, $classMapper);
 
             unset($task);
 
@@ -588,7 +580,7 @@ class TaskController extends SimpleController
 		return $response->withStatus(200);
     }
 
-    private function getTranslationsVariables($task){
+    private static function getTranslationsVariables($task){
         $arrayOfObjectWithKeyAsKey = array();
         $arrayOfObjectWithKeyAsKey['text'] = $task->text;
         $arrayOfObjectWithKeyAsKey['description'] = $task->description;
@@ -596,4 +588,27 @@ class TaskController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
+    public static function deleteObject($task, $classMapper){
+
+        $questions = $classMapper->staticMethod('question', 'where', 'task_id', $task->id)->get();
+        foreach ($questions as $question) {
+            QuestionController::deleteObject($question, $classMapper);
+        }
+        $subTasks = $classMapper->staticMethod('subTask', 'where', 'task_id', $task->id)->get();
+        foreach ($subTasks as $subTask) {
+            SubTaskController::deleteObject($subTask, $classMapper);
+        }
+
+        $task->delete();
+
+        TranslationsUtilities::deleteTranslations($task, $classMapper, TaskController::getTranslationsVariables($task));
+
+        //delete image files associated with this object
+            if (isset($task->image_1)) {
+                ImageUploadAndDelivery::deleteImageFile($task->image_1);
+            }
+            if (isset($task->image_2)) {
+                ImageUploadAndDelivery::deleteImageFile($task->image_2);
+            }
+    }
 }

@@ -8,6 +8,7 @@ use Slim\Exception\NotFoundException as NotFoundException;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Support\Exception\BadRequestException;
@@ -326,9 +327,8 @@ class QuestionController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($question, $title, $currentUser, $classMapper)
         {
-            $question->delete();
 
-            TranslationsUtilities::deleteTranslations($question, $classMapper, $this->getTranslationsVariables($question));
+            QuestionController::deleteObject($question, $classMapper);
 
             unset($question);
 
@@ -516,7 +516,7 @@ class QuestionController extends SimpleController
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 
-    private function getTranslationsVariables($question){
+    private static function getTranslationsVariables($question){
         $arrayOfObjectWithKeyAsKey = array();
         $arrayOfObjectWithKeyAsKey['title'] = $question->title;
         $arrayOfObjectWithKeyAsKey['sub_title'] = $question->sub_title;
@@ -524,6 +524,17 @@ class QuestionController extends SimpleController
         $arrayOfObjectWithKeyAsKey['info_description'] = $question->info_description;
 
         return $arrayOfObjectWithKeyAsKey;
+    }
+
+    public static function deleteObject($question, $classMapper){
+        $answers = $classMapper->staticMethod('answer', 'where', 'question_id', $question->id)->get();
+        foreach ($answers as $answer) {
+            AnswerController::deleteObject($answer, $classMapper);
+        }
+
+        $question->delete();
+
+        TranslationsUtilities::deleteTranslations($question, $classMapper, QuestionController::getTranslationsVariables($question));
     }
 
 }

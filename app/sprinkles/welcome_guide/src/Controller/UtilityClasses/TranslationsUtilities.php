@@ -96,7 +96,7 @@ class TranslationsUtilities{
     }
 
 
-    private static function deleteTranslations($object, $classMapper, $arrayOfObjectWithKeyAsKey){
+    public static function deleteTranslations($object, $classMapper, $arrayOfObjectWithKeyAsKey){
         foreach ($arrayOfObjectWithKeyAsKey as $key => $value) {
             $translations = $classMapper->staticMethod('translation', 'where', 'text_id', $object->{$key})->get();
             foreach ($translations as $translation) {

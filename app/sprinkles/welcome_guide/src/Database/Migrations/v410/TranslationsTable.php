@@ -35,7 +35,7 @@ class TranslationsTable extends Migration
                 $table->increments('id');
 
                 $table->integer('text_id')->unsigned();
-                $table->text('translated_text');
+                $table->longText('translated_text');
                 $table->integer('language_id')->unsigned();
 
                 $table->integer('creator_id')->unsigned()->nullable();

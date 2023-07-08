@@ -22,7 +22,7 @@
     },
     "markdown" : {
         "form" : {
-            "type" : "translation",
+            "type" : "markdown",
             "label" : "MARKDOWN",
             "icon" : "fa-th-list",
             "placeholder" : "MARKDOWN"

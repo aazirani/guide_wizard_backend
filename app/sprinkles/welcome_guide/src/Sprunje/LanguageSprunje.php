@@ -16,6 +16,7 @@ class LanguageSprunje extends Sprunje
         "language_code",
         "language_name",
         "is_active",
+        "is_main_language",
         "creator_id"
     ];
 
@@ -23,6 +24,7 @@ class LanguageSprunje extends Sprunje
         "language_code",
         "language_name",
         "is_active",
+        "is_main_language",
         "creator_id"
     ];
 

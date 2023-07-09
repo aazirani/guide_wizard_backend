@@ -44,5 +44,25 @@
                 "1" : "YES"
             }
         }
+    },
+    "is_main_language" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "0", "1"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.IS_MAIN_LANGUAGE"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "IS_MAIN_LANGUAGE",
+            "options" : {
+                "0" : "NO",
+                "1" : "YES"
+            }
+        }
     }
 }

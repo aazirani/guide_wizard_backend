@@ -52,8 +52,8 @@ class AnswerController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('title')
-                ->with('question.title');
+                ->with('title.translations.language')
+                ->with('question.title.translations.language');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -139,7 +139,17 @@ class AnswerController extends SimpleController
         {
             $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
                 ->first();
-            $questionSelect += [$question->id => $title->technical_name];
+
+            $translations = $title->translations()->whereHas('language', function ($query) {
+                $query->where('is_main_language', 1);
+            })->get();
+
+            $nameText = '';
+            foreach ($translations as $translation) {
+                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
+            }
+
+            $questionSelect += [$question->id => $nameText];
         }
         $form->setInputArgument('question_id', 'options', $questionSelect);
 
@@ -413,7 +423,17 @@ class AnswerController extends SimpleController
         {
             $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
                 ->first();
-            $questionSelect += [$question->id => $title->technical_name];
+
+            $translations = $title->translations()->whereHas('language', function ($query) {
+                $query->where('is_main_language', 1);
+            })->get();
+
+            $nameText = '';
+            foreach ($translations as $translation) {
+                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
+            }
+
+            $questionSelect += [$question->id => $nameText];
         }
         $form->setInputArgument('question_id', 'options', $questionSelect);
 

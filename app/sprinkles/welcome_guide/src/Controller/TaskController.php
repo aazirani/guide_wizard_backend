@@ -52,9 +52,9 @@ class TaskController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('text')
-                ->with('description')
-                ->with('step.name');
+                ->with('text.translations.language')
+                ->with('description.translations.language')
+                ->with('step.name.translations.language');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -140,7 +140,17 @@ class TaskController extends SimpleController
         {
             $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
                 ->first();
-            $stepSelect += [$step->id => $name->technical_name];
+
+            $translations = $name->translations()->whereHas('language', function ($query) {
+                $query->where('is_main_language', 1);
+            })->get();
+
+            $nameText = '';
+            foreach ($translations as $translation) {
+                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
+            }
+
+            $stepSelect += [$step->id => $nameText];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
 
@@ -415,7 +425,17 @@ class TaskController extends SimpleController
         {
             $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
                 ->first();
-            $stepSelect += [$step->id => $name->technical_name];
+
+            $translations = $name->translations()->whereHas('language', function ($query) {
+                $query->where('is_main_language', 1);
+            })->get();
+
+            $nameText = '';
+            foreach ($translations as $translation) {
+                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
+            }
+
+            $stepSelect += [$step->id => $nameText];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
         

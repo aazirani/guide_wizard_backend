@@ -34,6 +34,7 @@ class LanguagesTable extends Migration
                 $table->string('language_code', 10);
                 $table->text('language_name');
                 $table->boolean('is_active')->default(true);
+                $table->boolean('is_main_language')->default(false);
 
                 $table->integer('creator_id')->unsigned()->nullable();
                 $table->timestamps();

@@ -50,7 +50,7 @@
         <td data-id="{{row.question.id}}">
             {{#each row.question.title.translations}}
             {{#ifx this.language.is_main_language '==' 1 }}
-            {{this.translated_text}} ({{this.language.language_name}})
+            <a href="#" class="js-displayForm-table" data-toggle="modal" data-formurl="api/questions/{{../row.question.id}}/edit">{{this.translated_text}} ({{this.language.language_name}})</a>
             {{/ifx }}
             {{/each}}
         </td>

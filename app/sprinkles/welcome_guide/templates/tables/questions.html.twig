@@ -119,7 +119,7 @@
             {{#if row.task }}
             {{#each row.task.text.translations}}
             {{#ifx this.language.is_main_language '==' 1 }}
-            {{this.translated_text}} ({{this.language.language_name}})
+            <a href="#" class="js-displayForm-table" data-toggle="modal" data-formurl="api/tasks/{{../row.task.id}}/edit">{{this.translated_text}} ({{this.language.language_name}})</a>
             {{/ifx }}
             {{/each}}
             {{ else }}

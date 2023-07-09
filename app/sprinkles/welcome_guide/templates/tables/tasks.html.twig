@@ -53,7 +53,7 @@
                 {{#if row.step }}
                 {{#each row.step.name.translations}}
                 {{#ifx this.language.is_main_language '==' 1 }}
-                {{this.translated_text}} ({{this.language.language_name}})
+                <a href="#" class="js-displayForm-table" data-toggle="modal" data-formurl="api/steps/{{../row.step.id}}/edit">{{this.translated_text}} ({{this.language.language_name}})</a>
                 {{/ifx }}
                 {{/each}}
                 {{ else }}

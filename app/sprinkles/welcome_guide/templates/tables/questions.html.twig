@@ -43,12 +43,20 @@
     {% verbatim %}
     <script id="question-table-column-title" type="text/x-handlebars-template">
         <td data-id="{{row.title.id}}">
-				{{row.title.technical_name}}
+            {{#each row.title.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
 	<script id="question-table-column-sub_title" type="text/x-handlebars-template">
         <td data-id="{{row.sub_title.id}}">
-				{{row.sub_title.technical_name}}
+            {{#each row.sub_title.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
 	<script id="question-table-column-type" type="text/x-handlebars-template">
@@ -72,12 +80,20 @@
     </script>
     <script id="question-table-column-info_url" type="text/x-handlebars-template">
         <td data-id="{{row.info_url.id}}">
-				{{row.info_url.technical_name}}
+            {{#each row.info_url.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
 	<script id="question-table-column-info_description" type="text/x-handlebars-template">
         <td data-id="{{row.info_description.id}}">
-				{{row.info_description.technical_name}}
+            {{#each row.info_description.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="question-table-column-answer_required" type="text/x-handlebars-template">
@@ -101,9 +117,11 @@
     <script id="question-table-column-task" type="text/x-handlebars-template">
         <td data-text="{{row.task.text.technical_name}}">
             {{#if row.task }}
-                <strong>
-                    {{row.task.text.technical_name}}
-                </strong>
+            {{#each row.task.text.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
             {{ else }}
                 <i>{% endverbatim %}{{translate("TASK.DELETED")}}{% verbatim %}</i>
             {{/if }}

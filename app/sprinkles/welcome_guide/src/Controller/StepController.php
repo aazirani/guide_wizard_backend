@@ -52,8 +52,8 @@ class StepController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('name')
-                ->with('description');
+                ->with('name.translations.language')
+                ->with('description.translations.language');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);

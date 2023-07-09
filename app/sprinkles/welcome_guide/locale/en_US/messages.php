@@ -235,5 +235,6 @@ return [
     "IMAGE_1" => "1st Image",
     "IMAGE_2" => "2nd Image",
     "FA_ICON" => "Icon",
-    "LANGUAGE_NAME" => "Language Name"
+    "LANGUAGE_NAME" => "Language Name",
+    "IS_MAIN_LANGUAGE" => "Is Main Language"
     ];

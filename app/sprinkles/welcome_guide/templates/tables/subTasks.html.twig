@@ -40,22 +40,38 @@
     {% verbatim %}
     <script id="subTask-table-column-title" type="text/x-handlebars-template">
         <td data-id="{{row.title.id}}">
-				{{row.title.technical_name}}
+            {{#each row.title.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="subTask-table-column-task" type="text/x-handlebars-template">
         <td data-id="{{row.task.id}}">
-				{{row.task.text.technical_name}}
+            {{#each row.task.text.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="subTask-table-column-markdown" type="text/x-handlebars-template">
         <td>
-				{{row.markdown.technical_name}}
+            {{#each row.markdown.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="subTask-table-column-deadline" type="text/x-handlebars-template">
         <td>
-                {{row.deadline.technical_name}}
+            {{#each row.deadline.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="subTask-table-column-order" type="text/x-handlebars-template">

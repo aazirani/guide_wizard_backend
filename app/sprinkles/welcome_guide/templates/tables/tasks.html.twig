@@ -41,13 +41,21 @@
         {% verbatim %}
         <script id="task-table-column-text" type="text/x-handlebars-template">
             <td data-id="{{row.id}}">
-                {{row.text.technical_name}}
+                {{#each row.text.translations}}
+                {{#ifx this.language.is_main_language '==' 1 }}
+                {{this.translated_text}} ({{this.language.language_name}})
+                {{/ifx }}
+                {{/each}}
             </td>
         </script>
         <script id="task-table-column-step" type="text/x-handlebars-template">
             <td data-text="{{row.step.name.technical_name}}">
                 {{#if row.step }}
-                    {{row.step.name.technical_name}}
+                {{#each row.step.name.translations}}
+                {{#ifx this.language.is_main_language '==' 1 }}
+                {{this.translated_text}} ({{this.language.language_name}})
+                {{/ifx }}
+                {{/each}}
                 {{ else }}
                 <i>{% endverbatim %}{{translate("STEP.DELETED")}}{% verbatim %}</i>
                 {{/if }}
@@ -55,7 +63,11 @@
         </script>
         <script id="task-table-column-description" type="text/x-handlebars-template">
             <td data-id="{{row.description.id}}">
-                {{row.description.technical_name}}
+                {{#each row.description.translations}}
+                {{#ifx this.language.is_main_language '==' 1 }}
+                {{this.translated_text}} ({{this.language.language_name}})
+                {{/ifx }}
+                {{/each}}
             </td>
         </script>
         <script id="task-table-column-image_1" type="text/x-handlebars-template">

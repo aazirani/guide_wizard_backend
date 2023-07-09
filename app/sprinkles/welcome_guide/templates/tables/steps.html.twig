@@ -35,15 +35,24 @@
      #
      # These templates require handlebars-helpers.js, moment.js
     #}
+
     {% verbatim %}
     <script id="step-table-column-name" type="text/x-handlebars-template">
         <td data-id="{{row.name.id}}">
-				{{row.name.technical_name}}
+            {{#each row.name.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}}) 
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="step-table-column-description" type="text/x-handlebars-template">
         <td data-id="{{row.description.id}}">
-				{{row.description.technical_name}}
+            {{#each row.description.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="step-table-column-image" type="text/x-handlebars-template">

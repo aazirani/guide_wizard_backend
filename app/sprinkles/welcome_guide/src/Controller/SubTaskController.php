@@ -50,11 +50,10 @@ class SubTaskController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('task.text')
-                ->with('title')
-                ->with('task')
-                ->with('markdown')
-                ->with('deadline');
+                ->with('task.text.translations.language')
+                ->with('title.translations.language')
+                ->with('markdown.translations.language')
+                ->with('deadline.translations.language');
         });
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
@@ -140,7 +139,17 @@ class SubTaskController extends SimpleController
         {
             $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
                 ->first();
-            $taskSelect += [$task->id => $name->technical_name];
+
+            $translations = $name->translations()->whereHas('language', function ($query) {
+                $query->where('is_main_language', 1);
+            })->get();
+
+            $nameText = '';
+            foreach ($translations as $translation) {
+                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
+            }
+
+            $taskSelect += [$task->id => $nameText];
         }
         $form->setInputArgument('task_id', 'options', $taskSelect);
 
@@ -410,7 +419,17 @@ class SubTaskController extends SimpleController
         {
             $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
                 ->first();
-            $taskSelect += [$task->id => $name->technical_name];
+
+            $translations = $name->translations()->whereHas('language', function ($query) {
+                $query->where('is_main_language', 1);
+            })->get();
+
+            $nameText = '';
+            foreach ($translations as $translation) {
+                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
+            }
+
+            $taskSelect += [$task->id => $nameText];
         }
         $form->setInputArgument('task_id', 'options', $taskSelect);
         

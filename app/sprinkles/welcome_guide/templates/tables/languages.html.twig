@@ -14,7 +14,8 @@
                 <th class="sorter-metatext" data-column-name="language_code" data-column-template="#language-table-column-language_code" data-priority="1">{{translate("LANGUAGE_CODE")}} <i class="fa fa-sort"></i></th>
                 <th class="sorter-metatext" data-column-name="language_name" data-column-template="#language-table-column-language_name" data-priority="1">{{translate("LANGUAGE_NAME")}} <i class="fa fa-sort"></i></th>
                 <th class="sorter-metatext" data-column-name="is_active" data-column-template="#language-table-column-is_active" data-priority="1">{{translate("IS_ACTIVE")}} <i class="fa fa-sort"></i></th>
-				
+                <th class="sorter-metatext" data-column-name="is_main_language" data-column-template="#language-table-column-is_main_language" data-priority="1">{{translate("IS_MAIN_LANGUAGE")}} <i class="fa fa-sort"></i></th>
+
 
                 {% if 'creator' in table.columns %}
                     <th class="sorter-metatext" data-column-name="creator" data-column-template="#language-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
@@ -49,6 +50,15 @@
     <script id="language-table-column-is_active" type="text/x-handlebars-template">
         <td>
             {{#if row.is_active }}
+            Yes
+            {{ else }}
+            No
+            {{/if }}
+        </td>
+    </script>
+    <script id="language-table-column-is_main_language" type="text/x-handlebars-template">
+        <td>
+            {{#if row.is_main_language }}
             Yes
             {{ else }}
             No

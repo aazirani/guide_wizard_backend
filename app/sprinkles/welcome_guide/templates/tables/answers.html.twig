@@ -39,12 +39,20 @@
     {% verbatim %}
     <script id="answer-table-column-title" type="answer/x-handlebars-template">
         <td data-id="{{row.title.id}}">
-				{{row.title.technical_name}}
+            {{#each row.title.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="answer-table-column-question" type="answer/x-handlebars-template">
         <td data-id="{{row.question.id}}">
-				{{row.question.title.technical_name}}
+            {{#each row.question.title.translations}}
+            {{#ifx this.language.is_main_language '==' 1 }}
+            {{this.translated_text}} ({{this.language.language_name}})
+            {{/ifx }}
+            {{/each}}
         </td>
     </script>
     <script id="answer-table-column-order" type="answer/x-handlebars-template">

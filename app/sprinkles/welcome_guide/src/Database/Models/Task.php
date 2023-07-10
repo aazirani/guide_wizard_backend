@@ -26,7 +26,6 @@ class Task extends Model
         "description", 
         "image_1",
         "image_2", 
-        "fa_icon", 
         "creator_id"
     ];
 

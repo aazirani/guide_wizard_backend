@@ -18,7 +18,6 @@ class TaskSprunje extends Sprunje
         "description", 
         "image_1",
         "image_2", 
-        "fa_icon", 
         "creator_id"
     ];
 
@@ -28,7 +27,6 @@ class TaskSprunje extends Sprunje
         "description", 
         "image_1",
         "image_2", 
-        "fa_icon", 
         "creator_id"
     ];
 

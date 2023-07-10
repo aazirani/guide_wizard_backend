@@ -39,7 +39,6 @@ class TasksTable extends Migration
 				$table->integer('description')->unsigned()->nullable();
 				$table->text('image_1')->nullable();
 				$table->text('image_2')->nullable();
-				$table->string('fa_icon', 50)->nullable();
 
 				$table->integer('creator_id')->unsigned()->nullable();
 				$table->timestamps();

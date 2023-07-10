@@ -139,19 +139,7 @@ class QuestionController extends SimpleController
         $taskSelect = [];
         foreach ($tasks as $task)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
-                ->first();
-
-            $translations = $name->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $taskSelect += [$task->id => $nameText];
+            $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
         }
 
         $form->setInputArgument('task_id', 'options', $taskSelect);
@@ -244,11 +232,13 @@ class QuestionController extends SimpleController
             $question->save();
             TranslationsUtilities::saveTranslations($question, "Question", $params, $classMapper, $currentUser, $this->getTranslationsVariables($question));
 
+            $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
+
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new question named {$question->title}.", ['type' => 'question_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new question named {$text}.", ['type' => 'question_created', 'user_id' => $currentUser->id]);
 
             $ms->addMessageTranslated('success', 'QUESTION.CREATED', $data);
         });
@@ -330,12 +320,13 @@ class QuestionController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $question->title;
 
         $classMapper = $this->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($question, $title, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($question, $text, $currentUser, $classMapper)
         {
 
             QuestionController::deleteObject($question, $classMapper);
@@ -346,10 +337,10 @@ class QuestionController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the question {$title}.", ['type' => 'question_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the question {$text}.", ['type' => 'question_deleted', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'QUESTION.DELETION_SUCCESSFUL', ['name' => $title]);
+        $ms->addMessageTranslated('success', 'QUESTION.DELETION_SUCCESSFUL', ['name' => $text]);
 
         //return $response->withStatus(200);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
@@ -420,19 +411,7 @@ class QuestionController extends SimpleController
         $taskSelect = [];
         foreach ($tasks as $task)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
-                ->first();
-
-            $translations = $name->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $taskSelect += [$task->id => $nameText];
+            $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
         }
         $form->setInputArgument('task_id', 'options', $taskSelect);
 
@@ -511,8 +490,10 @@ class QuestionController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post)
+        Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post, $text)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -529,10 +510,10 @@ class QuestionController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for question {$question->title}.", ['type' => 'question_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for question $text.", ['type' => 'question_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'QUESTION.DETAILS_UPDATED', ['name' => $question->title]);
+        $ms->addMessageTranslated('success', 'QUESTION.DETAILS_UPDATED', ['name' => $text]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 

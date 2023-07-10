@@ -45,17 +45,5 @@
             "icon" : "fa-image",
             "placeholder" : "IMAGE_2"
         }
-    },
-    "fa_icon" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.FA_ICON"
-        },
-        "form" : {
-            "type" : "text",
-            "label" : "FA_ICON",
-            "icon" : "fa-th-list",
-            "placeholder" : "FA_ICON"
-        }
     }
 }

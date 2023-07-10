@@ -138,19 +138,7 @@ class TaskController extends SimpleController
         $stepSelect = [];
         foreach ($steps as $step)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
-                ->first();
-
-            $translations = $name->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $stepSelect += [$step->id => $nameText];
+            $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
 
@@ -244,14 +232,16 @@ class TaskController extends SimpleController
             $task = $classMapper->createInstance('task', $data);
             // Store new task to database
             $task->save();
+
             TranslationsUtilities::saveTranslations($task, "Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($task));
+
+            $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new task with the text {$task
-                ->text->technical_name}.", ['type' => 'task_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new task with the text {$text}.", ['type' => 'task_created', 'user_id' => $currentUser->id]);
 
             $ms->addMessageTranslated('success', 'TASK.CREATED', $data);
         });
@@ -332,10 +322,10 @@ class TaskController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $text = $task
-            ->text->technical_name;
 
         $classMapper = $this->ci->classMapper;
+
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($task, $text, $currentUser, $classMapper)
@@ -423,19 +413,7 @@ class TaskController extends SimpleController
         $stepSelect = [];
         foreach ($steps as $step)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $step->name)
-                ->first();
-
-            $translations = $name->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $stepSelect += [$step->id => $nameText];
+            $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
         
@@ -515,8 +493,10 @@ class TaskController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post)
+        Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post, $text)
         {
 
             $task->image_1 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', $task->image_1);
@@ -537,11 +517,10 @@ class TaskController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for task with the text {$task
-                ->text->technical_name}.", ['type' => 'task_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for task with the text {$text}.", ['type' => 'task_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'TASK.DETAILS_UPDATED', ['name' => $task->name->technical_name]);
+        $ms->addMessageTranslated('success', 'TASK.DETAILS_UPDATED', ['name' => $text]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
     

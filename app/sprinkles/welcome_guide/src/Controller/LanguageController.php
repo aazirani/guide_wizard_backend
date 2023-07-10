@@ -214,7 +214,7 @@ class LanguageController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new language with the language code {$language
+                ->info("User {$currentUser->user_name} created a new language {$language
                 ->language_code}.", ['type' => 'language_created', 'user_id' => $currentUser->id]);
 
             $ms->addMessageTranslated('success', 'LANGUAGE.CREATED', $data);
@@ -308,7 +308,7 @@ class LanguageController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the language with the language code {$language_code}.", ['type' => 'language_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the language {$language_code}.", ['type' => 'language_deleted', 'user_id' => $currentUser->id]);
         });
 
         $ms->addMessageTranslated('success', 'LANGUAGE.DELETION_SUCCESSFUL', ['name' => $language_code]);
@@ -470,7 +470,7 @@ class LanguageController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for language with the technical name {$language
+                ->info("User {$currentUser->user_name} updated basic data for language {$language
                 ->language_code}.", ['type' => 'language_updated', 'user_id' => $currentUser->id]);
         });
 

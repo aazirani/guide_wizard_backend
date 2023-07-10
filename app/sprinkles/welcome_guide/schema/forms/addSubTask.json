@@ -37,9 +37,14 @@
         }
     },
     "order" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.ORDER"
+        "validators" : {
+            "length" : {
+                "min" : 1,
+                "max" : 99
+            },
+            "required" : {
+                "message" : "VALIDATE.ORDER"
+            }
         },
         "form" : {
             "type" : "text",
@@ -47,5 +52,5 @@
             "icon" : "fa-th-list",
             "placeholder" : "ORDER"
         }
-    }
+    },
 }

@@ -17,8 +17,9 @@ class WelcomeGuidePermissions extends BaseSeed
      */
     public function run()
     {
-        // We require the default roles
-        Seeder::execute('DefaultRoles');
+
+        // We require the default welcome guide roles
+        Seeder::execute('WelcomeGuideRoles');
 
         // Get and save permissions
         $permissions = $this->getPermissions();
@@ -385,13 +386,9 @@ class WelcomeGuidePermissions extends BaseSeed
      */
     protected function syncPermissionsRole(array $permissions)
     {
-        $roleUser = Role::where('slug', 'user')->first();
-        if ($roleUser) {
-            $roleUser->permissions()->sync([
-                $permissions['update_account_settings']->id,
-                $permissions['uri_account_settings']->id,
-                $permissions['uri_dashboard']->id,
-                
+        $roleWelcomeGuideViewer = Role::where('slug', 'welcome-guide-viewer')->first();
+        if ($roleWelcomeGuideViewer) {
+            $roleWelcomeGuideViewer->permissions()->sync([
                 $permissions['view_answers']->id,
                 $permissions['view_languages']->id,
                 $permissions['view_logics']->id,
@@ -402,70 +399,36 @@ class WelcomeGuidePermissions extends BaseSeed
             ]);
         }
 
-        $roleSiteAdmin = Role::where('slug', 'site-admin')->first();
-        if ($roleSiteAdmin) {
-            $roleSiteAdmin->permissions()->sync([
-                $permissions['create_group']->id,
-                $permissions['create_user']->id,
-                $permissions['create_user_field']->id,
-                $permissions['delete_group']->id,
-                $permissions['delete_user']->id,
-                $permissions['update_user_field']->id,
-                $permissions['update_group_field']->id,
-                $permissions['uri_activities']->id,
-                $permissions['uri_group']->id,
-                $permissions['uri_groups']->id,
-                $permissions['uri_user']->id,
-                $permissions['uri_users']->id,
-                $permissions['view_group_field']->id,
-                $permissions['view_user_field']->id,
-                
+        $roleWelcomeGuideAdmin = Role::where('slug', 'welcome-guide-admin')->first();
+        if ($roleWelcomeGuideAdmin) {
+            $roleWelcomeGuideAdmin->permissions()->sync([
                 $permissions['create_answer']->id,
+                $permissions['update_answer_field']->id,
                 $permissions['delete_answer']->id,
                 
                 $permissions['create_language']->id,
+                $permissions['update_language_field']->id,
                 $permissions['delete_language']->id,
                 
                 $permissions['create_logic']->id,
+                $permissions['update_logic_field']->id,
                 $permissions['delete_logic']->id,
                 
                 $permissions['create_question']->id,
+                $permissions['update_question_field']->id,
                 $permissions['delete_question']->id,
                 
                 $permissions['create_step']->id,
+                $permissions['update_step_field']->id,
                 $permissions['delete_step']->id,
                 
                 $permissions['create_subTask']->id,
+                $permissions['update_subTask_field']->id,
                 $permissions['delete_subTask']->id,
                 
                 $permissions['create_task']->id,
-                $permissions['delete_task']->id,
-            ]);
-        }
-
-        $roleGroupAdmin = Role::where('slug', 'group-admin')->first();
-        if ($roleGroupAdmin) {
-            $roleGroupAdmin->permissions()->sync([
-                $permissions['create_user']->id,
-                $permissions['update_user_field_group']->id,
-                $permissions['uri_group_own']->id,
-                $permissions['uri_user_in_group']->id,
-                $permissions['view_group_field_own']->id,
-                $permissions['view_user_field_group']->id,
-                
-                $permissions['update_answer_field']->id,
-
-                $permissions['update_language_field']->id,
-
-                $permissions['update_logic_field']->id,
-
-                $permissions['update_question_field']->id,
-
-                $permissions['update_step_field']->id,
-
-                $permissions['update_subTask_field']->id,
-
                 $permissions['update_task_field']->id,
+                $permissions['delete_task']->id,
             ]);
         }
     }

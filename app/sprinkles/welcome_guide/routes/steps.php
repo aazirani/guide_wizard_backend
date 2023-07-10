@@ -6,6 +6,10 @@ $app->group('/steps', function () {
     $this->get('/image/{image_name}', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\StepController:deliverImageFile');
 })->add('authGuard');
 
+$app->group('/steps', function () {
+    $this->get('/image/{image_name}', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\StepController:deliverImageFile');
+});
+
 $app->group('/api/steps', function () {
     $this->get('', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\StepController:getList');
 	$this->post('', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\StepController:create');

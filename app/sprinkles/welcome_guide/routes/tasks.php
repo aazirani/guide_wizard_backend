@@ -6,6 +6,10 @@ $app->group('/tasks', function () {
     $this->get('/image/{image_name}', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\TaskController:deliverImageFile');
 })->add('authGuard');
 
+$app->group('/tasks', function () {
+    $this->get('/image/{image_name}', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\TaskController:deliverImageFile');
+});
+
 $app->group('/api/tasks', function () {
     $this->get('', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\TaskController:getList');
 	$this->post('', 'UserFrosting\Sprinkle\WelcomeGuide\Controller\TaskController:create');

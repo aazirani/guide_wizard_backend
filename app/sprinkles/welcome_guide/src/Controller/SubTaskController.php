@@ -137,19 +137,7 @@ class SubTaskController extends SimpleController
         $taskSelect = [];
         foreach ($tasks as $task)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
-                ->first();
-
-            $translations = $name->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $taskSelect += [$task->id => $nameText];
+            $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
         }
         $form->setInputArgument('task_id', 'options', $taskSelect);
 
@@ -239,14 +227,16 @@ class SubTaskController extends SimpleController
             $subTask = $classMapper->createInstance('subTask', $data);
             // Store new subTask to database
             $subTask->save();
+
             TranslationsUtilities::saveTranslations($subTask, "Sub Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($subTask));
+
+            $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
 
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new subTask with the title {$subTask
-                ->title->technical_name}.", ['type' => 'subTask_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new subTask with the title {$text}.", ['type' => 'subTask_created', 'user_id' => $currentUser->id]);
 
             $ms->addMessageTranslated('success', 'SUB_TASK.CREATED', $data);
         });
@@ -327,13 +317,13 @@ class SubTaskController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $subTask
-            ->title->technical_name;
 
         $classMapper = $this->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($subTask, $title, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($subTask, $text, $currentUser, $classMapper)
         {
             SubTaskController::deleteObject($subTask, $classMapper);
             
@@ -343,10 +333,10 @@ class SubTaskController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the subTask with the title {$title}.", ['type' => 'subTask_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the subTask with the title {$text}.", ['type' => 'subTask_deleted', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'SUB_TASK.DELETION_SUCCESSFUL', ['name' => $title]);
+        $ms->addMessageTranslated('success', 'SUB_TASK.DELETION_SUCCESSFUL', ['name' => $text]);
 
         //return $response->withStatus(200);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
@@ -417,19 +407,7 @@ class SubTaskController extends SimpleController
         $taskSelect = [];
         foreach ($tasks as $task)
         {
-            $name = $classMapper->staticMethod('text', 'where', 'id', $task->text)
-                ->first();
-
-            $translations = $name->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $taskSelect += [$task->id => $nameText];
+            $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
         }
         $form->setInputArgument('task_id', 'options', $taskSelect);
         
@@ -509,8 +487,10 @@ class SubTaskController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $subTask, $currentUser, $classMapper, $post)
+        Capsule::transaction(function () use ($data, $subTask, $currentUser, $classMapper, $post, $text)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -527,11 +507,10 @@ class SubTaskController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for subTask with the title {$subTask
-                ->title->technical_name}.", ['type' => 'subTask_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for subTask with the title {$text}.", ['type' => 'subTask_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'SUB_TASK.DETAILS_UPDATED', ['name' => $subTask->name->technical_name]);
+        $ms->addMessageTranslated('success', 'SUB_TASK.DETAILS_UPDATED', ['name' => $text]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 

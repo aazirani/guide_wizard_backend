@@ -137,19 +137,7 @@ class AnswerController extends SimpleController
         $questionSelect = [];
         foreach ($questions as $question)
         {
-            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
-                ->first();
-
-            $translations = $title->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $questionSelect += [$question->id => $nameText];
+            $questionSelect += [$question->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper)];
         }
         $form->setInputArgument('question_id', 'options', $questionSelect);
 
@@ -244,12 +232,13 @@ class AnswerController extends SimpleController
             $answer->save();
             TranslationsUtilities::saveTranslations($answer, "Answer", $params, $classMapper, $currentUser, $this->getTranslationsVariables($answer));
 
+            $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper);
+
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new answer with the technical name {$answer
-                ->title->technical_name}.", ['type' => 'answer_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new answer with the name {$text}.", ['type' => 'answer_created', 'user_id' => $currentUser->id]);
 
             $ms->addMessageTranslated('success', 'ANSWER.CREATED', $data);
         });
@@ -330,13 +319,15 @@ class AnswerController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $answer
-            ->title->technical_name;
+
+
 
         $classMapper = $this->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($answer, $title, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($answer, $text, $currentUser, $classMapper)
         {
 
             AnswerController::deleteObject($answer, $classMapper);
@@ -347,10 +338,10 @@ class AnswerController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the answer with the technical name {$title}.", ['type' => 'answer_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the answer with the name {$text}.", ['type' => 'answer_deleted', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'ANSWER.DELETION_SUCCESSFUL', ['name' => $title]);
+        $ms->addMessageTranslated('success', 'ANSWER.DELETION_SUCCESSFUL', ['name' => $text]);
 
         //return $response->withStatus(200);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
@@ -421,19 +412,7 @@ class AnswerController extends SimpleController
         $questionSelect = [];
         foreach ($questions as $question)
         {
-            $title = $classMapper->staticMethod('text', 'where', 'id', $question->title)
-                ->first();
-
-            $translations = $title->translations()->whereHas('language', function ($query) {
-                $query->where('is_main_language', 1);
-            })->get();
-
-            $nameText = '';
-            foreach ($translations as $translation) {
-                $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
-            }
-
-            $questionSelect += [$question->id => $nameText];
+            $questionSelect += [$question->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper)];
         }
         $form->setInputArgument('question_id', 'options', $questionSelect);
 
@@ -513,8 +492,10 @@ class AnswerController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $answer, $currentUser, $classMapper, $post)
+        Capsule::transaction(function () use ($data, $answer, $currentUser, $classMapper, $post, $text)
         {
 
             $answer->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $answer->image);
@@ -534,11 +515,10 @@ class AnswerController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for answer with the technical name {$answer
-                ->title->technical_name}.", ['type' => 'answer_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for answer with the name {$text}.", ['type' => 'answer_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'ANSWER.DETAILS_UPDATED', ['name' => $answer->title->technical_name]);
+        $ms->addMessageTranslated('success', 'ANSWER.DETAILS_UPDATED', ['name' => $text]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 
@@ -562,7 +542,6 @@ class AnswerController extends SimpleController
         }
 
 		$filename = ImageUploadAndDelivery::getFullImagePath($data['image_name']);
-
 
         if(file_exists($filename)){
             //Get file type and set it as Content Type

@@ -28,8 +28,6 @@ class Question extends Model
         "is_multiple_choice", 
         "info_url", 
         "info_description", 
-        "answer_required", 
-        "answers_selected_by_default", 
         "task_id",
         "creator_id"
     ];

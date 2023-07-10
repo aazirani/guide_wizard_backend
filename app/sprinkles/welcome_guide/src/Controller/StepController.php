@@ -224,12 +224,13 @@ class StepController extends SimpleController
 
             TranslationsUtilities::saveTranslations($step, "Step", $params, $classMapper, $currentUser, $this->getTranslationsVariables($step));
 
+            $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
+
             // Create activity record
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} created a new step with the technical name {$step
-                ->name->technical_name}.", ['type' => 'step_created', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} created a new step with the name {$text}.", ['type' => 'step_created', 'user_id' => $currentUser->id]);
 
             $ms->addMessageTranslated('success', 'STEP.CREATED', $data);
         });
@@ -310,12 +311,13 @@ class StepController extends SimpleController
         /** @var UserFrosting\Config\Config $config */
         $config = $this
             ->ci->config;
-        $title = $step->name;
 
         $classMapper = $this->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($step, $title, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($step, $text, $currentUser, $classMapper)
         {
             StepController::deleteObject($step, $classMapper);
             unset($step);
@@ -324,10 +326,10 @@ class StepController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} deleted the step with the technical name {$title}.", ['type' => 'step_deleted', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} deleted the step with the name {$text}.", ['type' => 'step_deleted', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'STEP.DELETION_SUCCESSFUL', ['name' => $title]);
+        $ms->addMessageTranslated('success', 'STEP.DELETION_SUCCESSFUL', ['name' => $text]);
 
         //return $response->withStatus(200);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
@@ -470,8 +472,10 @@ class StepController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post)
+        Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post, $text)
         {
 
             $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image);
@@ -491,11 +495,10 @@ class StepController extends SimpleController
             $this
                 ->ci
                 ->userActivityLogger
-                ->info("User {$currentUser->user_name} updated basic data for step with the technical name {$step
-                ->name->technical_name}.", ['type' => 'step_updated', 'user_id' => $currentUser->id]);
+                ->info("User {$currentUser->user_name} updated basic data for step with the name {$text}.", ['type' => 'step_updated', 'user_id' => $currentUser->id]);
         });
 
-        $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', ['name' => $step->name->technical_name]);
+        $ms->addMessageTranslated('success', 'STEP.DETAILS_UPDATED', ['name' => $text]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 

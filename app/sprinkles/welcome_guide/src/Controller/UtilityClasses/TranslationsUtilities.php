@@ -107,4 +107,20 @@ class TranslationsUtilities{
         }
     }
 
+    public static function getTranslationTextBasedOnMainLanguage($textObject, $classMapper){
+        $text = $classMapper->staticMethod('text', 'where', 'id', $textObject)
+                ->first();
+
+        $translations = $text->translations()->whereHas('language', function ($query) {
+            $query->where('is_main_language', 1);
+        })->get();
+
+        $nameText = '';
+        foreach ($translations as $translation) {
+            $nameText .= $translation->translated_text . ' (' . $translation->language->language_name . ') ';
+        }
+
+        return $nameText;
+    }
+
 }

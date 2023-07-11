@@ -41,8 +41,6 @@ class QuestionsTable extends Migration
                 $table->boolean('is_multiple_choice')->default(false);
                 $table->integer('info_url')->unsigned()->nullable();
                 $table->integer('info_description')->unsigned()->nullable();
-                $table->boolean('answer_required')->default(false);
-                $table->boolean('answers_selected_by_default')->default(false);
                 $table->integer('task_id')->unsigned();
 
                 $table->integer('creator_id')->unsigned()->nullable();

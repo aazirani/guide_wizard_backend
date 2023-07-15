@@ -31,7 +31,7 @@ class Logic extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('logics.*');
+        $query = $query->select('logics.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'logics.creator_id', '=', 'users.id');
 

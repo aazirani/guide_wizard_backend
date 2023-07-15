@@ -14,8 +14,8 @@
 				<th class="sorter-metatext" data-column-name="title" data-column-template="#answer-table-column-title" data-priority="1">{{translate("TITLE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="question" data-column-template="#answer-table-column-question" data-priority="1">{{translate("QUESTION")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="order" data-column-template="#answer-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="image" data-column-template="#answer-table-column-image" data-priority="1">{{translate("IMAGE")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="is_enabled" data-column-template="#answer-table-column-is_enabled" data-priority="1">{{translate("IS_ENABLED")}} <i class="fa fa-sort"></i></th>
+                <th data-sorter="false" data-filter="false" data-column-name="image" data-column-template="#answer-table-column-image" data-priority="1">{{translate("IMAGE")}}</th>
+                <th class="filter-select filter-metatext" data-column-name="is_enabled" data-column-template="#answer-table-column-is_enabled" data-priority="1">{{translate("IS_ENABLED")}} <i class="fa fa-sort"></i></th>
 
                 {% if 'creator' in table.columns %}
                     <th class="sorter-metatext" data-column-name="creator" data-column-template="#answer-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
@@ -68,13 +68,22 @@
         </td>
     </script>
     <script id="answer-table-column-is_enabled" type="text/x-handlebars-template">
-        <td>
-	        {{#if row.is_enabled }}
-				Yes
-	        {{ else }}
-	            No
-	        {{/if }}
-        </td>
+        <td
+        {{#ifx row.is_enabled '==' 0 }}
+        data-text="no"
+        {{ else }}
+        data-text="yes"
+        {{/ifx }}
+        >
+        {{#ifx row.is_enabled '==' 0 }}
+        <span class="text-red">
+            {% endverbatim %}{{translate("NO")}}{% verbatim %}
+        </span>
+        {{ else }}
+        <span class="text-green">
+            {% endverbatim %}{{translate("YES")}}{% verbatim %}
+        </span>
+        {{/ifx }}
     </script>
 	<script id="answer-table-column-creator" type="answer/x-handlebars-template">
         <td data-answer="{{row.creator.last_name}}">

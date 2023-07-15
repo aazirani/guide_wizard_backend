@@ -33,11 +33,31 @@ class Step extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('steps.*');
+        $query = $query->select('steps.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'steps.creator_id', '=', 'users.id');
 
         return $query;
+    }
+
+    /**
+     * Joins the object's name, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinName($query)
+    {
+        return $query
+        ->leftJoin('texts as name_text', 'steps.name', '=', 'name_text.id')
+        ->leftJoin('translations as name_translation', 'name_text.id', '=', 'name_translation.text_id');
+    }
+
+    /**
+     * Joins the object's description, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinDescription($query)
+    {
+        return $query
+        ->leftJoin('texts as description_text', 'steps.description', '=', 'description_text.id')
+        ->leftJoin('translations as description_translation', 'description_text.id', '=', 'description_translation.text_id');
     }
 
     /**

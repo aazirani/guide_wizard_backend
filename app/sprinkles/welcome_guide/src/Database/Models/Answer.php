@@ -34,7 +34,7 @@ class Answer extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('answers.*');
+        $query = $query->select('answers.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'answers.creator_id', '=', 'users.id');
 
@@ -42,15 +42,24 @@ class Answer extends Model
     }
 
     /**
-     * Joins the object's question, so we can do things like sort, search, paginate, etc.
+     * Joins the object's title, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinTitle($query)
+    {
+        return $query
+        ->leftJoin('texts as title_text', 'answers.title', '=', 'title_text.id')
+        ->leftJoin('translations as title_translation', 'title_text.id', '=', 'title_translation.text_id');
+    }
+
+    /**
+     * Joins the object's step, so we can do things like sort, search, paginate, etc.
      */
     public function scopeJoinQuestion($query)
     {
-        $query = $query->select('answers.*');
-
-        $query = $query->leftJoin('questions', 'answers.question_id', '=', 'questions.id');
-
-        return $query;
+        return $query
+        ->leftJoin('questions as question', 'answers.question_id', '=', 'question.id')
+        ->leftJoin('texts as question_title_text', 'question.title', '=', 'question_title_text.id')
+        ->leftJoin('translations as question_title_translation', 'question_title_text.id', '=', 'question_title_translation.text_id');
     }
 
     /**

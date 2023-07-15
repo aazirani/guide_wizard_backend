@@ -13,8 +13,8 @@
             <tr>
                 <th class="sorter-metatext" data-column-name="language_code" data-column-template="#language-table-column-language_code" data-priority="1">{{translate("LANGUAGE_CODE")}} <i class="fa fa-sort"></i></th>
                 <th class="sorter-metatext" data-column-name="language_name" data-column-template="#language-table-column-language_name" data-priority="1">{{translate("LANGUAGE_NAME")}} <i class="fa fa-sort"></i></th>
-                <th class="sorter-metatext" data-column-name="is_active" data-column-template="#language-table-column-is_active" data-priority="1">{{translate("IS_ACTIVE")}} <i class="fa fa-sort"></i></th>
-                <th class="sorter-metatext" data-column-name="is_main_language" data-column-template="#language-table-column-is_main_language" data-priority="1">{{translate("IS_MAIN_LANGUAGE")}} <i class="fa fa-sort"></i></th>
+                <th class="filter-select filter-metatext" data-column-name="is_active" data-column-template="#language-table-column-is_active" data-priority="1">{{translate("IS_ACTIVE")}} <i class="fa fa-sort"></i></th>
+                <th class="filter-select filter-metatext" data-column-name="is_main_language" data-column-template="#language-table-column-is_main_language" data-priority="1">{{translate("IS_MAIN_LANGUAGE")}} <i class="fa fa-sort"></i></th>
 
 
                 {% if 'creator' in table.columns %}
@@ -48,21 +48,41 @@
         </td>
     </script>
     <script id="language-table-column-is_active" type="text/x-handlebars-template">
-        <td>
-            {{#if row.is_active }}
-            Yes
-            {{ else }}
-            No
-            {{/if }}
-        </td>
+        <td
+        {{#ifx row.is_active '==' 0 }}
+        data-text="no"
+        {{ else }}
+        data-text="yes"
+        {{/ifx }}
+        >
+        {{#ifx row.is_active '==' 0 }}
+        <span class="text-red">
+            {% endverbatim %}{{translate("NO")}}{% verbatim %}
+        </span>
+        {{ else }}
+        <span class="text-green">
+            {% endverbatim %}{{translate("YES")}}{% verbatim %}
+        </span>
+        {{/ifx }}
+    </td>
     </script>
     <script id="language-table-column-is_main_language" type="text/x-handlebars-template">
-        <td>
-            {{#if row.is_main_language }}
-            Yes
+            <td
+            {{#ifx row.is_main_language '==' 0 }}
+            data-text="no"
             {{ else }}
-            No
-            {{/if }}
+            data-text="yes"
+            {{/ifx }}
+            >
+            {{#ifx row.is_main_language '==' 0 }}
+            <span class="text-red">
+                {% endverbatim %}{{translate("NO")}}{% verbatim %}
+            </span>
+            {{ else }}
+            <span class="text-green">
+                {% endverbatim %}{{translate("YES")}}{% verbatim %}
+            </span>
+            {{/ifx }}
         </td>
     </script>
 	<script id="language-table-column-creator" type="text/x-handlebars-template">

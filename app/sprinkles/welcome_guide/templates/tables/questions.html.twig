@@ -13,9 +13,9 @@
             <tr>
 				<th class="sorter-metatext" data-column-name="title" data-column-template="#question-table-column-title" data-priority="1">{{translate("TITLE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="sub_title" data-column-template="#question-table-column-sub_title" data-priority="1">{{translate("SUB_TITLE")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="type" data-column-template="#question-table-column-type" data-priority="1">{{translate("TYPE")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="axis_count" data-column-template="#question-table-column-axis_count" data-priority="1">{{translate("AXIS_COUNT")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="is_multiple_choice" data-column-template="#question-table-column-is_multiple_choice" data-priority="1">{{translate("IS_MULTIPLE_CHOICE")}} <i class="fa fa-sort"></i></th>
+                <th class="filter-select filter-metatext" data-column-name="type" data-column-template="#question-table-column-type" data-priority="1">{{translate("TYPE")}} <i class="fa fa-sort"></i></th>
+                <th class="filter-select filter-metatext" data-column-name="axis_count" data-column-template="#question-table-column-axis_count" data-priority="1">{{translate("AXIS_COUNT")}} <i class="fa fa-sort"></i></th>
+                <th class="filter-select filter-metatext" data-column-name="is_multiple_choice" data-column-template="#question-table-column-is_multiple_choice" data-priority="1">{{translate("IS_MULTIPLE_CHOICE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="info_url" data-column-template="#question-table-column-info_url" data-priority="1">{{translate("INFO_URL")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="info_description" data-column-template="#question-table-column-info_description" data-priority="1">{{translate("INFO_DESCRIPTION")}} <i class="fa fa-sort"></i></th>
                 <th class="sorter-metatext" data-column-name="task" data-column-template="#question-table-column-task" data-priority="1">{{translate("TASK")}} <i class="fa fa-sort"></i></th>
@@ -58,23 +58,62 @@
         </td>
     </script>
 	<script id="question-table-column-type" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.type}}
-        </td>
+        <td
+        {{#ifx row.type '==' 'TEXT' }}
+        data-text="text"
+        {{ else }}
+        data-text="image"
+        {{/ifx }}
+        >
+        {{#ifx row.type '==' 'IMAGE' }}
+        <span class="text-red">
+            {% endverbatim %}{{translate("IMAGE")}}{% verbatim %}
+        </span>
+        {{ else }}
+        <span class="text-green">
+            {% endverbatim %}{{translate("TEXT")}}{% verbatim %}
+        </span>
+        {{/ifx }}
     </script>
     <script id="question-table-column-axis_count" type="text/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.axis_count}}
+        <td
+        {{#ifx row.axis_count '==' 1 }}
+        data-text="1"
+        {{ else }}
+        {{#ifx row.axis_count '==' 2 }}
+        data-text="2"
+        {{ else }}
+        {{#ifx row.axis_count '==' 3 }}
+        data-text="3"
+        {{ else }}
+        {{#ifx row.axis_count '==' 4 }}
+        data-text="4"
+        {{/ifx }}
+        {{/ifx }}
+        {{/ifx }}
+        {{/ifx }}
+        >
+        {{row.axis_count}}
         </td>
     </script>
 	<script id="question-table-column-is_multiple_choice" type="text/x-handlebars-template">
-        <td>
-	        {{#if row.is_multiple_choice }}
-				Yes
-	        {{ else }}
-	            No
-	        {{/if }}
-        </td>
+        <td
+        {{#ifx row.is_multiple_choice '==' 0 }}
+        data-text="no"
+        {{ else }}
+        data-text="yes"
+        {{/ifx }}
+        >
+        {{#ifx row.is_multiple_choice '==' 0 }}
+        <span class="text-red">
+            {% endverbatim %}{{translate("NO")}}{% verbatim %}
+        </span>
+        {{ else }}
+        <span class="text-green">
+            {% endverbatim %}{{translate("YES")}}{% verbatim %}
+        </span>
+        {{/ifx }}
+    </td>
     </script>
     <script id="question-table-column-info_url" type="text/x-handlebars-template">
         <td data-id="{{row.info_url.id}}">

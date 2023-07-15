@@ -30,11 +30,42 @@ class SubTask extends Model
     ];
 
     /**
+     * Joins the object's title, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinTitle($query)
+    {
+        return $query
+        ->leftJoin('texts as title_text', 'sub_tasks.title', '=', 'title_text.id')
+        ->leftJoin('translations as title_translation', 'title_text.id', '=', 'title_translation.text_id');
+    }
+
+    /**
+     * Joins the object's markdown, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinMarkdown($query)
+    {
+        return $query
+        ->leftJoin('texts as markdown_text', 'sub_tasks.markdown', '=', 'markdown_text.id')
+        ->leftJoin('translations as markdown_translation', 'markdown_text.id', '=', 'markdown_translation.text_id');
+    }
+
+        /**
+     * Joins the object's deadline, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinDeadline($query)
+    {
+        return $query
+        ->leftJoin('texts as deadline_text', 'sub_tasks.deadline', '=', 'deadline_text.id')
+        ->leftJoin('translations as deadline_translation', 'deadline_text.id', '=', 'deadline_translation.text_id');
+    }
+
+
+    /**
      * Joins the object's creator, so we can do things like sort, search, paginate, etc.
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('tasks.*');
+        $query = $query->select('sub_tasks.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'sub_tasks.creator_id', '=', 'users.id');
 
@@ -46,11 +77,10 @@ class SubTask extends Model
      */
     public function scopeJoinTask($query)
     {
-        $query = $query->select('sub_tasks.*');
-
-        $query = $query->leftJoin('tasks', 'sub_tasks.task_id', '=', 'tasks.id');
-
-        return $query;
+        return $query
+        ->leftJoin('tasks as task', 'sub_tasks.task_id', '=', 'task.id')
+        ->leftJoin('texts as task_text_text', 'task.text', '=', 'task_text_text.id')
+        ->leftJoin('translations as task_text_translation', 'task_text_text.id', '=', 'task_text_translation.text_id');
     }
 
     /**

@@ -10,24 +10,21 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class TaskSprunje extends Sprunje
+class TaskSprunje extends ExtendedSprunje
 {
     protected $sortable = [
-        "step_id", 
         "text", 
-        "description", 
-        "image_1",
-        "image_2", 
-        "creator_id"
+        "description",
+        "creator",
+        "step",
+        "created_at"
     ];
 
     protected $filterable = [
-        "step_id", 
-        "text", 
+        "text",
+        "step",
         "description", 
-        "image_1",
-        "image_2", 
-        "creator_id"
+        "creator"
     ];
 
     protected $name = 'tasks';
@@ -39,41 +36,7 @@ class TaskSprunje extends Sprunje
     {
         $query = $this->classMapper->createInstance('task');
 		
-		return $query->joinCreator()->joinStep();
-    }
-	
-	 /**
-     * Filter LIKE the creator info.
-     *
-     * @param Builder $query
-     * @param mixed $value
-     * @return $this
-     */
-    protected function filterCreator($query, $value)
-    {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('users.first_name', $value)
-                    ->orLike('users.last_name', $value)
-                    ->orLike('users.email', $value);
-            }
-        });
-        return $this;
-    }
-	
-    /**
-     * Sort based on creator last name.
-     *
-     * @param Builder $query
-     * @param string $direction
-     * @return $this
-     */
-    protected function sortCreator($query, $direction)
-    {
-        $query->orderBy('users.last_name', $direction);
-        return $this;
+        return $query->joinCreator()->joinStep()->joinText()->joinDescription()->distinct();
     }
 
     /**
@@ -85,14 +48,7 @@ class TaskSprunje extends Sprunje
      */
     protected function filterStep($query, $value)
     {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('steps.name', $value);
-            }
-        });
-        return $this;
+        return $this->filterForTranslation($query, $value, 'step_name_translation.translated_text');
     }
 	
     /**
@@ -104,8 +60,32 @@ class TaskSprunje extends Sprunje
      */
     protected function sortStep($query, $direction)
     {
-        $query->orderBy('steps.name', $direction);
+        $query->orderBy('tasks.step_id', $direction);
         return $this;
+    }
+
+    /**
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterText($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'text_translation.translated_text');
+    }
+
+    /**
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterDescription($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'description_translation.translated_text');
     }
 	
 }

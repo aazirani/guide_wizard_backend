@@ -34,7 +34,7 @@ class Task extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('tasks.*');
+        $query = $query->select('tasks.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'tasks.creator_id', '=', 'users.id');
 
@@ -43,7 +43,7 @@ class Task extends Model
 
     /**
      * Joins the object's step, so we can do things like sort, search, paginate, etc.
-     */
+
     public function scopeJoinStep($query)
     {
         $query = $query->select('tasks.*');
@@ -51,6 +51,38 @@ class Task extends Model
         $query = $query->leftJoin('steps', 'tasks.step_id', '=', 'steps.id');
 
         return $query;
+    }
+    */
+
+    /**
+     * Joins the object's name, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinText($query)
+    {
+        return $query
+        ->leftJoin('texts as text_text', 'tasks.text', '=', 'text_text.id')
+        ->leftJoin('translations as text_translation', 'text_text.id', '=', 'text_translation.text_id');
+    }
+
+    /**
+     * Joins the object's description, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinDescription($query)
+    {
+        return $query
+        ->leftJoin('texts as description_text', 'tasks.description', '=', 'description_text.id')
+        ->leftJoin('translations as description_translation', 'description_text.id', '=', 'description_translation.text_id');
+    }
+
+    /**
+     * Joins the object's step, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinStep($query)
+    {
+        return $query
+        ->leftJoin('steps as step', 'tasks.step_id', '=', 'step.id')
+        ->leftJoin('texts as step_name_text', 'step.name', '=', 'step_name_text.id')
+        ->leftJoin('translations as step_name_translation', 'step_name_text.id', '=', 'step_name_translation.text_id');
     }
 
     /**

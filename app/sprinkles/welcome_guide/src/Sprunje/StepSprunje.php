@@ -10,22 +10,21 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class StepSprunje extends Sprunje
+class StepSprunje extends ExtendedSprunje
 {
     protected $sortable = [
         "name",
         "description",
         "order",
-        "image",
-        "creator_id"
+        "creator",
+        "created_at"
     ];
 
     protected $filterable = [
         "name",
         "description",
         "order",
-        "image",
-        "creator_id"
+        "creator"
     ];
 
     protected $name = 'steps';
@@ -37,41 +36,32 @@ class StepSprunje extends Sprunje
     {
         $query = $this->classMapper->createInstance('step');
 		
-		return $query->joinCreator();
+        return $query->joinCreator()->joinName()->joinDescription()->distinct();
+
     }
-	
-	/**
-     * Filter LIKE the creator info.
+
+    /**
+     * Filter LIKE the object translations.
      *
      * @param Builder $query
      * @param mixed $value
      * @return $this
      */
-    protected function filterCreator($query, $value)
+    protected function filterName($query, $value)
     {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('users.first_name', $value)
-                    ->orLike('users.last_name', $value)
-                    ->orLike('users.email', $value);
-            }
-        });
-        return $this;
+        return $this->filterForTranslation($query, $value, 'name_translation.translated_text');
     }
-	
+
     /**
-     * Sort based on creator last name.
+     * Filter LIKE the object translations.
      *
      * @param Builder $query
-     * @param string $direction
+     * @param mixed $value
      * @return $this
      */
-    protected function sortCreator($query, $direction)
+    protected function filterDescription($query, $value)
     {
-        $query->orderBy('users.last_name', $direction);
-        return $this;
+        return $this->filterForTranslation($query, $value, 'description_translation.translated_text');
     }
-	
+
 }

@@ -32,7 +32,7 @@ class Translation extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('translations.*');
+        $query = $query->select('translations.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'translations.creator_id', '=', 'users.id');
 

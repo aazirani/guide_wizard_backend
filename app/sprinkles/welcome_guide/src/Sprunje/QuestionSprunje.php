@@ -4,14 +4,20 @@ namespace UserFrosting\Sprinkle\WelcomeGuide\Sprunje;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Facades\Debug;
 use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
+use UserFrosting\Sprinkle\Core\Facades\Translator;
 
 /**
  * Implements Sprunje for the module API.
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class QuestionSprunje extends Sprunje
+class QuestionSprunje extends ExtendedSprunje
 {
+    protected $listable = [
+        'is_multiple_choice',
+        'type',
+        'axis_count'
+    ];
     protected $sortable = [
         "title",
         "sub_title",
@@ -20,8 +26,9 @@ class QuestionSprunje extends Sprunje
         "is_multiple_choice",
         "info_url",
         "info_description",
-        "task_id",
-        "creator_id"
+        "task",
+        "creator",
+        "created_at"
     ];
 
     protected $filterable = [
@@ -32,8 +39,8 @@ class QuestionSprunje extends Sprunje
         "is_multiple_choice",
         "info_url",
         "info_description",
-        "task_id",
-        "creator_id"
+        "task",
+        "creator"
     ];
 
     protected $name = 'questions';
@@ -45,64 +52,194 @@ class QuestionSprunje extends Sprunje
     {
         $query = $this->classMapper->createInstance('question');
 		
-		return $query->joinCreator()->joinTask();
+		return $query->joinCreator()->joinTask()->joinTitle()->joinSubTitle()->joinInfoUrl()->joinInfoDescription()->distinct();
     }
-	
-	 /**
-     * Filter LIKE the creator info.
+
+    /**
+     * Return a list of possible options.
+     *
+     * @return array
+     */
+    protected function listType()
+    {
+        return [
+            [
+                'value' => 'text',
+                'text'  => Translator::translate('TEXT'),
+            ],
+            [
+                'value' => 'image',
+                'text'  => Translator::translate('IMAGE'),
+            ],
+        ];
+    }
+
+    /**
+     * Return a list of possible options.
+     *
+     * @return array
+     */
+    protected function listAxisCount()
+    {
+        return [
+            [
+                'value' => '1',
+                'text'  => '1',
+            ],
+            [
+                'value' => '2',
+                'text'  => '2',
+            ],
+            [
+                'value' => '3',
+                'text'  => '3',
+            ],
+            [
+                'value' => '4',
+                'text'  => '4',
+            ],
+        ];
+    }
+
+    /**
+     * Return a list of possible options.
+     *
+     * @return array
+     */
+    protected function listIsMultipleChoice()
+    {
+        return $this->listForYesNoQuestion();
+    }
+
+    /**
+     * Filter by option.
      *
      * @param Builder $query
-     * @param mixed $value
-     * @return $this
+     * @param mixed   $value
+     *
+     * @return self
      */
-    protected function filterCreator($query, $value)
+    protected function filterIsMultipleChoice($query, $value)
+    {
+        return $this->filterForYesNoQuestion($query, $value, 'is_multiple_choice');
+    }
+
+    /**
+     * Filter by option.
+     *
+     * @param Builder $query
+     * @param mixed   $value
+     *
+     * @return self
+     */
+    protected function filterType($query, $value)
     {
         // Split value on separator for OR queries
         $values = explode($this->orSeparator, $value);
         $query->where(function ($query) use ($values) {
             foreach ($values as $value) {
-                $query->orLike('users.first_name', $value)
-                    ->orLike('users.last_name', $value)
-                    ->orLike('users.email', $value);
+                if ($value == 'image') {
+                    $query->orWhere('type', 'IMAGE');
+                } elseif ($value == 'text') {
+                    $query->orWhere('type', 'TEXT');
+                }
             }
         });
-        return $this;
-    }
-	
-    /**
-     * Sort based on creator last name.
-     *
-     * @param Builder $query
-     * @param string $direction
-     * @return $this
-     */
-    protected function sortCreator($query, $direction)
-    {
-        $query->orderBy('users.last_name', $direction);
+
         return $this;
     }
 
     /**
-     * Filter LIKE the task name.
+     * Filter by option.
      *
      * @param Builder $query
-     * @param mixed $value
-     * @return $this
+     * @param mixed   $value
+     *
+     * @return self
      */
-    protected function filterTasks($query, $value)
+    protected function filterAxisCount($query, $value)
     {
         // Split value on separator for OR queries
         $values = explode($this->orSeparator, $value);
         $query->where(function ($query) use ($values) {
             foreach ($values as $value) {
-                $query->orLike('tasks.text', $value);
+                if ($value == '1') {
+                    $query->orWhere('axis_count', '1');
+                } elseif ($value == '2') {
+                    $query->orWhere('axis_count', '2');
+                } elseif ($value == '3') {
+                    $query->orWhere('axis_count', '3');
+                } elseif ($value == '4') {
+                    $query->orWhere('axis_count', '4');
+                }
             }
         });
+
         return $this;
     }
-	
+
     /**
-     * Sort based on task name.
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterTitle($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'title_translation.translated_text');
+    }
+
+    /**
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterSubTitle($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'subTitle_translation.translated_text');
+    }
+
+    /**
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterInfoUrl($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'infoUrl_translation.translated_text');
+    }
+
+    /**
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterInfoDescription($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'infoDescription_translation.translated_text');
+    }
+
+    /**
+     * Filter LIKE the task text.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterTask($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'task_text_translation.translated_text');
+    }
+
+    /**
+     * Sort based on task text.
      *
      * @param Builder $query
      * @param string $direction
@@ -110,7 +247,7 @@ class QuestionSprunje extends Sprunje
      */
     protected function sortTask($query, $direction)
     {
-        $query->orderBy('tasks.name', $direction);
+        $query->orderBy('questions.task_id', $direction);
         return $this;
     }
 	

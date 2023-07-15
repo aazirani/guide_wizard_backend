@@ -33,7 +33,7 @@ class Language extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('languages.*');
+        $query = $query->select('languages.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'languages.creator_id', '=', 'users.id');
 

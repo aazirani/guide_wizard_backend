@@ -10,24 +10,25 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class SubTaskSprunje extends Sprunje
+class SubTaskSprunje extends ExtendedSprunje
 {
     protected $sortable = [
-        "task_id", 
         "title", 
         "markdown", 
         "deadline",
-        "order",  
-        "creator_id"
+        "order",
+        "task",
+        "creator",
+        "created_at"
     ];
 
     protected $filterable = [
-        "task_id", 
         "title", 
         "markdown", 
         "deadline",
-        "order",  
-        "creator_id"
+        "order",
+        "task",
+        "creator"
     ];
 
     protected $name = 'subTasks';
@@ -39,45 +40,47 @@ class SubTaskSprunje extends Sprunje
     {
         $query = $this->classMapper->createInstance('subTask');
 		
-		return $query->joinCreator()->joinTask();
+		return $query->joinCreator()->joinTask()->joinTitle()->joinMarkdown()->joinDeadline()->distinct();
     }
-	
-	 /**
-     * Filter LIKE the creator info.
+
+    /**
+     * Filter LIKE the object translations.
      *
      * @param Builder $query
      * @param mixed $value
      * @return $this
      */
-    protected function filterCreator($query, $value)
+    protected function filterTitle($query, $value)
     {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('users.first_name', $value)
-                    ->orLike('users.last_name', $value)
-                    ->orLike('users.email', $value);
-            }
-        });
-        return $this;
-    }
-	
-    /**
-     * Sort based on creator last name.
-     *
-     * @param Builder $query
-     * @param string $direction
-     * @return $this
-     */
-    protected function sortCreator($query, $direction)
-    {
-        $query->orderBy('users.last_name', $direction);
-        return $this;
+        return $this->filterForTranslation($query, $value, 'title_translation.translated_text');
     }
 
     /**
-     * Filter LIKE the task name.
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterMarkdown($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'markdown_translation.translated_text');
+    }
+
+    /**
+     * Filter LIKE the object translations.
+     *
+     * @param Builder $query
+     * @param mixed $value
+     * @return $this
+     */
+    protected function filterDeadline($query, $value)
+    {
+        return $this->filterForTranslation($query, $value, 'deadline_translation.translated_text');
+    }
+
+    /**
+     * Filter LIKE the task text.
      *
      * @param Builder $query
      * @param mixed $value
@@ -85,14 +88,7 @@ class SubTaskSprunje extends Sprunje
      */
     protected function filterTask($query, $value)
     {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('tasks.text', $value);
-            }
-        });
-        return $this;
+        return $this->filterForTranslation($query, $value, 'task_text_translation.translated_text');
     }
 	
     /**
@@ -104,7 +100,7 @@ class SubTaskSprunje extends Sprunje
      */
     protected function sortTask($query, $direction)
     {
-        $query->orderBy('tasks.text', $direction);
+        $query->orderBy('sub_tasks.task_id', $direction);
         return $this;
     }
 	

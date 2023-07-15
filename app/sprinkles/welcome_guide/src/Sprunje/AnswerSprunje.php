@@ -10,24 +10,30 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class AnswerSprunje extends Sprunje
+class AnswerSprunje extends ExtendedSprunje
 {
+
+    protected $listable = [
+        'is_enabled'
+    ];
+
     protected $sortable = [
-        "question_id",
         "title",
         "order",
         "image",
         "is_enabled",
-        "creator_id"
+        "question",
+        "creator",
+        "created_at"
     ];
 
     protected $filterable = [
-        "question_id",
         "title",
         "order",
         "image",
         "is_enabled",
-        "creator_id"
+        "question",
+        "creator"
     ];
 
     protected $name = 'answers';
@@ -39,41 +45,42 @@ class AnswerSprunje extends Sprunje
     {
         $query = $this->classMapper->createInstance('answer');
 
-        return $query->joinCreator()->joinQuestion();
+        return $query->joinCreator()->joinQuestion()->joinTitle()->distinct();
     }
 
     /**
-     * Filter LIKE the creator info.
+     * Return a list of possible options.
+     *
+     * @return array
+     */
+    protected function listIsEnabled()
+    {
+        return $this->listForYesNoQuestion();
+    }
+
+    /**
+     * Filter by option.
+     *
+     * @param Builder $query
+     * @param mixed   $value
+     *
+     * @return self
+     */
+    protected function filterIsEnabled($query, $value)
+    {
+        return $this->filterForYesNoQuestion($query, $value, 'is_enabled');
+    }
+
+    /**
+     * Filter LIKE the object translations.
      *
      * @param Builder $query
      * @param mixed $value
      * @return $this
      */
-    protected function filterCreator($query, $value)
+    protected function filterTitle($query, $value)
     {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('users.first_name', $value)
-                    ->orLike('users.last_name', $value)
-                    ->orLike('users.email', $value);
-            }
-        });
-        return $this;
-    }
-	
-    /**
-     * Sort based on creator last name.
-     *
-     * @param Builder $query
-     * @param string $direction
-     * @return $this
-     */
-    protected function sortCreator($query, $direction)
-    {
-        $query->orderBy('users.last_name', $direction);
-        return $this;
+        return $this->filterForTranslation($query, $value, 'title_translation.translated_text');
     }
 
     /**
@@ -85,14 +92,7 @@ class AnswerSprunje extends Sprunje
      */
     protected function filterQuestion($query, $value)
     {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('questions.title', $value);
-            }
-        });
-        return $this;
+        return $this->filterForTranslation($query, $value, 'question_title_translation.translated_text');
     }
 	
     /**
@@ -104,7 +104,7 @@ class AnswerSprunje extends Sprunje
      */
     protected function sortQuestion($query, $direction)
     {
-        $query->orderBy('questions.title', $direction);
+        $query->orderBy('answers.question_id', $direction);
         return $this;
     }
 

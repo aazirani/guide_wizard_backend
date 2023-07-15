@@ -4,20 +4,28 @@ namespace UserFrosting\Sprinkle\WelcomeGuide\Sprunje;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Facades\Debug;
 use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
+use UserFrosting\Sprinkle\Core\Facades\Translator;
 
 /**
  * Implements Sprunje for the module API.
  *
  * @author Amin Akbari (https://github.com/aminakbari)
  */
-class LanguageSprunje extends Sprunje
+class LanguageSprunje extends ExtendedSprunje
 {
+
+    protected $listable = [
+        'is_active',
+        'is_main_language'
+    ];
+
     protected $sortable = [
         "language_code",
         "language_name",
         "is_active",
         "is_main_language",
-        "creator_id"
+        "creator",
+        "created_at"
     ];
 
     protected $filterable = [
@@ -25,7 +33,7 @@ class LanguageSprunje extends Sprunje
         "language_name",
         "is_active",
         "is_main_language",
-        "creator_id"
+        "creator"
     ];
 
     protected $name = 'languages';
@@ -39,39 +47,51 @@ class LanguageSprunje extends Sprunje
 		
 		return $query->joinCreator();
     }
-	
-	 /**
-     * Filter LIKE the creator info.
-     *
-     * @param Builder $query
-     * @param mixed $value
-     * @return $this
-     */
-    protected function filterCreator($query, $value)
-    {
-        // Split value on separator for OR queries
-        $values = explode($this->orSeparator, $value);
-        $query->where(function ($query) use ($values) {
-            foreach ($values as $value) {
-                $query->orLike('users.first_name', $value)
-                    ->orLike('users.last_name', $value)
-                    ->orLike('users.email', $value);
-            }
-        });
-        return $this;
-    }
-	
+
     /**
-     * Sort based on creator last name.
+     * Return a list of possible options.
+     *
+     * @return array
+     */
+    protected function listIsActive()
+    {
+        return $this->listForYesNoQuestion();
+    }
+
+    /**
+     * Filter by option.
      *
      * @param Builder $query
-     * @param string $direction
-     * @return $this
+     * @param mixed   $value
+     *
+     * @return self
      */
-    protected function sortCreator($query, $direction)
+    protected function filterIsActive($query, $value)
     {
-        $query->orderBy('users.last_name', $direction);
-        return $this;
+        return $this->filterForYesNoQuestion($query, $value, 'is_active');
+    }
+
+    /**
+     * Return a list of possible options.
+     *
+     * @return array
+     */
+    protected function listIsMainLanguage()
+    {
+        return $this->listForYesNoQuestion();
+    }
+
+    /**
+     * Filter by option.
+     *
+     * @param Builder $query
+     * @param mixed   $value
+     *
+     * @return self
+     */
+    protected function filterIsMainLanguage($query, $value)
+    {
+        return $this->filterForYesNoQuestion($query, $value, 'is_main_language');
     }
 	
 }

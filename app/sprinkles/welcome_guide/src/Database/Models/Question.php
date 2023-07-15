@@ -37,7 +37,7 @@ class Question extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('questions.*');
+        $query = $query->select('questions.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'questions.creator_id', '=', 'users.id');
 
@@ -45,15 +45,54 @@ class Question extends Model
     }
 
     /**
+     * Joins the object's title, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinTitle($query)
+    {
+        return $query
+        ->leftJoin('texts as title_text', 'questions.title', '=', 'title_text.id')
+        ->leftJoin('translations as title_translation', 'title_text.id', '=', 'title_translation.text_id');
+    }
+
+    /**
+     * Joins the object's title, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinSubTitle($query)
+    {
+        return $query
+        ->leftJoin('texts as subTitle_text', 'questions.sub_title', '=', 'subTitle_text.id')
+        ->leftJoin('translations as subTitle_translation', 'subTitle_text.id', '=', 'subTitle_translation.text_id');
+    }
+
+    /**
+     * Joins the object's info url, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinInfoUrl($query)
+    {
+        return $query
+        ->leftJoin('texts as infoUrl_text', 'questions.info_url', '=', 'infoUrl_text.id')
+        ->leftJoin('translations as infoUrl_translation', 'infoUrl_text.id', '=', 'infoUrl_translation.text_id');
+    }
+
+    /**
+     * Joins the object's info url, so we can do things like sort, search, paginate, etc.
+     */
+    public function scopeJoinInfoDescription($query)
+    {
+        return $query
+        ->leftJoin('texts as infoDescription_text', 'questions.info_description', '=', 'infoDescription_text.id')
+        ->leftJoin('translations as infoDescription_translation', 'infoDescription_text.id', '=', 'infoDescription_translation.text_id');
+    }
+
+    /**
      * Joins the object's task, so we can do things like sort, search, paginate, etc.
      */
     public function scopeJoinTask($query)
     {
-        $query = $query->select('questions.*');
-
-        $query = $query->leftJoin('tasks', 'questions.task_id', '=', 'tasks.id');
-
-        return $query;
+        return $query
+        ->leftJoin('tasks as task', 'questions.task_id', '=', 'task.id')
+        ->leftJoin('texts as task_text_text', 'task.text', '=', 'task_text_text.id')
+        ->leftJoin('translations as task_text_translation', 'task_text_text.id', '=', 'task_text_translation.text_id');
     }
 
     /**

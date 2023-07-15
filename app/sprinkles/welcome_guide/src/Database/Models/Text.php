@@ -30,7 +30,7 @@ class Text extends Model
      */
     public function scopeJoinCreator($query)
     {
-        $query = $query->select('texts.*');
+        $query = $query->select('texts.*', 'users.last_name');
 
         $query = $query->leftJoin('users', 'texts.creator_id', '=', 'users.id');
 

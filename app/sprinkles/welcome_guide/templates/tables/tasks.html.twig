@@ -14,8 +14,8 @@
                 <th class="sorter-metatext" data-column-name="text" data-column-template="#task-table-column-text" data-priority="1">{{translate("TEXT")}} <i class="fa fa-sort"></i></th>
                 <th class="sorter-metatext" data-column-name="step" data-column-template="#task-table-column-step" data-priority="1">{{translate("STEP")}} <i class="fa fa-sort"></i></th>
                 <th class="sorter-metatext" data-column-name="description" data-column-template="#task-table-column-description" data-priority="1">{{translate("DESCRIPTION")}} <i class="fa fa-sort"></i></th>
-                <th class="sorter-metatext" data-column-name="image_1" data-column-template="#task-table-column-image_1" data-priority="1">{{translate("IMAGE_1")}} <i class="fa fa-sort"></i></th>
-                <th class="sorter-metatext" data-column-name="image_2" data-column-template="#task-table-column-image_2" data-priority="1">{{translate("IMAGE_2")}} <i class="fa fa-sort"></i></th>
+                <th data-sorter="false" data-filter="false" data-column-name="image_1" data-column-template="#task-table-column-image_1" data-priority="1">{{translate("IMAGE_1")}}</th>
+                <th data-sorter="false" data-filter="false" data-column-name="image_2" data-column-template="#task-table-column-image_2" data-priority="1">{{translate("IMAGE_2")}}</th>
                 
 
                 {% if 'creator' in table.columns %}

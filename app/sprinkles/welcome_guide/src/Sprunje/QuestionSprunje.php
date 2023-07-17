@@ -9,7 +9,7 @@ use UserFrosting\Sprinkle\Core\Facades\Translator;
 /**
  * Implements Sprunje for the module API.
  *
- * @author Amin Akbari (https://github.com/aminakbari)
+ * @author Amin Azirani (https://github.com/aminazirani)
  */
 class QuestionSprunje extends ExtendedSprunje
 {

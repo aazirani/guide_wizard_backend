@@ -26,7 +26,6 @@ use UserFrosting\Sprinkle\Core\Log\MixedFormatter;
 /**
  * Registers services for the sprinkle.
  *
- * @author Amin Azirani (https://github.com/aminazirani)
  */
 class ServicesProvider
 {

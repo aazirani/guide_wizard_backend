@@ -8,7 +8,6 @@ use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
 /**
  * Implements Sprunje for the module API.
  *
- * @author Amin Azirani (https://github.com/aminazirani)
  */
 class TaskSprunje extends ExtendedSprunje
 {

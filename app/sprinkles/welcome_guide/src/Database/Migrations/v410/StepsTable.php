@@ -12,7 +12,6 @@ use UserFrosting\Sprinkle\Core\Database\Migration;
  *
  * See https://laravel.com/docs/5.4/migrations#tables
  * @extends Migration
- * @author Amin Azirani (https://github.com/aminazirani)
  */
 class StepsTable extends Migration
 {

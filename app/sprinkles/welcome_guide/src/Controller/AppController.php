@@ -41,7 +41,7 @@ class AppController extends SimpleController
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this
             ->ci->classMapper;
-        $sprunje = $classMapper->createInstance('step_sprunje', $classMapper, $params);
+        $sprunje = $classMapper->createInstance('apps_step_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query) {
             return $query
                 ->with('tasks.questions.answers')

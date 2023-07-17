@@ -56,6 +56,7 @@ class ServicesProvider
 
             $classMapper->setClassMapping('step', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step');
             $classMapper->setClassMapping('step_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\StepSprunje');
+            $classMapper->setClassMapping('apps_step_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\AppsStepSprunje');
 
             $classMapper->setClassMapping('subTask', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\SubTask');
             $classMapper->setClassMapping('subTask_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\SubTaskSprunje');

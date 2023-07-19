@@ -10,7 +10,7 @@ use UserFrosting\Sprinkle\Core\Facades\Translator;
  * Implements Sprunje for the module API.
  *
  */
-class LogicSprunje extends ExtendedSprunje
+class LanguageSprunje extends ExtendedSprunje
 {
 
     protected $listable = [

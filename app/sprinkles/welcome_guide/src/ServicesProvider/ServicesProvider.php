@@ -49,6 +49,7 @@ class ServicesProvider
             $classMapper->setClassMapping('language_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\LanguageSprunje');
 
             $classMapper->setClassMapping('logic', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Logic');
+            $classMapper->setClassMapping('logic_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\LogicSprunje');
 
             $classMapper->setClassMapping('question', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question');
             $classMapper->setClassMapping('question_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\QuestionSprunje');

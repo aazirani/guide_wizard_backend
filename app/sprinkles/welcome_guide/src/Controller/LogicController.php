@@ -8,6 +8,9 @@ use Slim\Exception\NotFoundException as NotFoundException;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -120,8 +123,15 @@ class LogicController extends SimpleController
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
+
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this
+            ->ci->classMapper;
+
         // Generate the form
         $form = new Form($schema);
+
+        LogicController::setFormValues($form, $classMapper, null);
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -182,12 +192,26 @@ class LogicController extends SimpleController
             $error = true;
         }
 
+        //If the input does not match the required style, stop adding the object.
+	    if(!LogicController::isValidExpression($data['expression'])){
+            $ms->addMessageTranslated('danger', 'VALIDATE.EXPRESSION', $data);
+            $error = true;
+        }
+
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = $this
             ->ci->classMapper;
 
         //Add the creator id to the sent data
         $data['creator_id'] = $currentUser->id;
+
+        $ids = array();
+        preg_match_all('/\d+/', $data['expression'], $answerIds);
+        // Loop through the found ids array
+		foreach($answerIds[0] as $key => $value){
+            //remove the { and } signs and add to array
+			array_push($ids, $value);
+        }
 
         if ($error)
         {
@@ -202,13 +226,18 @@ class LogicController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $ids)
         {
 
             // Create the object
             $logic = $classMapper->createInstance('logic', $data);
             // Store new logic to database
             $logic->save();
+
+            if(count($ids) > 0){
+                //add the sent tag ids to this logic
+				$logic->answers()->attach($ids);
+            }
 
             // Create activity record
             $this
@@ -221,6 +250,41 @@ class LogicController extends SimpleController
         });
 
         return $response->withStatus(200);
+    }
+
+    function isValidExpression($expr) {
+        // Replace logical operators and operands with PHP-valid equivalents
+    $jsExpr = str_replace(['and', 'or', 'xor', '!'], ['&&', '||', '^', '!'], $expr);
+    $jsExpr = preg_replace('/\b\d+\b/', 'true', $jsExpr);
+
+    // Check if parentheses are balanced
+    $depth = 0;
+    for ($i = 0; $i < strlen($jsExpr); $i++) {
+        if ($jsExpr[$i] === '(') {
+            $depth++;
+        } else if ($jsExpr[$i] === ')') {
+            if ($depth === 0) {
+                return false;
+            }
+            $depth--;
+        }
+    }
+    if ($depth !== 0) {
+        return false;
+    }
+
+    // Check if expression is just "!"
+    if(trim($jsExpr) === '!') {
+        return false;
+    }
+
+    // Try to evaluate the expression
+    $result = @eval("return $jsExpr;");
+    if ($result === NULL) {
+        return false;
+    }
+
+    return true;
     }
 
     protected function getLogicFromParams($params)
@@ -376,6 +440,8 @@ class LogicController extends SimpleController
         // Generate the form
         $form = new Form($schema, $logic);
 
+        LogicController::setFormValues($form, $classMapper, $logic);
+
         // Render the template / form
         $this
             ->ci
@@ -434,6 +500,13 @@ class LogicController extends SimpleController
             return $response->withStatus(400);
         }
 
+        //If the input does not match the required style, stop adding the object.
+	    if(!LogicController::isValidExpression($data['expression'])){
+            $ms->addMessageTranslated('danger', 'VALIDATE.EXPRESSION', $data);
+            $error = true;
+            return $response->withStatus(400);
+        }
+
         /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
         $authorizer = $this
             ->ci->authorizer;
@@ -452,8 +525,22 @@ class LogicController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $ids = array();
+        preg_match_all('/\d+/', $data['expression'], $answerIds);
+        // Loop through the found ids array
+		foreach($answerIds[0] as $key => $value){
+            //remove the { and } signs and add to array
+			array_push($ids, $value);
+        }
+
+
+        if ($error)
+        {
+            return $response->withStatus(400);
+        }
+
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $logic, $currentUser)
+        Capsule::transaction(function () use ($data, $logic, $currentUser, $ids)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -466,6 +553,11 @@ class LogicController extends SimpleController
 
             $logic->save();
 
+            if(count($ids) > 0){
+                //add the sent tag ids to this logic
+				$logic->answers()->attach($ids);
+            }
+
             // Create activity record
             $this
                 ->ci
@@ -477,4 +569,95 @@ class LogicController extends SimpleController
         $ms->addMessageTranslated('success', 'LOGIC.DETAILS_UPDATED', ['name' => $logic->name]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
+
+    public static function setFormValues($form, $classMapper, $logic){
+        $answers = Answer::all();
+        $answerSelect = [];
+        foreach ($answers as $answer) {
+            $answerData = [];
+            $answerData += ['title' => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper)];
+            $answerData += ['question' => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->question->title, $classMapper)];
+
+            $answerSelect += [$answer->id => $answerData];
+
+        }
+
+        $form->setInputArgument('expression', 'answers', $answerSelect);
+
+
+        if($logic){
+            $answers = $logic->answers()->get();
+            $expressionAnswers = [];
+            foreach ($answers as $answer) {
+                $answerData = [];
+                $answerData += ['title' => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper)];
+                $answerData += ['question' => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->question->title, $classMapper)];
+
+                $expressionAnswers += [$answer->id => $answerData];
+            }
+
+            $expressionElements = [[]];
+            $arrayFromExpression = LogicController::tokenizeExpression($logic->expression);
+            $index = 1;
+            foreach ($arrayFromExpression as $singleElement) {
+                if(is_numeric($singleElement)){
+                    $expressionElements += [$index => [$singleElement => $expressionAnswers[$singleElement]]];
+                } elseif(strlen(trim($singleElement)) > 0) {
+                    $expressionElements += [$index => [$singleElement => $singleElement]];
+                }
+                $index++;
+            }
+
+
+
+
+
+            $form->setInputArgument('expression', 'expressionElements', $expressionElements);
+        }
+
+
+
+        /*
+        $answers = $logic->answers->get();
+        return $answers;
+        foreach ($arrayOfExpression as $singleExpression) {
+            //$numbersInsideArray = LogicController::getlistOfNumbersFromArray($arrayOfExpression);
+
+            //$answers = $classMapper->staticMethod('answer', 'whereIn', 'id', $numbersInsideArray);
+        }
+
+
+
+        //Set all the languages for the modal dialog
+        $languages = LANGUAGE::all();
+        $languageSelect = [];
+        foreach ($languages as $language) {
+            $languageSelect += [$language->id => $language->language_name];
+        }
+        foreach ($arrayOfKeys as $key => $value) {
+            $form->setInputArgument($key, 'options', $languageSelect);
+        }
+
+        foreach ($arrayOfKeys as $key => &$value) {
+            //Set all the current translations for the modal dialog
+            $translations = $classMapper->staticMethod('text', 'where', 'id', $value)->with('translations')->first()->translations;
+            $translationSelect = [];
+            if($translations){
+                foreach ($translations as $translation) {
+                    $translationSelect += [$key.'_'.$translation->language_id => $translation->translated_text];
+                }
+            }
+            $form->setInputArgument($key, 'translations', $translationSelect);
+        }
+*/
+    }
+
+
+    static function tokenizeExpression($expression) {
+        // Handle the 'not' operator separately by using a lookahead assertion in the regex pattern
+        $pattern = '/\!|\d+|\(|\)|and|or|xor/';
+        preg_match_all($pattern, $expression, $matches);
+        return $matches[0];
+    }
+
 }

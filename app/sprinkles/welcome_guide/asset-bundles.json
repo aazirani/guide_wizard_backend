@@ -74,7 +74,8 @@
         },
         "js/pages/logics": {
             "scripts": [
-                "userfrosting/js/pages/logics.js"
+                "userfrosting/js/pages/logics.js",
+                "vendor/sortablejs/Sortable.min.js"
             ],
             "options": {
                 "result": {
@@ -112,6 +113,23 @@
         "css/markdown": {
             "styles": [
                 "vendor/simplemde/dist/simplemde.min.css"
+            ]
+        },
+        "js/modals/logics": {
+            "scripts": [
+                "userfrosting/js/modals/logics.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        },
+        "css/modals/logics": {
+            "styles": [
+                "userfrosting/css/modals/logics.css"
             ]
         }
     }

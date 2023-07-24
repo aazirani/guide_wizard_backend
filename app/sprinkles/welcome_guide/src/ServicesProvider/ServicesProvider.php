@@ -26,7 +26,6 @@ use UserFrosting\Sprinkle\Core\Log\MixedFormatter;
 /**
  * Registers services for the sprinkle.
  *
- * @author Amin Akbari (https://github.com/aminakbari)
  */
 class ServicesProvider
 {
@@ -50,6 +49,7 @@ class ServicesProvider
             $classMapper->setClassMapping('language_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\LanguageSprunje');
 
             $classMapper->setClassMapping('logic', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Logic');
+            $classMapper->setClassMapping('logic_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\LogicSprunje');
 
             $classMapper->setClassMapping('question', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question');
             $classMapper->setClassMapping('question_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\QuestionSprunje');

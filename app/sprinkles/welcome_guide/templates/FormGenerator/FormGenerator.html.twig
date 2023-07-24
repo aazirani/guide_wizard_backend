@@ -6,7 +6,10 @@
 {% import "FormGenerator/macros/alert.html.twig" as alert %}
 {% import "FormGenerator/macros/translation.html.twig" as translation %}
 {% import "FormGenerator/macros/file.html.twig" as file %}
+{% import "FormGenerator/macros/logic.html.twig" as logic %}
+{% import "FormGenerator/macros/subTask.html.twig" as subTask %}
 {% import "FormGenerator/macros/markdown.html.twig" as markdown %}
+
 
 {% for name,input in fields %}
     {% if input.type == "hidden" %}
@@ -30,6 +33,10 @@
                     {{ translation.generate(input) }}
                 {% elseif input.type == "markdown" %}
                     {{ markdown.generate(input) }}
+                {% elseif input.type == "logic" %}
+                    {{ logic.generate(input) }}
+                {% elseif input.type == "subTask" %}
+                    {{ subTask.generate(input) }}
                 {% elseif input.type == "file" %}
                     {{ file.generate(input) }}
                 {% else %}

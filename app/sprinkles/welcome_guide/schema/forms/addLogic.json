@@ -7,20 +7,29 @@
         "form" : {
             "type" : "text",
             "label" : "NAME",
-            "icon" : "fa-th-list",
+            "icon" : "fa-pencil-ruler",
             "placeholder" : "NAME"
         }
     },
     "expression" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.EXPRESSION"
-        },
         "form" : {
-            "type" : "text",
+            "type" : "logic",
             "label" : "EXPRESSION",
             "icon" : "fa-th-list",
             "placeholder" : "EXPRESSION"
+        }
+    },
+    "subTaskOptions" : {
+        "form" : {
+            "type" : "subTask",
+            "label" : "SUB_TASK",
+            "icon" : "fa-th-list",
+            "placeholder" : "SUB_TASK"
+        }
+    },
+    "subTasks" : {
+        "form" : {
+            "type" : "hidden"
         }
     }
 }

@@ -37,8 +37,12 @@
                     <span class="input-group-addon"><i class="fa fa-question fa-fw"></i></span>
                     <select class="form-control js-select2" id="questionSelect">
                         <option value="">Select a question...</option>
+                        {% set uniqueQuestions = [] %}
                         {% for answerId, answerTitles in input.answers %}
-                        <option value="{{answerTitles.question}}">{{answerTitles.question}}</option>
+                            {% if answerTitles.question not in uniqueQuestions %}
+                                {% set uniqueQuestions = uniqueQuestions|merge([answerTitles.question]) %}
+                                <option value="{{answerTitles.question}}">{{answerTitles.question}}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>

@@ -73,7 +73,7 @@ class Logic extends Model
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static::$ci->classMapper;
 
-        return $this->belongsToMany($classMapper->getClassMapping('subTask'));
+        return $this->belongsToMany($classMapper->getClassMapping('subTask'), 'sub_task_logic');
     }
 
     //observe this model being deleted and delete the relationships

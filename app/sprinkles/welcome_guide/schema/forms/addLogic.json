@@ -18,5 +18,18 @@
             "icon" : "fa-th-list",
             "placeholder" : "EXPRESSION"
         }
+    },
+    "subTaskOptions" : {
+        "form" : {
+            "type" : "subTask",
+            "label" : "SUB_TASK",
+            "icon" : "fa-th-list",
+            "placeholder" : "SUB_TASK"
+        }
+    },
+    "subTasks" : {
+        "form" : {
+            "type" : "hidden"
+        }
     }
 }

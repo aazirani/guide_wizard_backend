@@ -11,6 +11,7 @@ use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\SubTask;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
@@ -137,7 +138,7 @@ class LogicController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'LOGIC.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/logics', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal-large.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'LOGIC.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/logics', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
 
     /**
@@ -238,6 +239,13 @@ class LogicController extends SimpleController
                 //add the sent tag ids to this logic
 				$logic->answers()->attach($ids);
             }
+
+            if($data['subTasks']){
+                $logic->subTasks()->sync(array_map('intval', explode(",", $data['subTasks'])));
+            } else {
+                $logic->subTasks()->sync(null);
+            }
+
 
             // Create activity record
             $this
@@ -446,7 +454,7 @@ class LogicController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'LOGIC.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/logics/' . $args['logic_id'],
+            ->render($response, 'FormGenerator/modal-large.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'LOGIC.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/logics/' . $args['logic_id'],
         //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
         'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
     }
@@ -533,19 +541,13 @@ class LogicController extends SimpleController
 			array_push($ids, $value);
         }
 
-
-        if ($error)
-        {
-            return $response->withStatus(400);
-        }
-
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($data, $logic, $currentUser, $ids)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
             {
-                if ($value != $logic->$name)
+                if ($value != $logic->$name && $name != 'subTasks')
                 {
                     $logic->$name = $value;
                 }
@@ -557,6 +559,12 @@ class LogicController extends SimpleController
                 //add the sent tag ids to this logic
 				$logic->answers()->attach($ids);
             }
+            if($data['subTasks']){
+                $logic->subTasks()->sync(array_map('intval', explode(",", $data['subTasks'])));
+            } else {
+                $logic->subTasks()->sync(null);
+            }
+
 
             // Create activity record
             $this
@@ -581,9 +589,19 @@ class LogicController extends SimpleController
             $answerSelect += [$answer->id => $answerData];
 
         }
-
         $form->setInputArgument('expression', 'answers', $answerSelect);
 
+        $subTasks = SubTask::all();
+        $subTaskSelect = [];
+        foreach ($subTasks as $subTask) {
+            $subTaskData = [];
+            $subTaskData += ['title' => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper)];
+            $subTaskData += ['task' => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->task->text, $classMapper)];
+
+            $subTaskSelect += [$subTask->id => $subTaskData];
+
+        }
+        $form->setInputArgument('subTaskOptions', 'subTaskOptionElements', $subTaskSelect);
 
         if($logic){
             $answers = $logic->answers()->get();
@@ -595,7 +613,6 @@ class LogicController extends SimpleController
 
                 $expressionAnswers += [$answer->id => $answerData];
             }
-
             $expressionElements = [[]];
             $arrayFromExpression = LogicController::tokenizeExpression($logic->expression);
             $index = 1;
@@ -607,49 +624,14 @@ class LogicController extends SimpleController
                 }
                 $index++;
             }
-
-
-
-
-
             $form->setInputArgument('expression', 'expressionElements', $expressionElements);
+
+
+            $subTasksIds = $logic->subTasks()->get()->pluck('id')->toArray();
+            $form->setInputArgument('subTasks', 'value', implode(",", $subTasksIds));
         }
 
 
-
-        /*
-        $answers = $logic->answers->get();
-        return $answers;
-        foreach ($arrayOfExpression as $singleExpression) {
-            //$numbersInsideArray = LogicController::getlistOfNumbersFromArray($arrayOfExpression);
-
-            //$answers = $classMapper->staticMethod('answer', 'whereIn', 'id', $numbersInsideArray);
-        }
-
-
-
-        //Set all the languages for the modal dialog
-        $languages = LANGUAGE::all();
-        $languageSelect = [];
-        foreach ($languages as $language) {
-            $languageSelect += [$language->id => $language->language_name];
-        }
-        foreach ($arrayOfKeys as $key => $value) {
-            $form->setInputArgument($key, 'options', $languageSelect);
-        }
-
-        foreach ($arrayOfKeys as $key => &$value) {
-            //Set all the current translations for the modal dialog
-            $translations = $classMapper->staticMethod('text', 'where', 'id', $value)->with('translations')->first()->translations;
-            $translationSelect = [];
-            if($translations){
-                foreach ($translations as $translation) {
-                    $translationSelect += [$key.'_'.$translation->language_id => $translation->translated_text];
-                }
-            }
-            $form->setInputArgument($key, 'translations', $translationSelect);
-        }
-*/
     }
 
 

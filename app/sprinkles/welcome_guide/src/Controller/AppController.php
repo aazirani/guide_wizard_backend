@@ -48,10 +48,10 @@ class AppController extends SimpleController
         $inputAnswerIds = $answerMatchList[0];
 
         //get all the logics
-		$logics = Logic::all();
+        $logics = Logic::all();
 
         //define the array containing the final subTasks
-		$subTaskIds = array();
+        $subTaskIds = array();
 
         //iterate over all the logics to evaluate each one based on the users answers
         foreach ($logics as $logic) {
@@ -81,25 +81,27 @@ class AppController extends SimpleController
             //evaluate the expression
             if (eval("if (" . $logic->expression . "){ return 1; } else {return 0;}")) {
                 //get the ids to all the subTasks corresponding to this logic inorder to only return subTasks that are selected
-                $subTaskIds =  array_merge($subTaskIds, $logic->subTasks->pluck('id')->toArray());
+                $subTaskIds = array_merge($subTaskIds, $logic->subTasks->pluck('id')->toArray());
             }
         }
 
         $sprunje = $classMapper->createInstance('apps_step_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query) use ($subTaskIds) {
             return $query
-        ->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
-            $query->whereIn('id', $subTaskIds);
-        })
-        ->orWhereHas('tasks.questions')
-        ->with([
-            'tasks.questions.answers',
-            'tasks.subTasks' => function ($query) use ($subTaskIds) {
-            $query->whereIn('id', $subTaskIds);
-            },
-        ]);
+                ->where(function ($query) use ($subTaskIds) {
+                    $query->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
+                        $query->whereIn('id', $subTaskIds);
+                    })
+                        ->orWhereHas('tasks.questions');
+                })
+                ->with([
+                    'tasks.questions.answers',
+                    'tasks.subTasks' => function ($query) use ($subTaskIds) {
+                        $query->whereIn('id', $subTaskIds);
+                    },
+                ]);
         });
-        
+
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
     }
@@ -132,11 +134,11 @@ class AppController extends SimpleController
     public function getLastUpdatedAt($request, $response, $args)
     {
         $types = ['UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step',
-        'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Task',
-        'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question',
-        'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer',
-        'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\SubTask',
-        'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\logic'];
+            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Task',
+            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question',
+            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer',
+            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\SubTask',
+            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\logic'];
 
         $lastUpdatedForContent = null;
 
@@ -150,8 +152,8 @@ class AppController extends SimpleController
         }
 
         $types = ['UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text',
-        'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation',
-        'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language'];
+            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation',
+            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language'];
 
         $lastUpdatedForTranslations = null;
 
@@ -167,7 +169,7 @@ class AppController extends SimpleController
         $data = [
             'last_updated_at_content' => $lastUpdatedForContent,
             'last_updated_at_technical_names' => $lastUpdatedForTranslations
-    ];
+        ];
         return json_encode($data);
     }
 

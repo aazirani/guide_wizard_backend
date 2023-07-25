@@ -88,13 +88,10 @@ class AppController extends SimpleController
         $sprunje = $classMapper->createInstance('apps_step_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query) use ($subTaskIds) {
             return $query
-                ->whereHas('tasks', function ($query) use ($subTaskIds) {
-                    $query
-                        ->whereHas('subTasks', function ($query) use ($subTaskIds) {
-                            $query->whereIn('id', $subTaskIds);
-                        })
-                        ->orWhereHas('questions');
+                ->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
+                    $query->whereIn('id', $subTaskIds);
                 })
+                ->orWhereHas('tasks.questions')
                 ->with([
                     'tasks.questions.answers',
                     'tasks.subTasks' => function ($query) use ($subTaskIds) {
@@ -102,7 +99,7 @@ class AppController extends SimpleController
                     },
                 ]);
         });
-        
+
 
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);

@@ -89,10 +89,9 @@ class AppController extends SimpleController
         $sprunje->extendQuery(function ($query) use ($subTaskIds) {
             return $query
                 ->whereHas('tasks', function ($query) use ($subTaskIds) {
-                    $query
-                        ->whereHas('subTasks', function ($query) use ($subTaskIds) {
-                            $query->whereIn('id', $subTaskIds);
-                        })
+                    $query->whereHas('subTasks', function ($query) use ($subTaskIds) {
+                        $query->whereIn('id', $subTaskIds);
+                    })
                         ->orWhereHas('questions');
                 })
                 ->with([
@@ -102,7 +101,6 @@ class AppController extends SimpleController
                     },
                 ]);
         });
-        
 
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);

@@ -1,23 +1,21 @@
 <?php
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
-use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\NotFoundException as NotFoundException;
+use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\Core\Controller\SimpleController;
+use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
-use UserFrosting\Sprinkle\FormGenerator\Form;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 
 class TaskController extends SimpleController
 {
@@ -217,6 +215,8 @@ class TaskController extends SimpleController
         $config = $this
             ->ci->config;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $data['creator_id'] = $currentUser->id;
 
         //uploading images
@@ -225,7 +225,7 @@ class TaskController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
         {
 
             // Create the object
@@ -233,7 +233,7 @@ class TaskController extends SimpleController
             // Store new task to database
             $task->save();
 
-            TranslationsUtilities::saveTranslations($task, "Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($task));
+            TranslationsUtilities::saveTranslations($task, "Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($task), $userActivityLogger);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
@@ -325,13 +325,15 @@ class TaskController extends SimpleController
 
         $classMapper = $this->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($task, $text, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($task, $text, $currentUser, $classMapper, $userActivityLogger)
         {
 
-            TaskController::deleteObject($task, $classMapper);
+            TaskController::deleteObject($task, $classMapper, $userActivityLogger, $currentUser);
 
             unset($task);
 
@@ -493,10 +495,12 @@ class TaskController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post, $text)
+        Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post, $text, $userActivityLogger)
         {
 
             $task->image_1 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', $task->image_1);
@@ -511,7 +515,7 @@ class TaskController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($task, "Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($task));
+            TranslationsUtilities::saveTranslations($task, "Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($task), $userActivityLogger);
 
             // Create activity record
             $this
@@ -587,20 +591,20 @@ class TaskController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($task, $classMapper){
+    public static function deleteObject($task, $classMapper, $userActivityLogger, $currentUser){
 
         $questions = $classMapper->staticMethod('question', 'where', 'task_id', $task->id)->get();
         foreach ($questions as $question) {
-            QuestionController::deleteObject($question, $classMapper);
+            QuestionController::deleteObject($question, $classMapper, $userActivityLogger, $currentUser);
         }
         $subTasks = $classMapper->staticMethod('subTask', 'where', 'task_id', $task->id)->get();
         foreach ($subTasks as $subTask) {
-            SubTaskController::deleteObject($subTask, $classMapper);
+            SubTaskController::deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser);
         }
 
         $task->delete();
 
-        TranslationsUtilities::deleteTranslations($task, $classMapper, TaskController::getTranslationsVariables($task));
+        TranslationsUtilities::deleteTranslations($task, $classMapper, TaskController::getTranslationsVariables($task), $userActivityLogger, $currentUser);
 
         //delete image files associated with this object
             if (isset($task->image_1)) {

@@ -216,11 +216,13 @@ class SubTaskController extends SimpleController
         $config = $this
             ->ci->config;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $data['creator_id'] = $currentUser->id;
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
         {
 
             // Create the object
@@ -228,7 +230,7 @@ class SubTaskController extends SimpleController
             // Store new subTask to database
             $subTask->save();
 
-            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($subTask));
+            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($subTask), $userActivityLogger);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
 
@@ -320,12 +322,14 @@ class SubTaskController extends SimpleController
 
         $classMapper = $this->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($subTask, $text, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($subTask, $text, $currentUser, $classMapper, $userActivityLogger)
         {
-            SubTaskController::deleteObject($subTask, $classMapper);
+            SubTaskController::deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser);
             
             unset($subTask);
 
@@ -487,10 +491,12 @@ class SubTaskController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $subTask, $currentUser, $classMapper, $post, $text)
+        Capsule::transaction(function () use ($data, $subTask, $currentUser, $classMapper, $post, $text, $userActivityLogger)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -501,7 +507,7 @@ class SubTaskController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($subTask));
+            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($subTask), $userActivityLogger);
 
             // Create activity record
             $this
@@ -523,11 +529,11 @@ class SubTaskController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($subTask, $classMapper){
-
+    public static function deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser){
+        $subTask->logics()->sync(null);
         $subTask->delete();
 
-        TranslationsUtilities::deleteTranslations($subTask, $classMapper, SubTaskController::getTranslationsVariables($subTask));
+        TranslationsUtilities::deleteTranslations($subTask, $classMapper, SubTaskController::getTranslationsVariables($subTask), $userActivityLogger, $currentUser);
 
     }
 }

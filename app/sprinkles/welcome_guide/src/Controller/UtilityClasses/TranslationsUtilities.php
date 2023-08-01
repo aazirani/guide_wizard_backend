@@ -5,9 +5,10 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation;
 
 class TranslationsUtilities{
-    public static function addTranslations($params, $arrayOfObjectToReceiveWithKeyAsKey, $classMapper, $currentUserId, $objectName, $object): array
+    public static function addTranslations($params, $arrayOfObjectToReceiveWithKeyAsKey, $classMapper, $currentUserId, $objectName, $object, $userActivityLogger, $currentUser): array
     {
         foreach ($arrayOfObjectToReceiveWithKeyAsKey as $key => $valueOfKey){
+            $translationsWereUpdatedFlag = false;
 
             $text = $classMapper->staticMethod('text', 'where', 'id', $arrayOfObjectToReceiveWithKeyAsKey[$key])->with('creator')->first();
             if(!$text){
@@ -15,6 +16,7 @@ class TranslationsUtilities{
             }
             $text->technical_name = $objectName."_".$object->id."_".$key;
             $text->creator_id = $currentUserId;
+
             $text->save();
 
             $valuesFromKeyThatStartsWithString = TranslationsUtilities::getValuesFromKeyThatStartsWithString($params, $key);
@@ -25,11 +27,13 @@ class TranslationsUtilities{
                 if (empty(trim($value))) {
                     if($translation){
                         $translation->delete();
+                        $translationsWereUpdatedFlag = true;
                     }
                     continue;
                 }
                 if(!$translation){
                     $translation = $classMapper->createInstance('translation');
+                    $translationsWereUpdatedFlag = true;
                 }
                 $translation->language_id = $languageId;
                 $translation->translated_text = $value;
@@ -37,9 +41,17 @@ class TranslationsUtilities{
                 if(!$translation->creator_id){
                     $translation->creator_id = $currentUserId;
                 }
+                
+                if ($translation->isDirty()) { // Only write in activities if something has changed
+                    $translationsWereUpdatedFlag = true;
+                }
+                
                 $translation->save();
             }
 
+            if($translationsWereUpdatedFlag){
+                $userActivityLogger->info("User {$currentUser->user_name} updated basic data for text with the technical name {$text->technical_name}.", ['type' => 'text_updated', 'user_id' => $currentUser->id]);
+            }
             $arrayOfObjectToReceiveWithKeyAsKey[$key] = $text->id;
 
         }
@@ -84,9 +96,9 @@ class TranslationsUtilities{
         }
     }
 
-    public static function saveTranslations($object, $objectName, $params, $classMapper, $currentUser, $arrayOfObjectWithKeyAsKey){
+    public static function saveTranslations($object, $objectName, $params, $classMapper, $currentUser, $arrayOfObjectWithKeyAsKey, $userActivityLogger){
 
-        $textIds = TranslationsUtilities::addTranslations($params, $arrayOfObjectWithKeyAsKey, $classMapper, $currentUser->id, $objectName, $object);
+        $textIds = TranslationsUtilities::addTranslations($params, $arrayOfObjectWithKeyAsKey, $classMapper, $currentUser->id, $objectName, $object, $userActivityLogger, $currentUser);
 
         foreach ($arrayOfObjectWithKeyAsKey as $key => $value) {
             $object->{$key} = $textIds[$key];
@@ -96,13 +108,14 @@ class TranslationsUtilities{
     }
 
 
-    public static function deleteTranslations($object, $classMapper, $arrayOfObjectWithKeyAsKey){
+    public static function deleteTranslations($object, $classMapper, $arrayOfObjectWithKeyAsKey, $userActivityLogger, $currentUser){
         foreach ($arrayOfObjectWithKeyAsKey as $key => $value) {
             $translations = $classMapper->staticMethod('translation', 'where', 'text_id', $object->{$key})->get();
             foreach ($translations as $translation) {
                 $translation->delete();
             }
             $text = $classMapper->staticMethod('text', 'where', 'id', $object->{$key})->first();
+            $userActivityLogger->info("User {$currentUser->user_name} deleted the text with the technical name {$text->technical_name}.", ['type' => 'text_deleted', 'user_id' => $currentUser->id]);
             $text->delete();
         }
     }

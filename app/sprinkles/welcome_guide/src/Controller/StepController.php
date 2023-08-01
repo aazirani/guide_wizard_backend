@@ -210,19 +210,20 @@ class StepController extends SimpleController
 
         $data['creator_id'] = $currentUser->id;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
 
         //uploading images
         $data['image'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', null);
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
         {
             // Create the object
             $step = $classMapper->createInstance('step', $data);
             $step->save();
 
-            TranslationsUtilities::saveTranslations($step, "Step", $params, $classMapper, $currentUser, $this->getTranslationsVariables($step));
+            TranslationsUtilities::saveTranslations($step, "Step", $params, $classMapper, $currentUser, $this->getTranslationsVariables($step), $userActivityLogger);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
 
@@ -314,12 +315,14 @@ class StepController extends SimpleController
 
         $classMapper = $this->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($step, $text, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($step, $text, $currentUser, $classMapper, $userActivityLogger)
         {
-            StepController::deleteObject($step, $classMapper);
+            StepController::deleteObject($step, $classMapper, $userActivityLogger, $currentUser);
             unset($step);
 
             // Create activity record
@@ -472,10 +475,12 @@ class StepController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post, $text)
+        Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post, $text, $userActivityLogger)
         {
 
             $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image);
@@ -489,7 +494,7 @@ class StepController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($step, "Step", $post, $classMapper, $currentUser, $this->getTranslationsVariables($step));
+            TranslationsUtilities::saveTranslations($step, "Step", $post, $classMapper, $currentUser, $this->getTranslationsVariables($step), $userActivityLogger);
 
             // Create activity record
             $this
@@ -566,16 +571,16 @@ class StepController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($step, $classMapper){
+    public static function deleteObject($step, $classMapper, $userActivityLogger, $currentUser){
 
         $tasks = $classMapper->staticMethod('task', 'where', 'step_id', $step->id)->get();
         foreach ($tasks as $task) {
-            TaskController::deleteObject($task, $classMapper);
+            TaskController::deleteObject($task, $classMapper, $userActivityLogger, $currentUser);
         }
 
         $step->delete();
 
-        TranslationsUtilities::deleteTranslations($step, $classMapper, StepController::getTranslationsVariables($step));
+        TranslationsUtilities::deleteTranslations($step, $classMapper, StepController::getTranslationsVariables($step), $userActivityLogger, $currentUser);
 
         //delete image files associated with this object
             if (isset($step->image)) {

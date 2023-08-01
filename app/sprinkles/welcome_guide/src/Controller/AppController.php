@@ -2,23 +2,20 @@
 
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
 
-use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\NotFoundException as NotFoundException;
+use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\Core\Controller\SimpleController;
+use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Logic;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
-use UserFrosting\Sprinkle\FormGenerator\Form;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
 
 class AppController extends SimpleController
 {
@@ -132,38 +129,34 @@ class AppController extends SimpleController
 
     public function getLastUpdatedAt($request, $response, $args)
     {
-        $types = ['UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step',
-            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Task',
-            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question',
-            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer',
-            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\SubTask',
-            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\logic'];
 
-        $lastUpdatedForContent = null;
 
-        foreach ($types as $type) {
-            $model = new $type;
-            $updatedAt = $model->max('updated_at');
+        $classMapper = $this->ci->classMapper;
 
-            if ($updatedAt > $lastUpdatedForContent) {
-                $lastUpdatedForContent = $updatedAt;
-            }
-        }
+        $typesForObjects = [
+            'logic_created', 'logic_updated', 'logic_deleted',
+            'question_created', 'question_updated', 'question_deleted',
+            'answer_created', 'answer_updated', 'answer_deleted',
+            'language_created', 'language_updated', 'language_deleted',
+            'step_created', 'step_updated', 'step_deleted',
+            'subTask_created', 'subTask_updated', 'subTask_deleted',
+            'task_created', 'task_updated', 'task_deleted'
+        ];
 
-        $types = ['UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text',
-            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation',
-            'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language'];
+        $lastUpdatedForContent = $classMapper->createInstance('activity')
+            ->whereIn('type', $typesForObjects)
+            ->max('occurred_at');
 
-        $lastUpdatedForTranslations = null;
 
-        foreach ($types as $type) {
-            $model = new $type;
-            $updatedAt = $model->max('updated_at');
+        $typesForTranslations = [
+            'language_created', 'language_updated', 'language_deleted',
+            'text_created', 'text_updated', 'text_deleted'
+        ];
 
-            if ($updatedAt > $lastUpdatedForTranslations) {
-                $lastUpdatedForTranslations = $updatedAt;
-            }
-        }
+        $lastUpdatedForTranslations = $classMapper->createInstance('activity')
+            ->whereIn('type', $typesForTranslations)
+            ->max('occurred_at');
+
 
         $data = [
             'last_updated_at_content' => $lastUpdatedForContent,

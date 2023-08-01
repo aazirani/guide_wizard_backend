@@ -219,18 +219,20 @@ class QuestionController extends SimpleController
         $config = $this
             ->ci->config;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $data['creator_id'] = $currentUser->id;
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
         {
 
             // Create the object
             $question = $classMapper->createInstance('question', $data);
             // Store new question to database
             $question->save();
-            TranslationsUtilities::saveTranslations($question, "Question", $params, $classMapper, $currentUser, $this->getTranslationsVariables($question));
+            TranslationsUtilities::saveTranslations($question, "Question", $params, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
 
@@ -323,13 +325,15 @@ class QuestionController extends SimpleController
 
         $classMapper = $this->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($question, $text, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($question, $text, $currentUser, $classMapper, $userActivityLogger)
         {
 
-            QuestionController::deleteObject($question, $classMapper);
+            QuestionController::deleteObject($question, $classMapper, $userActivityLogger, $currentUser);
 
             unset($question);
 
@@ -490,10 +494,12 @@ class QuestionController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post, $text)
+        Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post, $text, $userActivityLogger)
         {
             // Update the object and generate success messages
             foreach ($data as $name => $value)
@@ -504,7 +510,7 @@ class QuestionController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($question, "Question", $post, $classMapper, $currentUser, $this->getTranslationsVariables($question));
+            TranslationsUtilities::saveTranslations($question, "Question", $post, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger);
 
             // Create activity record
             $this
@@ -527,15 +533,15 @@ class QuestionController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($question, $classMapper){
+    public static function deleteObject($question, $classMapper, $userActivityLogger, $currentUser){
         $answers = $classMapper->staticMethod('answer', 'where', 'question_id', $question->id)->get();
         foreach ($answers as $answer) {
-            AnswerController::deleteObject($answer, $classMapper);
+            AnswerController::deleteObject($answer, $classMapper, $userActivityLogger, $currentUser);
         }
 
         $question->delete();
 
-        TranslationsUtilities::deleteTranslations($question, $classMapper, QuestionController::getTranslationsVariables($question));
+        TranslationsUtilities::deleteTranslations($question, $classMapper, QuestionController::getTranslationsVariables($question), $userActivityLogger, $currentUser);
     }
 
 }

@@ -373,7 +373,11 @@ class LogicController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($logic, $name, $currentUser)
         {
+            $logic->answers()->sync(null);
+            $logic->subTasks()->sync(null);
+
             $logic->delete();
+            
             unset($logic);
 
             // Create activity record
@@ -630,8 +634,6 @@ class LogicController extends SimpleController
             $subTasksIds = $logic->subTasks()->get()->pluck('id')->toArray();
             $form->setInputArgument('subTasks', 'value', implode(",", $subTasksIds));
         }
-
-
     }
 
 

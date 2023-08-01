@@ -216,6 +216,8 @@ class AnswerController extends SimpleController
         $config = $this
             ->ci->config;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $data['creator_id'] = $currentUser->id;
 
         //uploading images
@@ -223,14 +225,14 @@ class AnswerController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params)
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
         {
 
             // Create the object
             $answer = $classMapper->createInstance('answer', $data);
             // Store new answer to database
             $answer->save();
-            TranslationsUtilities::saveTranslations($answer, "Answer", $params, $classMapper, $currentUser, $this->getTranslationsVariables($answer));
+            TranslationsUtilities::saveTranslations($answer, "Answer", $params, $classMapper, $currentUser, $this->getTranslationsVariables($answer), $userActivityLogger);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper);
 
@@ -320,17 +322,17 @@ class AnswerController extends SimpleController
         $config = $this
             ->ci->config;
 
-
+        $userActivityLogger = $this->ci->userActivityLogger;
 
         $classMapper = $this->ci->classMapper;
 
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($answer, $text, $currentUser, $classMapper)
+        Capsule::transaction(function () use ($answer, $text, $currentUser, $classMapper, $userActivityLogger)
         {
 
-            AnswerController::deleteObject($answer, $classMapper);
+            AnswerController::deleteObject($answer, $classMapper, $userActivityLogger, $currentUser);
 
             unset($answer);
 
@@ -492,10 +494,12 @@ class AnswerController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        $userActivityLogger = $this->ci->userActivityLogger;
+
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $answer, $currentUser, $classMapper, $post, $text)
+        Capsule::transaction(function () use ($data, $answer, $currentUser, $classMapper, $post, $text, $userActivityLogger)
         {
 
             $answer->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $answer->image);
@@ -509,7 +513,7 @@ class AnswerController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($answer, "Answer", $post, $classMapper, $currentUser, $this->getTranslationsVariables($answer));
+            TranslationsUtilities::saveTranslations($answer, "Answer", $post, $classMapper, $currentUser, $this->getTranslationsVariables($answer), $userActivityLogger);
 
             // Create activity record
             $this
@@ -583,10 +587,11 @@ class AnswerController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($answer, $classMapper){
+    public static function deleteObject($answer, $classMapper, $userActivityLogger, $currentUser){
+        $answer->logics()->sync(null);
         $answer->delete();
 
-        TranslationsUtilities::deleteTranslations($answer, $classMapper, AnswerController::getTranslationsVariables($answer));
+        TranslationsUtilities::deleteTranslations($answer, $classMapper, AnswerController::getTranslationsVariables($answer), $userActivityLogger, $currentUser);
 
         //delete image files associated with this object
         if (isset($answer->image)) {

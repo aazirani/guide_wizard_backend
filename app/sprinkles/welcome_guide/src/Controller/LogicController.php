@@ -1,23 +1,21 @@
 <?php
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
-use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\NotFoundException as NotFoundException;
+use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\Core\Controller\SimpleController;
+use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\SubTask;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
-use UserFrosting\Sprinkle\FormGenerator\Form;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
 
 class LogicController extends SimpleController
 {
@@ -262,7 +260,7 @@ class LogicController extends SimpleController
 
     function isValidExpression($expr) {
         // Replace logical operators and operands with PHP-valid equivalents
-    $jsExpr = str_replace(['and', 'or', 'xor', '!'], ['&&', '||', '^', '!'], $expr);
+    $jsExpr = str_replace(['AND', 'OR', 'XOR', '!'], ['&&', '||', '^', '!'], $expr);
     $jsExpr = preg_replace('/\b\d+\b/', 'true', $jsExpr);
 
     // Check if parentheses are balanced
@@ -639,7 +637,7 @@ class LogicController extends SimpleController
 
     static function tokenizeExpression($expression) {
         // Handle the 'not' operator separately by using a lookahead assertion in the regex pattern
-        $pattern = '/\!|\d+|\(|\)|and|or|xor/';
+        $pattern = '/\!|\d+|\(|\)|AND|OR|XOR/';
         preg_match_all($pattern, $expression, $matches);
         return $matches[0];
     }

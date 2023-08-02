@@ -18,7 +18,7 @@
                 <th class="filter-select filter-metatext" data-column-name="is_multiple_choice" data-column-template="#question-table-column-is_multiple_choice" data-priority="1">{{translate("IS_MULTIPLE_CHOICE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="info_url" data-column-template="#question-table-column-info_url" data-priority="1">{{translate("INFO_URL")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="info_description" data-column-template="#question-table-column-info_description" data-priority="1">{{translate("INFO_DESCRIPTION")}} <i class="fa fa-sort"></i></th>
-                <th class="sorter-metatext" data-column-name="task" data-column-template="#question-table-column-task" data-priority="1">{{translate("TASK")}} <i class="fa fa-sort"></i></th>
+                <th class="sorter-metatext" data-column-name="step" data-column-template="#question-table-column-step" data-priority="1">{{translate("STEP")}} <i class="fa fa-sort"></i></th>
                 {% if 'creator' in table.columns %}
                     <th class="sorter-metatext" data-column-name="creator" data-column-template="#question-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
                 {% endif %}
@@ -133,16 +133,16 @@
             {{/each}}
         </td>
     </script>
-    <script id="question-table-column-task" type="text/x-handlebars-template">
-        <td data-text="{{row.task.text.technical_name}}">
-            {{#if row.task }}
-            {{#each row.task.text.translations}}
+    <script id="question-table-column-step" type="text/x-handlebars-template">
+        <td data-text="{{row.step.name.technical_name}}">
+            {{#if row.step }}
+            {{#each row.step.name.translations}}
             {{#ifx this.language.is_main_language '==' 1 }}
-            <a href="#" class="js-displayForm-table" data-toggle="modal" data-formurl="api/tasks/{{../row.task.id}}/edit">{{this.translated_text}} ({{this.language.language_name}})</a>
+            <a href="#" class="js-displayForm-table" data-toggle="modal" data-formurl="api/steps/{{../row.step.id}}/edit">{{this.translated_text}} ({{this.language.language_name}})</a>
             {{/ifx }}
             {{/each}}
             {{ else }}
-                <i>{% endverbatim %}{{translate("TASK.DELETED")}}{% verbatim %}</i>
+                <i>{% endverbatim %}{{translate("STEP.DELETED")}}{% verbatim %}</i>
             {{/if }}
         </td>
     </script>

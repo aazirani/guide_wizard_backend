@@ -147,14 +147,6 @@ class Task extends Model
         return $this->hasManyThrough($classMapper->getClassMapping('translation') , $classMapper->getClassMapping('text') , 'id', 'text_id', 'description', 'id');
     }
 
-    public function questions()
-    {
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = static ::$ci->classMapper;
-
-        return $this->hasMany($classMapper->getClassMapping('question'));
-    }
-
     public function subTasks()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */

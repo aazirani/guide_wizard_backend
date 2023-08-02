@@ -25,7 +25,7 @@ class QuestionSprunje extends ExtendedSprunje
         "is_multiple_choice",
         "info_url",
         "info_description",
-        "task",
+        "step",
         "creator",
         "created_at"
     ];
@@ -38,7 +38,7 @@ class QuestionSprunje extends ExtendedSprunje
         "is_multiple_choice",
         "info_url",
         "info_description",
-        "task",
+        "step",
         "creator"
     ];
 
@@ -51,7 +51,7 @@ class QuestionSprunje extends ExtendedSprunje
     {
         $query = $this->classMapper->createInstance('question');
 		
-		return $query->joinCreator()->joinTask()->joinTitle()->joinSubTitle()->joinInfoUrl()->joinInfoDescription()->distinct();
+		return $query->joinCreator()->joinStep()->joinTitle()->joinSubTitle()->joinInfoUrl()->joinInfoDescription()->distinct();
     }
 
     /**
@@ -226,27 +226,27 @@ class QuestionSprunje extends ExtendedSprunje
     }
 
     /**
-     * Filter LIKE the task text.
+     * Filter LIKE the step name.
      *
      * @param Builder $query
      * @param mixed $value
      * @return $this
      */
-    protected function filterTask($query, $value)
+    protected function filterStep($query, $value)
     {
-        return $this->filterForTranslation($query, $value, 'task_text_translation.translated_text');
+        return $this->filterForTranslation($query, $value, 'step_name_translation.translated_text');
     }
 
     /**
-     * Sort based on task text.
+     * Sort based on step text.
      *
      * @param Builder $query
      * @param string $direction
      * @return $this
      */
-    protected function sortTask($query, $direction)
+    protected function sortStep($query, $direction)
     {
-        $query->orderBy('questions.task_id', $direction);
+        $query->orderBy('questions.step_id', $direction);
         return $this;
     }
 	

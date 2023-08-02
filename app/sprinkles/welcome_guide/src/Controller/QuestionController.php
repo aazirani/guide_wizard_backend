@@ -1,23 +1,20 @@
 <?php
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
-use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\NotFoundException as NotFoundException;
+use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
-use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
+use UserFrosting\Sprinkle\Core\Controller\SimpleController;
+use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
-use UserFrosting\Sprinkle\FormGenerator\Form;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Task;
 
 class QuestionController extends SimpleController
 {
@@ -51,7 +48,7 @@ class QuestionController extends SimpleController
         $sprunje->extendQuery(function ($query)
         {
             return $query->with('creator')
-                ->with('task.text.translations.language')
+                ->with('step.name.translations.language')
                 ->with('title.translations.language')
                 ->with('subTitle.translations.language')
                 ->with('infoUrl.translations.language')
@@ -135,14 +132,14 @@ class QuestionController extends SimpleController
         $classMapper = $this->ci->classMapper;
         TranslationsUtilities::setFormValues($form, $classMapper, QuestionController::getTranslationsVariables(null));
 
-        $tasks = TASK::all();
-        $taskSelect = [];
-        foreach ($tasks as $task)
+        $steps = STEP::all();
+        $stepSelect = [];
+        foreach ($steps as $step)
         {
-            $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
+            $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
 
-        $form->setInputArgument('task_id', 'options', $taskSelect);
+        $form->setInputArgument('step_id', 'options', $stepSelect);
 
         // Using custom form here to add the javascript we need fo Typeahead.
         $this
@@ -278,7 +275,7 @@ class QuestionController extends SimpleController
             ->ci->classMapper;
         // Get the object to delete
         $question = $classMapper->staticMethod('question', 'where', 'id', $data['question_id'])->with('creator')
-            ->with('task')
+            ->with('step')
             ->first();
 
         return $question;
@@ -411,13 +408,13 @@ class QuestionController extends SimpleController
 
         TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($question));
 
-        $tasks = TASK::all();
-        $taskSelect = [];
-        foreach ($tasks as $task)
+        $steps = Step::all();
+        $stepSelect = [];
+        foreach ($steps as $step)
         {
-            $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
+            $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
-        $form->setInputArgument('task_id', 'options', $taskSelect);
+        $form->setInputArgument('step_id', 'options', $stepSelect);
 
         // Render the template / form
         $this

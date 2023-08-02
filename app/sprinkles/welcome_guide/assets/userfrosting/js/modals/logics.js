@@ -114,7 +114,7 @@
         expressionData = expressionData.replace(/!\s+/g, '!') // Remove spaces after unary "!"
                                 .replace(/\s+\)/g, ')') // Remove spaces before closing parenthesis
                                 .replace(/\(\s+/g, '(') // Remove spaces after opening parenthesis
-                                .replace(/\s+(and|or|xor)\s+/g, ' $1 '); // Ensure spaces around binary operators
+                                .replace(/\s+(AND|OR|XOR)\s+/g, ' $1 '); // Ensure spaces around binary operators
 
         $('#field_expression').val(expressionData);
 
@@ -136,9 +136,9 @@
     
     function isValidExpression(expr) {
         // Replace logical operators and operands with JavaScript-valid equivalents
-        var jsExpr = expr.replace(/and/g, '&&')
-                     .replace(/or/g, '||')
-                     .replace(/xor/g, '^')
+        var jsExpr = expr.replace(/AND/g, '&&')
+                     .replace(/OR/g, '||')
+                     .replace(/XOR/g, '^')
                      .replace(/!/g, '!')
                      .replace(/\b\d+\b/g, 'true');
 
@@ -168,3 +168,18 @@
         return true;
     }
 
+function showAnswerData(answerTitle, questionTitle){
+        Swal.fire({
+            titleText: answerTitle,
+            text: questionTitle,
+            target: '#expandable-container-expression-builder',
+            customClass: {
+                container: 'position-absolute'
+            },
+            toast: false,
+            position: 'bottom-right',
+            showConfirmButton: false,
+            allowOutsideClick: true,
+            backdrop: true
+        })
+    }

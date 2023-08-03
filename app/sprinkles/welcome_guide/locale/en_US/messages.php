@@ -237,5 +237,6 @@ return [
     "FA_ICON" => "Icon",
     "LANGUAGE_NAME" => "Language Name",
     "IS_MAIN_LANGUAGE" => "Is Main Language",
-    "SUB_TASKS_ORDER" => "Order of Sub Tasks"
+    "SUB_TASKS_ORDER" => "Order of Sub Tasks",
+    "ANSWERS_ORDER" => "Order of Answers"
     ];

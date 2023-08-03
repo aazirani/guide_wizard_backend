@@ -13,8 +13,7 @@
             <tr>
 				<th class="sorter-metatext" data-column-name="title" data-column-template="#answer-table-column-title" data-priority="1">{{translate("TITLE")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="question" data-column-template="#answer-table-column-question" data-priority="1">{{translate("QUESTION")}} <i class="fa fa-sort"></i></th>
-				<th class="sorter-metatext" data-column-name="order" data-column-template="#answer-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
-                <th data-sorter="false" data-filter="false" data-column-name="image" data-column-template="#answer-table-column-image" data-priority="1">{{translate("IMAGE")}}</th>
+				<th data-sorter="false" data-filter="false" data-column-name="image" data-column-template="#answer-table-column-image" data-priority="1">{{translate("IMAGE")}}</th>
                 <th class="filter-select filter-metatext" data-column-name="is_enabled" data-column-template="#answer-table-column-is_enabled" data-priority="1">{{translate("IS_ENABLED")}} <i class="fa fa-sort"></i></th>
 
                 {% if 'creator' in table.columns %}
@@ -53,11 +52,6 @@
             <a href="#" class="js-displayForm-table" data-toggle="modal" data-formurl="api/questions/{{../row.question.id}}/edit">{{this.translated_text}} ({{this.language.language_name}})</a>
             {{/ifx }}
             {{/each}}
-        </td>
-    </script>
-    <script id="answer-table-column-order" type="answer/x-handlebars-template">
-        <td data-id="{{row.id}}">
-				{{row.order}}
         </td>
     </script>
     <script id="answer-table-column-image" type="answer/x-handlebars-template">

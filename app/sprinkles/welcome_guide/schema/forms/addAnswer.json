@@ -20,23 +20,6 @@
             "placeholder" : "TITLE"
         }
     },
-    "order" : {
-        "validators" : {
-            "length" : {
-                "min" : 1,
-                "max" : 99
-            },
-            "required" : {
-                "message" : "VALIDATE.ORDER"
-            }
-        },
-        "form" : {
-            "type" : "text",
-            "label" : "ORDER",
-            "icon" : "fa-globe-americas",
-            "placeholder" : "ORDER"
-        }
-    },
     "image" : {
         "validators" : {},
         "form" : {
@@ -50,7 +33,7 @@
         "validators" : {
             "member_of" : {
                 "values" : [
-                    "0", "1"
+                    "1", "0"
                 ]
             },
             "required" : {
@@ -61,8 +44,8 @@
             "type" : "select",
             "label" : "IS_ENABLED",
             "options" : {
-                "0" : "NO",
-                "1" : "YES"
+                "1" : "YES",
+                "0" : "NO"
             }
         }
     }

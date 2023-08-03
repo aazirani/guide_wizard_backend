@@ -414,7 +414,7 @@ class TaskController extends SimpleController
         $form->setInputArgument('subTasks', 'elements', $subTaskSelect);
 
         TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($task));
-        
+
         // Render the template / form
         $this
             ->ci
@@ -606,27 +606,27 @@ class TaskController extends SimpleController
         }
     }
 
-        private static function saveSubTaskOrder($data, $classMapper)
-        {
-            $orderedSubTasks = explode(",", $data['subTasksOrder']);
-            if (!empty($orderedSubTasks)) {
-                // Fetch all sub-tasks at once
-                $subTasks = $classMapper->createInstance('subTask')
-                    ->whereIn('id', $orderedSubTasks)
-                    ->get();
+    private static function saveSubTaskOrder($data, $classMapper)
+    {
+        $orderedSubTasks = explode(",", $data['subTasksOrder']);
+        if (!empty($orderedSubTasks)) {
+            // Fetch all sub-tasks at once
+            $subTasks = $classMapper->createInstance('subTask')
+                ->whereIn('id', $orderedSubTasks)
+                ->get();
 
-                // Create an associative array [id => subTask]
-                $subTasks = $subTasks->keyBy('id');
+            // Create an associative array [id => subTask]
+            $subTasks = $subTasks->keyBy('id');
 
-                // Loop over the ids and update the order
-                foreach ($orderedSubTasks as $index => $id) {
-                    $subTasks[$id]->order = $index + 1;
-                }
-
-                // Save all updated sub-tasks at once
-                $subTasks->each(function ($subTask) {
-                    $subTask->save();
-                });
+            // Loop over the ids and update the order
+            foreach ($orderedSubTasks as $index => $id) {
+                $subTasks[$id]->order = $index + 1;
             }
+
+            // Save all updated sub-tasks at once
+            $subTasks->each(function ($subTask) {
+                $subTask->save();
+            });
         }
+    }
 }

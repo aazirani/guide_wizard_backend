@@ -86,7 +86,8 @@ class AppController extends SimpleController
         $sprunje->extendQuery(function ($query) use ($subTaskIds) {
             return $query
                 ->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
-                    $query->whereIn('id', $subTaskIds);
+                    $query->
+                    ('id', $subTaskIds);
                 })
                 ->orWhereHas('questions')
                 ->with([

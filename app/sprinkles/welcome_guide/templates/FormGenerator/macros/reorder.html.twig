@@ -1,0 +1,14 @@
+{% macro generate(input) %}
+
+<div id="list-of-elements" class="list-group col">
+    {% for id, title in input.elements %}
+        <div id="{{id}}" class="list-group-item handle" style=""><i class="fas fa-arrows-alt handle"></i>&nbsp;&nbsp;{{title}}</div>
+    {% endfor %}
+</div>
+
+{% block scripts_page %}
+<!-- Include Page-specific JS -->
+{{ assets.js('js/modals/tasks') | raw }}
+{% endblock %}
+
+{% endmacro %}

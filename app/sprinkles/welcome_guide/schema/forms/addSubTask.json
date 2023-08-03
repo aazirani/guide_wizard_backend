@@ -35,22 +35,5 @@
             "icon" : "fa-th-list",
             "placeholder" : "DEADLINE"
         }
-    },
-    "order" : {
-        "validators" : {
-            "length" : {
-                "min" : 1,
-                "max" : 99
-            },
-            "required" : {
-                "message" : "VALIDATE.ORDER"
-            }
-        },
-        "form" : {
-            "type" : "text",
-            "label" : "ORDER",
-            "icon" : "fa-th-list",
-            "placeholder" : "ORDER"
-        }
-    },
+    }
 }

@@ -241,7 +241,7 @@ class LogicController extends SimpleController
             if($data['subTasks']){
                 $logic->subTasks()->sync(array_map('intval', explode(",", $data['subTasks'])));
             } else {
-                $logic->subTasks()->sync(null);
+                $logic->subTasks()->detach();
             }
 
 
@@ -371,8 +371,8 @@ class LogicController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($logic, $name, $currentUser)
         {
-            $logic->answers()->sync(null);
-            $logic->subTasks()->sync(null);
+            $logic->answers()->detach();
+            $logic->subTasks()->detach();
 
             $logic->delete();
             
@@ -564,7 +564,7 @@ class LogicController extends SimpleController
             if($data['subTasks']){
                 $logic->subTasks()->sync(array_map('intval', explode(",", $data['subTasks'])));
             } else {
-                $logic->subTasks()->sync(null);
+                $logic->subTasks()->detach();
             }
 
 

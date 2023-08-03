@@ -100,7 +100,8 @@
         },
         "js/pages/tasks": {
             "scripts": [
-                "userfrosting/js/pages/tasks.js"
+                "userfrosting/js/pages/tasks.js",
+                "vendor/sortablejs/Sortable.min.js"
             ],
             "options": {
                 "result": {
@@ -150,6 +151,18 @@
             "styles": [
                 "userfrosting/css/modals/subTasks.css"
             ]
+        },
+        "js/modals/tasks": {
+            "scripts": [
+                "userfrosting/js/modals/tasks.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
         }
     }
 }

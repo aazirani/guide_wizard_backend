@@ -172,6 +172,6 @@ class SubTask extends Model
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static::$ci->classMapper;
  
-        return $this->belongsToMany($classMapper->getClassMapping('logic'));
+        return $this->belongsToMany($classMapper->getClassMapping('logic'), 'sub_task_logic');
     }
 }

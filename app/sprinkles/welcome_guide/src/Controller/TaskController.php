@@ -1,5 +1,7 @@
 <?php
+
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
+
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -19,7 +21,6 @@ use UserFrosting\Support\Exception\HttpException;
 
 class TaskController extends SimpleController
 {
-
     /**
      * Return the list of all objects.
      */
@@ -38,8 +39,7 @@ class TaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_tasks'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_tasks')) {
             throw new ForbiddenException();
         }
 
@@ -47,8 +47,7 @@ class TaskController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         $sprunje = $classMapper->createInstance('task_sprunje', $classMapper, $params);
-        $sprunje->extendQuery(function ($query)
-        {
+        $sprunje->extendQuery(function ($query) {
             return $query->with('creator')
                 ->with('text.translations.language')
                 ->with('description.translations.language')
@@ -76,8 +75,7 @@ class TaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_tasks'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_tasks')) {
             throw new ForbiddenException();
         }
 
@@ -116,8 +114,7 @@ class TaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_task'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_task')) {
             throw new ForbiddenException();
         }
 
@@ -134,9 +131,8 @@ class TaskController extends SimpleController
 
         $steps = STEP::all();
         $stepSelect = [];
-        foreach ($steps as $step)
-        {
-            if($step->order == 1){
+        foreach ($steps as $step) {
+            if ($step->order == 1) {
                 continue;
             }
             $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
@@ -147,7 +143,7 @@ class TaskController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TASK.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/tasks', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TASK.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/tasks', 'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -174,8 +170,7 @@ class TaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_task'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_task')) {
             throw new ForbiddenException();
         }
 
@@ -196,8 +191,7 @@ class TaskController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             $error = true;
         }
@@ -209,8 +203,7 @@ class TaskController extends SimpleController
         //Add the creator id to the sent data
         $data['creator_id'] = $currentUser->id;
 
-        if ($error)
-        {
+        if ($error) {
             return $response->withStatus(400);
         }
 
@@ -228,8 +221,7 @@ class TaskController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger) {
 
             // Create the object
             $task = $classMapper->createInstance('task', $data);
@@ -263,14 +255,11 @@ class TaskController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
             $e = new BadRequestException();
-            foreach ($validator->errors() as $idx => $field)
-            {
-                foreach ($field as $eidx => $error)
-                {
+            foreach ($validator->errors() as $idx => $field) {
+                foreach ($field as $eidx => $error) {
                     $e->addUserMessage($error);
                 }
             }
@@ -300,8 +289,7 @@ class TaskController extends SimpleController
         $task = $this->getTaskFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$task)
-        {
+        if (!$task) {
             throw new NotFoundException($request, $response);
         }
 
@@ -314,8 +302,7 @@ class TaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_task', ['task' => $task]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'delete_task', ['task' => $task])) {
             throw new ForbiddenException();
         }
         /** @var UserFrosting\Sprinkle\Core\MessageStream $ms */
@@ -333,8 +320,7 @@ class TaskController extends SimpleController
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($task, $text, $currentUser, $classMapper, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($task, $text, $currentUser, $classMapper, $userActivityLogger) {
 
             TaskController::deleteObject($task, $classMapper, $userActivityLogger, $currentUser);
 
@@ -372,8 +358,7 @@ class TaskController extends SimpleController
         $task = $this->getTaskFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$task)
-        {
+        if (!$task) {
             throw new NotFoundException($request, $response);
         }
 
@@ -394,8 +379,7 @@ class TaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_task_field', ['task' => $task]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_task_field', ['task' => $task])) {
             throw new ForbiddenException();
         }
 
@@ -404,34 +388,40 @@ class TaskController extends SimpleController
             ->ci->config;
 
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addTask.json');
+        $schema = new RequestSchema('schema://forms/editTask.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
 
         // Generate the form
         $form = new Form($schema, $task);
-        
-        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($task));
 
         $steps = STEP::all();
         $stepSelect = [];
-        foreach ($steps as $step)
-        {
-            if($step->order == 1){
+        foreach ($steps as $step) {
+            if ($step->order == 1) {
                 continue;
             }
             $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
+
+        $subTasks = $classMapper->staticMethod('subTask', 'where', 'task_id', $task->id)->orderBy('order', 'asc')->get();
+        $subTaskSelect = [];
+        foreach ($subTasks as $subTask) {
+            $subTaskSelect += [$subTask->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper)];
+        }
+        $form->setInputArgument('subTasks', 'elements', $subTaskSelect);
+
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($task));
         
         // Render the template / form
         $this
             ->ci
             ->view
             ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'TASK.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/tasks/' . $args['task_id'],
-        //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
-        'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+                //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
+                'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -450,8 +440,7 @@ class TaskController extends SimpleController
         // Get the object from the URL
         $task = $this->getTaskFromParams($args);
 
-        if (!$task)
-        {
+        if (!$task) {
             throw new NotFoundException($request, $response);
         }
 
@@ -467,7 +456,7 @@ class TaskController extends SimpleController
         $post = $request->getParsedBody();
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addTask.json');
+        $schema = new RequestSchema('schema://forms/editTask.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -477,8 +466,7 @@ class TaskController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             return $response->withStatus(400);
         }
@@ -492,8 +480,7 @@ class TaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_task_field', ['task' => $task]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_task_field', ['task' => $task])) {
             throw new ForbiddenException();
         }
 
@@ -506,22 +493,21 @@ class TaskController extends SimpleController
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post, $text, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post, $text, $userActivityLogger) {
 
             $task->image_1 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', $task->image_1);
             $task->image_2 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_2', $task->image_2);
 
             // Update the object and generate success messages
-            foreach ($data as $name => $value)
-            {
-                if ($value != $task->$name)
-                {
+            foreach ($data as $name => $value) {
+                if ($value != $task->$name && $name != 'subTasksOrder') {
                     $task->$name = $value;
                 }
             }
 
             TranslationsUtilities::saveTranslations($task, "Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($task), $userActivityLogger);
+
+            TaskController::saveSubTaskOrder($data, $classMapper);
 
             // Create activity record
             $this
@@ -533,72 +519,75 @@ class TaskController extends SimpleController
         $ms->addMessageTranslated('success', 'TASK.DETAILS_UPDATED', ['name' => $text]);
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
-    
-    public function deliverImageFile($request, $response, $args){
+
+    public function deliverImageFile($request, $response, $args)
+    {
         // Load the request schema
-		$schema = new RequestSchema('schema://requests/image-get-by-name.yaml');
+        $schema = new RequestSchema('schema://requests/image-get-by-name.yaml');
         // Whitelist and set parameter defaults
-		$transformer = new RequestDataTransformer($schema);
+        $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($args);
         // Validate, and throw exception on validation errors.
-		$validator = new ServerSideValidator($schema, $this->ci->translator);
+        $validator = new ServerSideValidator($schema, $this->ci->translator);
         if (!$validator->validate($data)) {
             // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
-			$e = new BadRequestException();
+            $e = new BadRequestException();
             foreach ($validator->errors() as $idx => $field) {
-                foreach($field as $eidx => $error) {
+                foreach ($field as $eidx => $error) {
                     $e->addUserMessage($error);
                 }
             }
-			throw $e;
+            throw $e;
         }
 
-		$filename = ImageUploadAndDelivery::getFullImagePath($data['image_name']);
+        $filename = ImageUploadAndDelivery::getFullImagePath($data['image_name']);
 
 
-        if(file_exists($filename)){
+        if (file_exists($filename)) {
             //Get file type and set it as Content Type
-		    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $finfomime = finfo_file($finfo, $filename);
-            if ( $finfomime == ( "image/png" ) ||
-			        $finfomime == ( "image/jpeg" ) ||
-			        $finfomime == ( "image/gif" ) ||
-			        $finfomime == ( "image/bmp" ) ) {
+            if ($finfomime == ("image/png") ||
+                $finfomime == ("image/jpeg") ||
+                $finfomime == ("image/gif") ||
+                $finfomime == ("image/bmp")) {
 
                 header('Content-Type: ' . finfo_file($finfo, $filename));
                 finfo_close($finfo);
 
                 //Use Content-Disposition: attachment to specify the filename
-					    header('Content-Disposition: attachment; filename='.basename($filename));
+                header('Content-Disposition: attachment; filename=' . basename($filename));
 
-                        //No cache
-					    header('Expires: 0');
-                        header('Cache-Control: must-revalidate');
-                        header('Pragma: public');
+                //No cache
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
 
-                        //Define file size
-					    header('Content-Length: ' . filesize($filename));
+                //Define file size
+                header('Content-Length: ' . filesize($filename));
 
-                        ob_clean();
-                        flush();
-                        readfile($filename);
-                        exit;
+                ob_clean();
+                flush();
+                readfile($filename);
+                exit;
             }
 
         }
-		return $response->withStatus(200);
+        return $response->withStatus(200);
     }
 
-    private static function getTranslationsVariables($task){
+    private static function getTranslationsVariables($task)
+    {
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['text'] = isset($subTask) ? $task->text : null;
-        $arrayOfObjectWithKeyAsKey['description'] = isset($subTask) ? $task->description : null;
+        $arrayOfObjectWithKeyAsKey['text'] = isset($task) ? $task->text : null;
+        $arrayOfObjectWithKeyAsKey['description'] = isset($task) ? $task->description : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($task, $classMapper, $userActivityLogger, $currentUser){
-        
+    public static function deleteObject($task, $classMapper, $userActivityLogger, $currentUser)
+    {
+
         $subTasks = $classMapper->staticMethod('subTask', 'where', 'task_id', $task->id)->get();
         foreach ($subTasks as $subTask) {
             SubTaskController::deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser);
@@ -609,11 +598,35 @@ class TaskController extends SimpleController
         TranslationsUtilities::deleteTranslations($task, $classMapper, TaskController::getTranslationsVariables($task), $userActivityLogger, $currentUser);
 
         //delete image files associated with this object
-            if (isset($task->image_1)) {
-                ImageUploadAndDelivery::deleteImageFile($task->image_1);
-            }
-            if (isset($task->image_2)) {
-                ImageUploadAndDelivery::deleteImageFile($task->image_2);
-            }
+        if (isset($task->image_1)) {
+            ImageUploadAndDelivery::deleteImageFile($task->image_1);
+        }
+        if (isset($task->image_2)) {
+            ImageUploadAndDelivery::deleteImageFile($task->image_2);
+        }
     }
+
+        private static function saveSubTaskOrder($data, $classMapper)
+        {
+            $orderedSubTasks = explode(",", $data['subTasksOrder']);
+            if (!empty($orderedSubTasks)) {
+                // Fetch all sub-tasks at once
+                $subTasks = $classMapper->createInstance('subTask')
+                    ->whereIn('id', $orderedSubTasks)
+                    ->get();
+
+                // Create an associative array [id => subTask]
+                $subTasks = $subTasks->keyBy('id');
+
+                // Loop over the ids and update the order
+                foreach ($orderedSubTasks as $index => $id) {
+                    $subTasks[$id]->order = $index + 1;
+                }
+
+                // Save all updated sub-tasks at once
+                $subTasks->each(function ($subTask) {
+                    $subTask->save();
+                });
+            }
+        }
 }

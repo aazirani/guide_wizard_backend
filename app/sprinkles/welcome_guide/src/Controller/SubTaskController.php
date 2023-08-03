@@ -1,5 +1,7 @@
 <?php
+
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
+
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -37,8 +39,7 @@ class SubTaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_subTasks'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_subTasks')) {
             throw new ForbiddenException();
         }
 
@@ -46,8 +47,7 @@ class SubTaskController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         $sprunje = $classMapper->createInstance('subTask_sprunje', $classMapper, $params);
-        $sprunje->extendQuery(function ($query)
-        {
+        $sprunje->extendQuery(function ($query) {
             return $query->with('creator')
                 ->with('task.text.translations.language')
                 ->with('title.translations.language')
@@ -76,8 +76,7 @@ class SubTaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_subTasks'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_subTasks')) {
             throw new ForbiddenException();
         }
 
@@ -116,8 +115,7 @@ class SubTaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_subTask'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_subTask')) {
             throw new ForbiddenException();
         }
 
@@ -134,8 +132,7 @@ class SubTaskController extends SimpleController
 
         $tasks = TASK::all();
         $taskSelect = [];
-        foreach ($tasks as $task)
-        {
+        foreach ($tasks as $task) {
             $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
         }
         $form->setInputArgument('task_id', 'options', $taskSelect);
@@ -144,7 +141,7 @@ class SubTaskController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal-large.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'SUB_TASK.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/subTasks', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal-large.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'SUB_TASK.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/subTasks', 'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -171,8 +168,7 @@ class SubTaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_subTask'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_subTask')) {
             throw new ForbiddenException();
         }
 
@@ -193,8 +189,7 @@ class SubTaskController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             $error = true;
         }
@@ -206,8 +201,7 @@ class SubTaskController extends SimpleController
         //Add the creator id to the sent data
         $data['creator_id'] = $currentUser->id;
 
-        if ($error)
-        {
+        if ($error) {
             return $response->withStatus(400);
         }
 
@@ -221,11 +215,17 @@ class SubTaskController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger) {
 
             // Create the object
             $subTask = $classMapper->createInstance('subTask', $data);
+
+            $latestOrder = (int)$classMapper->createInstance('subTask')
+                ->where('task_id', $subTask->task_id)
+                ->max('order');
+
+            $subTask->order = $latestOrder + 1;
+
             // Store new subTask to database
             $subTask->save();
 
@@ -256,14 +256,11 @@ class SubTaskController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
             $e = new BadRequestException();
-            foreach ($validator->errors() as $idx => $field)
-            {
-                foreach ($field as $eidx => $error)
-                {
+            foreach ($validator->errors() as $idx => $field) {
+                foreach ($field as $eidx => $error) {
                     $e->addUserMessage($error);
                 }
             }
@@ -293,8 +290,7 @@ class SubTaskController extends SimpleController
         $subTask = $this->getSubTaskFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$subTask)
-        {
+        if (!$subTask) {
             throw new NotFoundException($request, $response);
         }
 
@@ -307,8 +303,7 @@ class SubTaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_subTask', ['subTask' => $subTask]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'delete_subTask', ['subTask' => $subTask])) {
             throw new ForbiddenException();
         }
         /** @var UserFrosting\Sprinkle\Core\MessageStream $ms */
@@ -326,10 +321,9 @@ class SubTaskController extends SimpleController
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($subTask, $text, $currentUser, $classMapper, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($subTask, $text, $currentUser, $classMapper, $userActivityLogger) {
             SubTaskController::deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser);
-            
+
             unset($subTask);
 
             // Create activity record
@@ -364,8 +358,7 @@ class SubTaskController extends SimpleController
         $subTask = $this->getSubTaskFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$subTask)
-        {
+        if (!$subTask) {
             throw new NotFoundException($request, $response);
         }
 
@@ -386,8 +379,7 @@ class SubTaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_subTask_field', ['subTask' => $subTask]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_subTask_field', ['subTask' => $subTask])) {
             throw new ForbiddenException();
         }
 
@@ -405,22 +397,21 @@ class SubTaskController extends SimpleController
         $form = new Form($schema, $subTask);
 
         TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($subTask));
-        
+
         $tasks = TASK::all();
         $taskSelect = [];
-        foreach ($tasks as $task)
-        {
+        foreach ($tasks as $task) {
             $taskSelect += [$task->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper)];
         }
         $form->setInputArgument('task_id', 'options', $taskSelect);
-        
+
         // Render the template / form
         $this
             ->ci
             ->view
             ->render($response, 'FormGenerator/modal-large.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'SUB_TASK.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/subTasks/' . $args['subTask_id'],
-        //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
-        'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+                //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
+                'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -439,8 +430,7 @@ class SubTaskController extends SimpleController
         // Get the object from the URL
         $subTask = $this->getSubTaskFromParams($args);
 
-        if (!$subTask)
-        {
+        if (!$subTask) {
             throw new NotFoundException($request, $response);
         }
 
@@ -466,8 +456,7 @@ class SubTaskController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             return $response->withStatus(400);
         }
@@ -481,8 +470,7 @@ class SubTaskController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_subTask_field', ['subTask' => $subTask]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_subTask_field', ['subTask' => $subTask])) {
             throw new ForbiddenException();
         }
 
@@ -495,13 +483,10 @@ class SubTaskController extends SimpleController
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $subTask, $currentUser, $classMapper, $post, $text, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($data, $subTask, $currentUser, $classMapper, $post, $text, $userActivityLogger) {
             // Update the object and generate success messages
-            foreach ($data as $name => $value)
-            {
-                if ($value != $subTask->$name)
-                {
+            foreach ($data as $name => $value) {
+                if ($value != $subTask->$name) {
                     $subTask->$name = $value;
                 }
             }
@@ -519,7 +504,8 @@ class SubTaskController extends SimpleController
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 
-    private static function getTranslationsVariables($subTask){
+    private static function getTranslationsVariables($subTask)
+    {
         $arrayOfObjectWithKeyAsKey = array();
         $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $subTask->title : null;
         $arrayOfObjectWithKeyAsKey['markdown'] = isset($subTask) ? $subTask->markdown : null;
@@ -528,8 +514,10 @@ class SubTaskController extends SimpleController
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser){
-        $subTask->logics()->sync(null);
+    public static function deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser)
+    {
+        $subTask->logics()->detach();
+
         $subTask->delete();
 
         TranslationsUtilities::deleteTranslations($subTask, $classMapper, SubTaskController::getTranslationsVariables($subTask), $userActivityLogger, $currentUser);

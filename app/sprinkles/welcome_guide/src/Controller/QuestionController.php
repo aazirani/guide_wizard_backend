@@ -507,10 +507,10 @@ class QuestionController extends SimpleController
     private static function getTranslationsVariables($question)
     {
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $question->title : null;
-        $arrayOfObjectWithKeyAsKey['sub_title'] = isset($subTask) ? $question->sub_title : null;
-        $arrayOfObjectWithKeyAsKey['info_url'] = isset($subTask) ? $question->info_url : null;
-        $arrayOfObjectWithKeyAsKey['info_description'] = isset($subTask) ? $question->info_description : null;
+        $arrayOfObjectWithKeyAsKey['title'] = isset($question) ? $question->title : null;
+        $arrayOfObjectWithKeyAsKey['sub_title'] = isset($question) ? $question->sub_title : null;
+        $arrayOfObjectWithKeyAsKey['info_url'] = isset($question) ? $question->info_url : null;
+        $arrayOfObjectWithKeyAsKey['info_description'] = isset($question) ? $question->info_description : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }

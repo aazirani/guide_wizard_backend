@@ -15,7 +15,6 @@
 				<th class="sorter-metatext" data-column-name="task" data-column-template="#subTask-table-column-task" data-priority="1">{{translate("TASK")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="markdown" data-column-template="#subTask-table-column-markdown" data-priority="1">{{translate("MARKDOWN")}} <i class="fa fa-sort"></i></th>
 				<th class="sorter-metatext" data-column-name="deadline" data-column-template="#subTask-table-column-deadline" data-priority="1">{{translate("DEADLINE")}} <i class="fa fa-sort"></i></th>
-                <th class="sorter-metatext" data-column-name="order" data-column-template="#subTask-table-column-order" data-priority="1">{{translate("ORDER")}} <i class="fa fa-sort"></i></th>
                 
 
                 {% if 'creator' in table.columns %}
@@ -72,11 +71,6 @@
             {{this.translated_text}} ({{this.language.language_name}})
             {{/ifx }}
             {{/each}}
-        </td>
-    </script>
-    <script id="subTask-table-column-order" type="text/x-handlebars-template">
-        <td>
-            {{row.order}}
         </td>
     </script>
 	<script id="subTask-table-column-creator" type="text/x-handlebars-template">

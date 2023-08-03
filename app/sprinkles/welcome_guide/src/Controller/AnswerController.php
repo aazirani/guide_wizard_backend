@@ -580,13 +580,13 @@ class AnswerController extends SimpleController
 
     private static function getTranslationsVariables($answer){
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $answer->title : null;
+        $arrayOfObjectWithKeyAsKey['title'] = isset($answer) ? $answer->title : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }
 
     public static function deleteObject($answer, $classMapper, $userActivityLogger, $currentUser){
-        $answer->logics()->sync(null);
+        $answer->logics()->detach();
         $answer->delete();
 
         TranslationsUtilities::deleteTranslations($answer, $classMapper, AnswerController::getTranslationsVariables($answer), $userActivityLogger, $currentUser);

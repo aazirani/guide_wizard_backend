@@ -12,11 +12,6 @@
         <a href="{{site.uri.public}}/steps"><i class="fa fa-shoe-prints"></i> <span>{{ translate("STEP", 2) }}</span></a>
     </li>
     {% endif %}
-    {% if checkAccess('view_tasks') %}
-    <li>
-        <a href="{{site.uri.public}}/tasks"><i class="fa fa-list"></i> <span>{{ translate("TASK", 2) }}</span></a>
-    </li>
-    {% endif %}
     {% if checkAccess('view_questions') %}
     <li>
         <a href="{{site.uri.public}}/questions"><i class="fa fa-question"></i> <span>{{ translate("QUESTION", 2) }}</span></a>
@@ -25,6 +20,11 @@
     {% if checkAccess('view_answers') %}
     <li>
         <a href="{{site.uri.public}}/answers"><i class="fa fa-comment-dots"></i> <span>{{ translate("ANSWER", 2) }}</span></a>
+    </li>
+    {% endif %}
+    {% if checkAccess('view_tasks') %}
+    <li>
+        <a href="{{site.uri.public}}/tasks"><i class="fa fa-list"></i> <span>{{ translate("TASK", 2) }}</span></a>
     </li>
     {% endif %}
     {% if checkAccess('view_subTasks') %}

@@ -91,7 +91,8 @@ class AppController extends SimpleController
                 ->orWhereHas('questions')
                 ->with([
                     'questions.answers' => function ($query) {
-                        $query->orderBy('order', 'asc');
+                        $query->where('is_enabled', 1)
+                            ->orderBy('order', 'asc');
                     },
                     'tasks.subTasks' => function ($query) use ($subTaskIds) {
                         $query->whereIn('id', $subTaskIds)

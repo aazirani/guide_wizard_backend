@@ -84,6 +84,9 @@ class TranslationsUtilities{
         }
 
         foreach ($arrayOfKeys as $key => &$value) {
+            if(!isset($value)){
+                continue;
+            }
             //Set all the current translations for the modal dialog
             $translations = $classMapper->staticMethod('text', 'where', 'id', $value)->with('translations')->first()->translations;
             $translationSelect = [];

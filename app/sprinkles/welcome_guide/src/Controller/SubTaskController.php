@@ -521,9 +521,9 @@ class SubTaskController extends SimpleController
 
     private static function getTranslationsVariables($subTask){
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['title'] = $subTask->title;
-        $arrayOfObjectWithKeyAsKey['markdown'] = $subTask->markdown;
-        $arrayOfObjectWithKeyAsKey['deadline'] = $subTask->deadline;
+        $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $subTask->title : null;
+        $arrayOfObjectWithKeyAsKey['markdown'] = isset($subTask) ? $subTask->markdown : null;
+        $arrayOfObjectWithKeyAsKey['deadline'] = isset($subTask) ? $subTask->deadline : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }

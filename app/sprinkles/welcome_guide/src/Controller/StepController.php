@@ -1,5 +1,7 @@
 <?php
+
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
+
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -37,8 +39,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_steps'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_steps')) {
             throw new ForbiddenException();
         }
 
@@ -46,9 +47,9 @@ class StepController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         $sprunje = $classMapper->createInstance('step_sprunje', $classMapper, $params);
-        $sprunje->extendQuery(function ($query)
-        {
-            return $query->with('creator')
+        $sprunje->extendQuery(function ($query) {
+            return $query
+                ->with('creator')
                 ->with('name.translations.language')
                 ->with('description.translations.language');
         });
@@ -74,8 +75,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_steps'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_steps')) {
             throw new ForbiddenException();
         }
 
@@ -114,8 +114,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_step'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_step')) {
             throw new ForbiddenException();
         }
 
@@ -134,7 +133,7 @@ class StepController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'STEP.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/steps', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'STEP.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/steps', 'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -161,8 +160,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_step'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_step')) {
             throw new ForbiddenException();
         }
 
@@ -183,8 +181,7 @@ class StepController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             $error = true;
         }
@@ -193,11 +190,16 @@ class StepController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
 
+        //If the order is already available, stop adding the object.
+        if (!StepController::isValidOrder($data['order'], $classMapper, null)) {
+            $ms->addMessageTranslated('danger', 'VALIDATE.ORDER_ALREADY_AVAILABLE', $data);
+            $error = true;
+        }
+
         //Add the creator id to the sent data
         $data['creator_id'] = $currentUser->id;
 
-        if ($error)
-        {
+        if ($error) {
             return $response->withStatus(400);
         }
 
@@ -214,8 +216,7 @@ class StepController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger) {
             // Create the object
             $step = $classMapper->createInstance('step', $data);
             $step->save();
@@ -247,14 +248,11 @@ class StepController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
             $e = new BadRequestException();
-            foreach ($validator->errors() as $idx => $field)
-            {
-                foreach ($field as $eidx => $error)
-                {
+            foreach ($validator->errors() as $idx => $field) {
+                foreach ($field as $eidx => $error) {
                     $e->addUserMessage($error);
                 }
             }
@@ -284,9 +282,13 @@ class StepController extends SimpleController
         $step = $this->getStepFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$step)
-        {
+        if (!$step) {
             throw new NotFoundException($request, $response);
+        }
+
+        //Do not allow removing step with order 1
+        if ($step->order == 1) {
+            throw new ForbiddenException();
         }
 
         /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager $authorizer */
@@ -298,8 +300,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_step', ['step' => $step]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'delete_step', ['step' => $step])) {
             throw new ForbiddenException();
         }
         /** @var UserFrosting\Sprinkle\Core\MessageStream $ms */
@@ -317,8 +318,7 @@ class StepController extends SimpleController
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($step, $text, $currentUser, $classMapper, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($step, $text, $currentUser, $classMapper, $userActivityLogger) {
             StepController::deleteObject($step, $classMapper, $userActivityLogger, $currentUser);
             unset($step);
 
@@ -354,8 +354,7 @@ class StepController extends SimpleController
         $step = $this->getStepFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$step)
-        {
+        if (!$step) {
             throw new NotFoundException($request, $response);
         }
 
@@ -376,8 +375,7 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_step_field', ['step' => $step]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_step_field', ['step' => $step])) {
             throw new ForbiddenException();
         }
 
@@ -386,7 +384,11 @@ class StepController extends SimpleController
             ->ci->config;
 
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addStep.json');
+        if($step->order == 1){
+            $schema = new RequestSchema('schema://forms/addQuestionsStep.json');
+        } else {
+            $schema = new RequestSchema('schema://forms/addStep.json');
+        }
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
@@ -401,8 +403,8 @@ class StepController extends SimpleController
             ->ci
             ->view
             ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'STEP.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/steps/' . $args['step_id'],
-        //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
-        'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+                //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
+                'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -421,8 +423,7 @@ class StepController extends SimpleController
         // Get the object from the URL
         $step = $this->getStepFromParams($args);
 
-        if (!$step)
-        {
+        if (!$step) {
             throw new NotFoundException($request, $response);
         }
 
@@ -437,8 +438,13 @@ class StepController extends SimpleController
         // Request POST data
         $post = $request->getParsedBody();
 
-        // Load the request schema
-        $schema = new RequestSchema('schema://forms/addStep.json');
+
+        // Load validation rules
+        if($step->order == 1){
+            $schema = new RequestSchema('schema://forms/addQuestionsStep.json');
+        } else {
+            $schema = new RequestSchema('schema://forms/addStep.json');
+        }
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -448,9 +454,19 @@ class StepController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
+            return $response->withStatus(400);
+        }
+
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = $this
+            ->ci->classMapper;
+
+        //If the order is already available, stop adding the object.
+        if (!StepController::isValidOrder($data['order'], $classMapper, $step)) {
+            $ms->addMessageTranslated('danger', 'VALIDATE.ORDER_ALREADY_AVAILABLE', $data);
             return $response->withStatus(400);
         }
 
@@ -463,30 +479,22 @@ class StepController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_step_field', ['step' => $step]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_step_field', ['step' => $step])) {
             throw new ForbiddenException();
         }
-
-        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
-        $classMapper = $this
-            ->ci->classMapper;
 
         $userActivityLogger = $this->ci->userActivityLogger;
 
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post, $text, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post, $text, $userActivityLogger) {
 
             $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image);
 
             // Update the object and generate success messages
-            foreach ($data as $name => $value)
-            {
-                if ($value != $step->$name)
-                {
+            foreach ($data as $name => $value) {
+                if ($value != $step->$name) {
                     $step->$name = $value;
                 }
             }
@@ -505,76 +513,79 @@ class StepController extends SimpleController
     }
 
 
-    public function deliverImageFile($request, $response, $args){
+    public function deliverImageFile($request, $response, $args)
+    {
         // Load the request schema
-		$schema = new RequestSchema('schema://requests/image-get-by-name.yaml');
+        $schema = new RequestSchema('schema://requests/image-get-by-name.yaml');
         // Whitelist and set parameter defaults
-		$transformer = new RequestDataTransformer($schema);
+        $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($args);
         // Validate, and throw exception on validation errors.
-		$validator = new ServerSideValidator($schema, $this->ci->translator);
+        $validator = new ServerSideValidator($schema, $this->ci->translator);
         if (!$validator->validate($data)) {
             // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
-			$e = new BadRequestException();
+            $e = new BadRequestException();
             foreach ($validator->errors() as $idx => $field) {
-                foreach($field as $eidx => $error) {
+                foreach ($field as $eidx => $error) {
                     $e->addUserMessage($error);
                 }
             }
-			throw $e;
+            throw $e;
         }
 
-		$filename = ImageUploadAndDelivery::getFullImagePath($data['image_name']);
+        $filename = ImageUploadAndDelivery::getFullImagePath($data['image_name']);
 
 
-        if(file_exists($filename)){
+        if (file_exists($filename)) {
             //Get file type and set it as Content Type
-		    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $finfomime = finfo_file($finfo, $filename);
-            if ( $finfomime == ( "image/png" ) ||
-			        $finfomime == ( "image/jpeg" ) ||
-			        $finfomime == ( "image/gif" ) ||
-			        $finfomime == ( "image/bmp" ) ) {
+            if ($finfomime == ("image/png") ||
+                $finfomime == ("image/jpeg") ||
+                $finfomime == ("image/gif") ||
+                $finfomime == ("image/bmp")) {
 
                 header('Content-Type: ' . finfo_file($finfo, $filename));
                 finfo_close($finfo);
 
                 //Use Content-Disposition: attachment to specify the filename
-					    header('Content-Disposition: attachment; filename='.basename($filename));
+                header('Content-Disposition: attachment; filename=' . basename($filename));
 
-                        //No cache
-					    header('Expires: 0');
-                        header('Cache-Control: must-revalidate');
-                        header('Pragma: public');
+                //No cache
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
 
-                        //Define file size
-					    header('Content-Length: ' . filesize($filename));
+                //Define file size
+                header('Content-Length: ' . filesize($filename));
 
-                        ob_clean();
-                        flush();
-                        readfile($filename);
-                        exit;
+                ob_clean();
+                flush();
+                readfile($filename);
+                exit;
             }
 
         }
-		return $response->withStatus(200);
+        return $response->withStatus(200);
     }
 
-    private static function getTranslationsVariables($step){
+    private static function getTranslationsVariables($step)
+    {
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['name'] = $step->name;
-        $arrayOfObjectWithKeyAsKey['description'] = $step->description;
+        $arrayOfObjectWithKeyAsKey['name'] = isset($step) ? $step->name : null;
+        $arrayOfObjectWithKeyAsKey['description'] = isset($step) ? $step->description : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($step, $classMapper, $userActivityLogger, $currentUser){
+    public static function deleteObject($step, $classMapper, $userActivityLogger, $currentUser)
+    {
 
         $questions = $classMapper->staticMethod('question', 'where', 'step_id', $step->id)->get();
         foreach ($questions as $question) {
             QuestionController::deleteObject($question, $classMapper, $userActivityLogger, $currentUser);
         }
-        
+
         $tasks = $classMapper->staticMethod('task', 'where', 'step_id', $step->id)->get();
         foreach ($tasks as $task) {
             TaskController::deleteObject($task, $classMapper, $userActivityLogger, $currentUser);
@@ -585,8 +596,21 @@ class StepController extends SimpleController
         TranslationsUtilities::deleteTranslations($step, $classMapper, StepController::getTranslationsVariables($step), $userActivityLogger, $currentUser);
 
         //delete image files associated with this object
-            if (isset($step->image)) {
-                ImageUploadAndDelivery::deleteImageFile($step->image);
-            }
+        if (isset($step->image)) {
+            ImageUploadAndDelivery::deleteImageFile($step->image);
+        }
     }
+
+    public static function isValidOrder($order, $classMapper, $step)
+    {
+        $query = $classMapper->createInstance('step')
+                ->where('order', $order);
+
+        if ($step !== null) {
+            $query = $query->where('id', '!=' , $step->id);
+        }
+
+    return $query->count() <= 0;
+    }
+
 }

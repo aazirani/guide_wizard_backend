@@ -580,7 +580,7 @@ class AnswerController extends SimpleController
 
     private static function getTranslationsVariables($answer){
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['title'] = $answer->title;
+        $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $answer->title : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }

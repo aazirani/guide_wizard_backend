@@ -101,11 +101,13 @@
                     <li>
 		<a href="#" class="js-displayForm-table" data-toggle="modal" data-formUrl="api/steps/{{row.id}}/edit"><i class="fa fa-edit"></i> {% endverbatim %}{{translate("STEP.EDIT")}}{% verbatim %}</a>
                     </li>
+                    {{#ifx row.order '!=' 1 }}
                     <li>
 						<a href="#" class="js-displayConfirm-table" data-confirm-title="{% endverbatim %}{{translate("STEP.DELETE")}}{% verbatim %}" data-confirm-message="{% endverbatim %}{{translate("STEP.DELETE_CONFIRM")}}{% verbatim %}" data-confirm-button="{% endverbatim %}{{translate("STEP.DELETE_YES")}}{% verbatim %}" data-post-url="api/steps/{{row.id}}" data-post-method="DELETE" data-toggle="modal">
 						<i class="fa fa-trash-alt"></i> {% endverbatim %}{{translate("STEP.DELETE")}}{% verbatim %}
 						</a>
                     </li>
+                    {{/ifx }}
                 </ul>
             </div>
         </td>			

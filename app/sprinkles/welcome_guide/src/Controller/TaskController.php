@@ -136,6 +136,9 @@ class TaskController extends SimpleController
         $stepSelect = [];
         foreach ($steps as $step)
         {
+            if($step->order == 1){
+                continue;
+            }
             $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
@@ -415,6 +418,9 @@ class TaskController extends SimpleController
         $stepSelect = [];
         foreach ($steps as $step)
         {
+            if($step->order == 1){
+                continue;
+            }
             $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
@@ -585,8 +591,8 @@ class TaskController extends SimpleController
 
     private static function getTranslationsVariables($task){
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['text'] = $task->text;
-        $arrayOfObjectWithKeyAsKey['description'] = $task->description;
+        $arrayOfObjectWithKeyAsKey['text'] = isset($subTask) ? $task->text : null;
+        $arrayOfObjectWithKeyAsKey['description'] = isset($subTask) ? $task->description : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }

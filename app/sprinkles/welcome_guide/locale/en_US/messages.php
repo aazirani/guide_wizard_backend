@@ -238,5 +238,11 @@ return [
     "LANGUAGE_NAME" => "Language Name",
     "IS_MAIN_LANGUAGE" => "Is Main Language",
     "SUB_TASKS_ORDER" => "Order of Sub Tasks",
-    "ANSWERS_ORDER" => "Order of Answers"
+    "ANSWERS_ORDER" => "Order of Answers",
+    "DRAG_AND_DROP_EXPRESSION_BUILDER" => "Drag & Drop Expression Builder",
+    "SELECT_A_QUESTION" => "Select a question...",
+    "SEARCH_FOR_AN_ANSWER" => "Search for an answer...",
+    "SUB_TASK_SELECTOR" => "Subtask Selector",
+    "SELECT_A_TASK" => "Select a task...",
+    "SEARCH_FOR_A_SUB_TASK" => "Search for a subtask..."
 ];

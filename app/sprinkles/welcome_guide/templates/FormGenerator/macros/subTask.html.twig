@@ -18,7 +18,7 @@
         <h4 class="panel-title">
             <a role="button" data-toggle="collapse" data-parent="#expandable-container" href="#collapse-subTasks" aria-expanded="false" aria-controls="collapse-subTasks">
                 <div class="expandable-title">
-                    <span><i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;Subtask Selector</span>
+                    <span><i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;{{translate("SUB_TASK_SELECTOR")}}</span>
                     <i class="fa fa-chevron-down chevron-icon"></i>
                 </div>
             </a>
@@ -29,7 +29,7 @@
             <div class="input-group" style="margin-bottom: 7px;">
                 <span class="input-group-addon"><i class="fa fa-list fa-fw"></i></span>
                 <select class="form-control js-select2" id="taskSelect">
-                    <option value="">Select a task...</option>
+                    <option value="">{{translate("SELECT_A_TASK")}}</option>
                     {% set uniqueTasks = [] %}
                     {% for taskId, taskTitles in input.subTaskOptionElements %}
                         {% if taskTitles.task not in uniqueTasks %}
@@ -42,7 +42,7 @@
         
             <div class="input-group" style="margin-bottom: 7px;">
                 <span class="input-group-addon"><i class="fa fa-filter fa-fw"></i></span>
-                <input autocomplete="off" class="form-control" type="text" id="searchFieldSubTasks" placeholder="Search for a subtask..." label="SEARCH_FOR_A_SUBTASK" icon="fa-filter">
+                <input autocomplete="off" class="form-control" type="text" id="searchFieldSubTasks" placeholder="{{translate("SEARCH_FOR_A_SUB_TASK")}}" label="{{translate("SEARCH_FOR_A_SUB_TASK")}}" icon="fa-filter">
             </div>
 
             <div class="grid-container" id="list-of-subtasks">

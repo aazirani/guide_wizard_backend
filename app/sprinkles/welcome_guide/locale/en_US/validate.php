@@ -20,7 +20,6 @@ return [
         "TEXT" => "Text is required.",
         "TRANSLATED_TEXT" => "Translated Text is required.",
         "LANGUAGE" => "Language is required.",
-        "TASK" => "Task is required.",
         "STEP" => "Step is required.",
         "ORDER" => "Order is required.",
         "QUESTION" => "Question is required.",

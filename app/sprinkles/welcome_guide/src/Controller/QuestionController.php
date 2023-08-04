@@ -1,5 +1,7 @@
 <?php
+
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
+
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -36,8 +38,7 @@ class QuestionController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_questions'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_questions')) {
             throw new ForbiddenException();
         }
 
@@ -45,8 +46,7 @@ class QuestionController extends SimpleController
         $classMapper = $this
             ->ci->classMapper;
         $sprunje = $classMapper->createInstance('question_sprunje', $classMapper, $params);
-        $sprunje->extendQuery(function ($query)
-        {
+        $sprunje->extendQuery(function ($query) {
             return $query->with('creator')
                 ->with('step.name.translations.language')
                 ->with('title.translations.language')
@@ -76,8 +76,7 @@ class QuestionController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'view_questions'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'view_questions')) {
             throw new ForbiddenException();
         }
 
@@ -116,8 +115,7 @@ class QuestionController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_question'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_question')) {
             throw new ForbiddenException();
         }
 
@@ -134,8 +132,7 @@ class QuestionController extends SimpleController
 
         $steps = STEP::all();
         $stepSelect = [];
-        foreach ($steps as $step)
-        {
+        foreach ($steps as $step) {
             $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
 
@@ -145,7 +142,7 @@ class QuestionController extends SimpleController
         $this
             ->ci
             ->view
-            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'QUESTION.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/questions', 'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+            ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'QUESTION.CREATE', 'submit_button' => 'CREATE', 'form_action' => 'api/questions', 'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
 
     /**
@@ -172,8 +169,7 @@ class QuestionController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'create_question'))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'create_question')) {
             throw new ForbiddenException();
         }
 
@@ -194,8 +190,7 @@ class QuestionController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             $error = true;
         }
@@ -207,8 +202,7 @@ class QuestionController extends SimpleController
         //Add the creator id to the sent data
         $data['creator_id'] = $currentUser->id;
 
-        if ($error)
-        {
+        if ($error) {
             return $response->withStatus(400);
         }
 
@@ -222,11 +216,13 @@ class QuestionController extends SimpleController
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($classMapper, $data, $ms, $config, $currentUser, $params, $userActivityLogger) {
 
             // Create the object
             $question = $classMapper->createInstance('question', $data);
+
+            $question->step_id = QuestionController::getQuestionsStepId($classMapper);
+
             // Store new question to database
             $question->save();
             TranslationsUtilities::saveTranslations($question, "Question", $params, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger);
@@ -256,14 +252,11 @@ class QuestionController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             // TODO: encapsulate the communication of error messages from ServerSideValidator to the BadRequestException
             $e = new BadRequestException();
-            foreach ($validator->errors() as $idx => $field)
-            {
-                foreach ($field as $eidx => $error)
-                {
+            foreach ($validator->errors() as $idx => $field) {
+                foreach ($field as $eidx => $error) {
                     $e->addUserMessage($error);
                 }
             }
@@ -294,8 +287,7 @@ class QuestionController extends SimpleController
         $question = $this->getQuestionFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$question)
-        {
+        if (!$question) {
             throw new NotFoundException($request, $response);
         }
 
@@ -308,8 +300,7 @@ class QuestionController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled page
-        if (!$authorizer->checkAccess($currentUser, 'delete_question', ['question' => $question]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'delete_question', ['question' => $question])) {
             throw new ForbiddenException();
         }
         /** @var UserFrosting\Sprinkle\Core\MessageStream $ms */
@@ -327,8 +318,7 @@ class QuestionController extends SimpleController
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($question, $text, $currentUser, $classMapper, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($question, $text, $currentUser, $classMapper, $userActivityLogger) {
 
             QuestionController::deleteObject($question, $classMapper, $userActivityLogger, $currentUser);
 
@@ -366,8 +356,7 @@ class QuestionController extends SimpleController
         $question = $this->getQuestionFromParams($args);
 
         // If the object doesn't exist, return 404
-        if (!$question)
-        {
+        if (!$question) {
             throw new NotFoundException($request, $response);
         }
 
@@ -388,8 +377,7 @@ class QuestionController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit fields
-        if (!$authorizer->checkAccess($currentUser, 'update_question_field', ['question' => $question]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_question_field', ['question' => $question])) {
             throw new ForbiddenException();
         }
 
@@ -410,8 +398,7 @@ class QuestionController extends SimpleController
 
         $steps = Step::all();
         $stepSelect = [];
-        foreach ($steps as $step)
-        {
+        foreach ($steps as $step) {
             $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
@@ -421,9 +408,10 @@ class QuestionController extends SimpleController
             ->ci
             ->view
             ->render($response, 'FormGenerator/modal.html.twig', ['box_id' => $get['box_id'], 'box_title' => 'QUESTION.EDIT', 'submit_button' => 'EDIT', 'form_action' => 'api/questions/' . $args['question_id'],
-        //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
-        'fields' => $form->generate() , 'validators' => $validator->rules('json', true) , ]);
+                //'form_method'   => 'PUT', //Send form using PUT instead of "POST"
+                'fields' => $form->generate(), 'validators' => $validator->rules('json', true),]);
     }
+
     /**
      * update function.
      * Processes the request to update an existing object's details.
@@ -440,8 +428,7 @@ class QuestionController extends SimpleController
         // Get the object from the URL
         $question = $this->getQuestionFromParams($args);
 
-        if (!$question)
-        {
+        if (!$question) {
             throw new NotFoundException($request, $response);
         }
 
@@ -467,8 +454,7 @@ class QuestionController extends SimpleController
         $validator = new ServerSideValidator($schema, $this
             ->ci
             ->translator);
-        if (!$validator->validate($data))
-        {
+        if (!$validator->validate($data)) {
             $ms->addValidationErrors($validator);
             return $response->withStatus(400);
         }
@@ -482,8 +468,7 @@ class QuestionController extends SimpleController
             ->ci->currentUser;
 
         // Access-controlled resource - check that currentUser has permission to edit submitted fields for this object
-        if (!$authorizer->checkAccess($currentUser, 'update_question_field', ['question' => $question]))
-        {
+        if (!$authorizer->checkAccess($currentUser, 'update_question_field', ['question' => $question])) {
             throw new ForbiddenException();
         }
 
@@ -496,16 +481,15 @@ class QuestionController extends SimpleController
         $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
 
         // Begin transaction - DB will be rolled back if an exception occurs
-        Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post, $text, $userActivityLogger)
-        {
+        Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post, $text, $userActivityLogger) {
             // Update the object and generate success messages
-            foreach ($data as $name => $value)
-            {
-                if ($value != $question->$name)
-                {
+            foreach ($data as $name => $value) {
+                if ($value != $question->$name) {
                     $question->$name = $value;
                 }
             }
+
+            $question->step_id = QuestionController::getQuestionsStepId($classMapper);
 
             TranslationsUtilities::saveTranslations($question, "Question", $post, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger);
 
@@ -520,17 +504,19 @@ class QuestionController extends SimpleController
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 
-    private static function getTranslationsVariables($question){
+    private static function getTranslationsVariables($question)
+    {
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['title'] = $question->title;
-        $arrayOfObjectWithKeyAsKey['sub_title'] = $question->sub_title;
-        $arrayOfObjectWithKeyAsKey['info_url'] = $question->info_url;
-        $arrayOfObjectWithKeyAsKey['info_description'] = $question->info_description;
+        $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $question->title : null;
+        $arrayOfObjectWithKeyAsKey['sub_title'] = isset($subTask) ? $question->sub_title : null;
+        $arrayOfObjectWithKeyAsKey['info_url'] = isset($subTask) ? $question->info_url : null;
+        $arrayOfObjectWithKeyAsKey['info_description'] = isset($subTask) ? $question->info_description : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }
 
-    public static function deleteObject($question, $classMapper, $userActivityLogger, $currentUser){
+    public static function deleteObject($question, $classMapper, $userActivityLogger, $currentUser)
+    {
         $answers = $classMapper->staticMethod('answer', 'where', 'question_id', $question->id)->get();
         foreach ($answers as $answer) {
             AnswerController::deleteObject($answer, $classMapper, $userActivityLogger, $currentUser);
@@ -539,6 +525,12 @@ class QuestionController extends SimpleController
         $question->delete();
 
         TranslationsUtilities::deleteTranslations($question, $classMapper, QuestionController::getTranslationsVariables($question), $userActivityLogger, $currentUser);
+    }
+
+    public static function getQuestionsStepId($classMapper){
+        return $classMapper->createInstance('step')
+                ->where('order', '1')
+                ->value('id');
     }
 
 }

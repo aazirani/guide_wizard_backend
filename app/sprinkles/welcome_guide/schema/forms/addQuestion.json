@@ -92,18 +92,6 @@
             "icon" : "fa-th-list",
             "placeholder" : "INFO_DESCRIPTION"
         }
-    },
-    "step_id" : {
-        "validators" : {},
-        "required" : {
-            "message" : "VALIDATE.STEP"
-        },
-        "form" : {
-            "type" : "select",
-            "label" : "STEP",
-            "icon" : "fa-th-list",
-            "placeholder" : "STEP"
-        }
     }
 	
 }

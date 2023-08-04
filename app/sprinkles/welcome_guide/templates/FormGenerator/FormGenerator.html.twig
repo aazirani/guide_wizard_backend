@@ -9,6 +9,7 @@
 {% import "FormGenerator/macros/logic.html.twig" as logic %}
 {% import "FormGenerator/macros/subTask.html.twig" as subTask %}
 {% import "FormGenerator/macros/markdown.html.twig" as markdown %}
+{% import "FormGenerator/macros/reorder.html.twig" as reorder %}
 
 
 {% for name,input in fields %}
@@ -39,6 +40,8 @@
                     {{ subTask.generate(input) }}
                 {% elseif input.type == "file" %}
                     {{ file.generate(input) }}
+                {% elseif input.type == "reorder" %}
+                    {{ reorder.generate(input) }}
                 {% else %}
                     {{ text.generate(input) }}
                 {% endif %}

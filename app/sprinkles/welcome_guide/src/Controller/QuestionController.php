@@ -386,7 +386,7 @@ class QuestionController extends SimpleController
             ->ci->config;
 
         // Load validation rules
-        $schema = new RequestSchema('schema://forms/addQuestion.json');
+        $schema = new RequestSchema('schema://forms/editQuestion.json');
         $validator = new JqueryValidationAdapter($schema, $this
             ->ci
             ->translator);
@@ -394,14 +394,21 @@ class QuestionController extends SimpleController
         // Generate the form
         $form = new Form($schema, $question);
 
-        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($question));
-
         $steps = Step::all();
         $stepSelect = [];
         foreach ($steps as $step) {
             $stepSelect += [$step->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper)];
         }
         $form->setInputArgument('step_id', 'options', $stepSelect);
+
+        $answers = $classMapper->staticMethod('answer', 'where', 'question_id', $question->id)->orderBy('order', 'asc')->get();
+        $answerSelect = [];
+        foreach ($answers as $answer) {
+            $answerSelect += [$answer->id => TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper)];
+        }
+        $form->setInputArgument('answers', 'elements', $answerSelect);
+
+        TranslationsUtilities::setFormValues($form, $classMapper, $this->getTranslationsVariables($question));
 
         // Render the template / form
         $this
@@ -444,7 +451,7 @@ class QuestionController extends SimpleController
         $post = $request->getParsedBody();
 
         // Load the request schema
-        $schema = new RequestSchema('schema://forms/addQuestion.json');
+        $schema = new RequestSchema('schema://forms/editQuestion.json');
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -484,7 +491,7 @@ class QuestionController extends SimpleController
         Capsule::transaction(function () use ($data, $question, $currentUser, $classMapper, $post, $text, $userActivityLogger) {
             // Update the object and generate success messages
             foreach ($data as $name => $value) {
-                if ($value != $question->$name) {
+                if ($value != $question->$name && $name != 'answersOrder') {
                     $question->$name = $value;
                 }
             }
@@ -492,6 +499,8 @@ class QuestionController extends SimpleController
             $question->step_id = QuestionController::getQuestionsStepId($classMapper);
 
             TranslationsUtilities::saveTranslations($question, "Question", $post, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger);
+
+            QuestionController::saveAnswerOrder($data, $classMapper);
 
             // Create activity record
             $this
@@ -507,10 +516,10 @@ class QuestionController extends SimpleController
     private static function getTranslationsVariables($question)
     {
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $question->title : null;
-        $arrayOfObjectWithKeyAsKey['sub_title'] = isset($subTask) ? $question->sub_title : null;
-        $arrayOfObjectWithKeyAsKey['info_url'] = isset($subTask) ? $question->info_url : null;
-        $arrayOfObjectWithKeyAsKey['info_description'] = isset($subTask) ? $question->info_description : null;
+        $arrayOfObjectWithKeyAsKey['title'] = isset($question) ? $question->title : null;
+        $arrayOfObjectWithKeyAsKey['sub_title'] = isset($question) ? $question->sub_title : null;
+        $arrayOfObjectWithKeyAsKey['info_url'] = isset($question) ? $question->info_url : null;
+        $arrayOfObjectWithKeyAsKey['info_description'] = isset($question) ? $question->info_description : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }
@@ -527,10 +536,35 @@ class QuestionController extends SimpleController
         TranslationsUtilities::deleteTranslations($question, $classMapper, QuestionController::getTranslationsVariables($question), $userActivityLogger, $currentUser);
     }
 
-    public static function getQuestionsStepId($classMapper){
+    public static function getQuestionsStepId($classMapper)
+    {
         return $classMapper->createInstance('step')
-                ->where('order', '1')
-                ->value('id');
+            ->where('order', '1')
+            ->value('id');
+    }
+
+    private static function saveAnswerOrder($data, $classMapper)
+    {
+        $orderedAnswers = explode(",", $data['answersOrder']);
+        if (!empty($orderedAnswers)) {
+            // Fetch all sub-tasks at once
+            $answers = $classMapper->createInstance('answer')
+                ->whereIn('id', $orderedAnswers)
+                ->get();
+
+            // Create an associative array [id => answer]
+            $answers = $answers->keyBy('id');
+
+            // Loop over the ids and update the order
+            foreach ($orderedAnswers as $index => $id) {
+                $answers[$id]->order = $index + 1;
+            }
+
+            // Save all updated answers at once
+            $answers->each(function ($answer) {
+                $answer->save();
+            });
+        }
     }
 
 }

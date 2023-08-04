@@ -74,8 +74,7 @@
         },
         "js/pages/logics": {
             "scripts": [
-                "userfrosting/js/pages/logics.js",
-                "vendor/sortablejs/Sortable.min.js"
+                "userfrosting/js/pages/logics.js"
             ],
             "options": {
                 "result": {
@@ -100,7 +99,8 @@
         },
         "js/pages/tasks": {
             "scripts": [
-                "userfrosting/js/pages/tasks.js"
+                "userfrosting/js/pages/tasks.js",
+                "vendor/sortablejs/Sortable.min.js"
             ],
             "options": {
                 "result": {
@@ -118,7 +118,8 @@
         "js/modals/logics": {
             "scripts": [
                 "userfrosting/js/modals/logics.js",
-                "vendor/sweetalert2/dist/sweetalert2.all.min.js"
+                "vendor/sweetalert2/dist/sweetalert2.all.min.js",
+                "vendor/sortablejs/Sortable.min.js"
             ],
             "options": {
                 "result": {
@@ -150,6 +151,31 @@
             "styles": [
                 "userfrosting/css/modals/subTasks.css"
             ]
+        },
+        "js/modals/tasks": {
+            "scripts": [
+                "userfrosting/js/modals/tasks.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
+        },
+        "js/modals/questions": {
+            "scripts": [
+                "userfrosting/js/modals/questions.js",
+                "vendor/sortablejs/Sortable.min.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                        "scripts": "plain"
+                    }
+                }
+            }
         }
     }
 }

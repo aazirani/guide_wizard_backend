@@ -6,7 +6,7 @@
 
 namespace UserFrosting\Sprinkle\FormGenerator\Element;
 
-class File extends Input
+class Reorder extends Input
 {
     /**
      * {@inheritdoc}

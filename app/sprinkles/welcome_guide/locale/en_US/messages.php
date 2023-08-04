@@ -236,5 +236,7 @@ return [
     "IMAGE_2" => "2nd Image",
     "FA_ICON" => "Icon",
     "LANGUAGE_NAME" => "Language Name",
-    "IS_MAIN_LANGUAGE" => "Is Main Language"
+    "IS_MAIN_LANGUAGE" => "Is Main Language",
+    "SUB_TASKS_ORDER" => "Order of Sub Tasks",
+    "ANSWERS_ORDER" => "Order of Answers"
     ];

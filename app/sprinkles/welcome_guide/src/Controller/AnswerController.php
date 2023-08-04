@@ -228,6 +228,13 @@ class AnswerController extends SimpleController
 
             // Create the object
             $answer = $classMapper->createInstance('answer', $data);
+            
+            $latestOrder = (int)$classMapper->createInstance('answer')
+                ->where('question_id', $answer->question_id)
+                ->max('order');
+
+            $answer->order = $latestOrder + 1;
+
             // Store new answer to database
             $answer->save();
             TranslationsUtilities::saveTranslations($answer, "Answer", $params, $classMapper, $currentUser, $this->getTranslationsVariables($answer), $userActivityLogger);
@@ -580,13 +587,13 @@ class AnswerController extends SimpleController
 
     private static function getTranslationsVariables($answer){
         $arrayOfObjectWithKeyAsKey = array();
-        $arrayOfObjectWithKeyAsKey['title'] = isset($subTask) ? $answer->title : null;
+        $arrayOfObjectWithKeyAsKey['title'] = isset($answer) ? $answer->title : null;
 
         return $arrayOfObjectWithKeyAsKey;
     }
 
     public static function deleteObject($answer, $classMapper, $userActivityLogger, $currentUser){
-        $answer->logics()->sync(null);
+        $answer->logics()->detach();
         $answer->delete();
 
         TranslationsUtilities::deleteTranslations($answer, $classMapper, AnswerController::getTranslationsVariables($answer), $userActivityLogger, $currentUser);

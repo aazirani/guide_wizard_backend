@@ -11,7 +11,7 @@
 
 <div class="input-group" style="margin-bottom: 15px;">
     <span class="input-group-addon"><i class="fa fa-code fa-fw"></i></span>
-    <input autocomplete="off" class="form-control" value="{{input.value}}" name="expression" id="field_expression" type="text" label="EXPRESSION" icon="fa-code" placeholder="Expression" readonly>
+    <input autocomplete="off" class="form-control" value="{{input.value}}" name="expression" id="field_expression" type="text" label="{{translate("EXPRESSION")}}" icon="fa-code" placeholder="{{translate("EXPRESSION")}}" readonly>
 </div>
 
 
@@ -24,7 +24,7 @@
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#expandable-container" href="#collapse-elements" aria-expanded="false" aria-controls="collapse-elements">
                     <div class="expandable-title">
-                        <span><i class="fa fa-magic"></i>&nbsp;&nbsp;&nbsp;Drag & Drop Expression Builder</span>
+                        <span><i class="fa fa-magic"></i>&nbsp;&nbsp;&nbsp;{{translate("DRAG_AND_DROP_EXPRESSION_BUILDER")}}</span>
                         <i class="fa fa-chevron-down chevron-icon"></i>
                     </div>
                 </a>
@@ -36,7 +36,7 @@
                 <div class="input-group" style="margin-bottom: 7px;">
                     <span class="input-group-addon"><i class="fa fa-question fa-fw"></i></span>
                     <select class="form-control js-select2" id="questionSelect">
-                        <option value="">Select a question...</option>
+                        <option value="">{{translate("SELECT_A_QUESTION")}}</option>
                         {% set uniqueQuestions = [] %}
                         {% for answerId, answerTitles in input.answers %}
                             {% if answerTitles.question not in uniqueQuestions %}
@@ -49,7 +49,7 @@
             
                 <div class="input-group" style="margin-bottom: 7px;">
                     <span class="input-group-addon"><i class="fa fa-filter fa-fw"></i></span>
-                    <input autocomplete="off" class="form-control" type="text" id="searchField" placeholder="Search for an answer..." label="SEARCH_FOR_AN_ANSWER" icon="fa-filter">
+                    <input autocomplete="off" class="form-control" type="text" id="searchField" placeholder="{{translate("SEARCH_FOR_AN_ANSWER")}}" label="{{translate("SEARCH_FOR_AN_ANSWER")}}" icon="fa-filter">
                 </div>
 
                 <div class="scroll-container">

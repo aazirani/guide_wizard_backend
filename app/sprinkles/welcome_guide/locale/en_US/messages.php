@@ -1,31 +1,31 @@
 <?php
 /**
-* US English message token translations for the 'welcome guide' sprinkle.
-*
-* @package userfrosting\i18n\en_US
-*/
+ * US English message token translations for the 'welcome guide' sprinkle.
+ *
+ * @package userfrosting\i18n\en_US
+ */
 
 return [
     "QUESTION" => [
         1 => "Question",
         2 => "Questions",
-        
+
         "PAGE" => "A listing of all questions",
         "CREATE" => "New Question",
         "CREATED" => "Question <strong>{{name}}</strong> has been successfully created",
-        
+
         "SELECTED" => [
             1 => "Selected Question",
             2 => "Selected Questions"
         ],
         "DELETE" => "Delete Question",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this question?",
-        "DELETE_YES"        => "Yes, delete question",
-        
-        "DETAILS_UPDATED"=> "Details updated for question <strong>{{name}}</strong>",
-        
-        "DELETION_SUCCESSFUL"   => "Question <strong>{{name}}</strong> has been successfully deleted.",
-        
+        "DELETE_CONFIRM" => "Are you sure you want to delete this question?",
+        "DELETE_YES" => "Yes, delete question",
+
+        "DETAILS_UPDATED" => "Details updated for question <strong>{{name}}</strong>",
+
+        "DELETION_SUCCESSFUL" => "Question <strong>{{name}}</strong> has been successfully deleted.",
+
         "CLONE" => "Clone Question",
         "EDIT" => "Edit Question"
     ],
@@ -35,65 +35,65 @@ return [
         "PAGE" => "A listing of all texts",
         "CREATE" => "New Text",
         "CREATED" => "Text <strong>{{name}}</strong> has been successfully created",
-        
+
         "SELECTED" => [
             1 => "Selected Text",
             2 => "Selected Texts"
         ],
         "DELETE" => "Delete Text",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this text?",
-        "DELETE_YES"        => "Yes, delete text",
-        
-        "DETAILS_UPDATED"=> "Details updated for text <strong>{{name}}</strong>",
-        
-        "DELETION_SUCCESSFUL"   => "Text <strong>{{name}}</strong> has been successfully deleted.",
-        
+        "DELETE_CONFIRM" => "Are you sure you want to delete this text?",
+        "DELETE_YES" => "Yes, delete text",
+
+        "DETAILS_UPDATED" => "Details updated for text <strong>{{name}}</strong>",
+
+        "DELETION_SUCCESSFUL" => "Text <strong>{{name}}</strong> has been successfully deleted.",
+
         "CLONE" => "Clone Text",
         "EDIT" => "Edit Text"
     ],
     "STEP" => [
         1 => "Step",
         2 => "Steps",
-        
+
         "PAGE" => "A listing of all steps",
         "CREATE" => "New Step",
         "CREATED" => "Step <strong>{{name}}</strong> has been successfully created",
-        
+
         "SELECTED" => [
             1 => "Selected Step",
             2 => "Selected Steps"
         ],
         "DELETE" => "Delete Step",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this step?",
-        "DELETE_YES"        => "Yes, delete step",
-        
-        "DETAILS_UPDATED"=> "Details updated for step <strong>{{name}}</strong>",
-        
-        "DELETION_SUCCESSFUL"   => "Step <strong>{{name}}</strong> has been successfully deleted.",
-        
+        "DELETE_CONFIRM" => "Are you sure you want to delete this step?",
+        "DELETE_YES" => "Yes, delete step",
+
+        "DETAILS_UPDATED" => "Details updated for step <strong>{{name}}</strong>",
+
+        "DELETION_SUCCESSFUL" => "Step <strong>{{name}}</strong> has been successfully deleted.",
+
         "CLONE" => "Clone Step",
         "EDIT" => "Edit Step"
     ],
     "ANSWER" => [
         1 => "Answer",
         2 => "Answers",
-        
+
         "PAGE" => "A listing of all answers",
         "CREATE" => "New Answer",
         "CREATED" => "Answer <strong>{{name}}</strong> has been successfully created",
-        
+
         "SELECTED" => [
             1 => "Selected Answer",
             2 => "Selected Answers"
         ],
         "DELETE" => "Delete Answer",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this answer?",
-        "DELETE_YES"        => "Yes, delete answer",
-        
-        "DETAILS_UPDATED"=> "Details updated for answer <strong>{{name}}</strong>",
-        
-        "DELETION_SUCCESSFUL"   => "Answer <strong>{{name}}</strong> has been successfully deleted.",
-        
+        "DELETE_CONFIRM" => "Are you sure you want to delete this answer?",
+        "DELETE_YES" => "Yes, delete answer",
+
+        "DETAILS_UPDATED" => "Details updated for answer <strong>{{name}}</strong>",
+
+        "DELETION_SUCCESSFUL" => "Answer <strong>{{name}}</strong> has been successfully deleted.",
+
         "CLONE" => "Clone Answer",
         "EDIT" => "Edit Answer"
     ],
@@ -110,12 +110,12 @@ return [
             2 => "Selected Languages"
         ],
         "DELETE" => "Delete Language",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this language?",
-        "DELETE_YES"        => "Yes, delete language",
+        "DELETE_CONFIRM" => "Are you sure you want to delete this language?",
+        "DELETE_YES" => "Yes, delete language",
 
-        "DETAILS_UPDATED"=> "Details updated for language <strong>{{name}}</strong>",
+        "DETAILS_UPDATED" => "Details updated for language <strong>{{name}}</strong>",
 
-        "DELETION_SUCCESSFUL"   => "Language <strong>{{name}}</strong> has been successfully deleted.",
+        "DELETION_SUCCESSFUL" => "Language <strong>{{name}}</strong> has been successfully deleted.",
 
         "CLONE" => "Clone Language",
         "EDIT" => "Edit Language"
@@ -133,12 +133,12 @@ return [
             2 => "Selected Translations"
         ],
         "DELETE" => "Delete Translation",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this translation?",
-        "DELETE_YES"        => "Yes, delete translation",
+        "DELETE_CONFIRM" => "Are you sure you want to delete this translation?",
+        "DELETE_YES" => "Yes, delete translation",
 
-        "DETAILS_UPDATED"=> "Details updated for translation <strong>{{name}}</strong>",
+        "DETAILS_UPDATED" => "Details updated for translation <strong>{{name}}</strong>",
 
-        "DELETION_SUCCESSFUL"   => "Translation <strong>{{name}}</strong> has been successfully deleted.",
+        "DELETION_SUCCESSFUL" => "Translation <strong>{{name}}</strong> has been successfully deleted.",
 
         "CLONE" => "Clone Translation",
         "EDIT" => "Edit Translation"
@@ -156,12 +156,12 @@ return [
             2 => "Selected Logics"
         ],
         "DELETE" => "Delete Logic",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this logic?",
-        "DELETE_YES"        => "Yes, delete logic",
+        "DELETE_CONFIRM" => "Are you sure you want to delete this logic?",
+        "DELETE_YES" => "Yes, delete logic",
 
-        "DETAILS_UPDATED"=> "Details updated for logic <strong>{{name}}</strong>",
+        "DETAILS_UPDATED" => "Details updated for logic <strong>{{name}}</strong>",
 
-        "DELETION_SUCCESSFUL"   => "Logic <strong>{{name}}</strong> has been successfully deleted.",
+        "DELETION_SUCCESSFUL" => "Logic <strong>{{name}}</strong> has been successfully deleted.",
 
         "CLONE" => "Clone Logic",
         "EDIT" => "Edit Logic"
@@ -179,12 +179,12 @@ return [
             2 => "Selected Sub Tasks"
         ],
         "DELETE" => "Delete Sub Task",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this sub task?",
-        "DELETE_YES"        => "Yes, delete sub task",
+        "DELETE_CONFIRM" => "Are you sure you want to delete this sub task?",
+        "DELETE_YES" => "Yes, delete sub task",
 
-        "DETAILS_UPDATED"=> "Details updated for sub task <strong>{{name}}</strong>",
+        "DETAILS_UPDATED" => "Details updated for sub task <strong>{{name}}</strong>",
 
-        "DELETION_SUCCESSFUL"   => "Sub Task <strong>{{name}}</strong> has been successfully deleted.",
+        "DELETION_SUCCESSFUL" => "Sub Task <strong>{{name}}</strong> has been successfully deleted.",
 
         "CLONE" => "Clone Sub Task",
         "EDIT" => "Edit Sub Task"
@@ -202,12 +202,12 @@ return [
             2 => "Selected Tasks"
         ],
         "DELETE" => "Delete Task",
-        "DELETE_CONFIRM"    => "Are you sure you want to delete this task?",
-        "DELETE_YES"        => "Yes, delete task",
+        "DELETE_CONFIRM" => "Are you sure you want to delete this task?",
+        "DELETE_YES" => "Yes, delete task",
 
-        "DETAILS_UPDATED"=> "Details updated for task <strong>{{name}}</strong>",
+        "DETAILS_UPDATED" => "Details updated for task <strong>{{name}}</strong>",
 
-        "DELETION_SUCCESSFUL"   => "Task <strong>{{name}}</strong> has been successfully deleted.",
+        "DELETION_SUCCESSFUL" => "Task <strong>{{name}}</strong> has been successfully deleted.",
 
         "CLONE" => "Clone Task",
         "EDIT" => "Edit Task"
@@ -238,5 +238,11 @@ return [
     "LANGUAGE_NAME" => "Language Name",
     "IS_MAIN_LANGUAGE" => "Is Main Language",
     "SUB_TASKS_ORDER" => "Order of Sub Tasks",
-    "ANSWERS_ORDER" => "Order of Answers"
-    ];
+    "ANSWERS_ORDER" => "Order of Answers",
+    "DRAG_AND_DROP_EXPRESSION_BUILDER" => "Drag & Drop Expression Builder",
+    "SELECT_A_QUESTION" => "Select a question...",
+    "SEARCH_FOR_AN_ANSWER" => "Search for an answer...",
+    "SUB_TASK_SELECTOR" => "Subtask Selector",
+    "SELECT_A_TASK" => "Select a task...",
+    "SEARCH_FOR_A_SUB_TASK" => "Search for a subtask..."
+];

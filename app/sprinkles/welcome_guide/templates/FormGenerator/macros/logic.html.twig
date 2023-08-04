@@ -16,7 +16,7 @@
 
 
 <!-- Use Bootstrap Collapse component to create an expandable container -->
-<div class="panel-group" id="expandable-container" role="tablist" aria-multiselectable="true">
+<div class="panel-group" id="expandable-container-expression-builder" role="tablist" aria-multiselectable="true">
 
     <!-- Single Panel containing all the elements -->
     <div class="panel panel-default">
@@ -59,7 +59,7 @@
                             <div class="list-group-item tinted" data="{{answerId}}">
                                 <div class="item-content">
                                     <div class="question-text" style="display: none;">{{answerTitles.question}}</div>   
-                                    <div class="answer-title">{{answerTitles.title}}</div>
+                                    <div class="answer-title"><a id="myLink" href="#" onclick="showAnswerData('{{answerTitles.title}}', '{{answerTitles.question}}');">{{answerTitles.title}}</a></div>
                                 </div>
                             </div>
                             {% endfor %}
@@ -76,7 +76,7 @@
                                 <div class="list-group-item tinted" data="{{ answerId }}">
                                     <div class="item-content">
                                         <div class="question-text" style="display: none;">{{ answerTitles.question }}</div>   
-                                        <div class="answer-title">{{ answerTitles.title }}</div>
+                                        <div class="answer-title"><a id="myLink" href="#" onclick="showAnswerData('{{answerTitles.title}}', '{{answerTitles.question}}');">{{answerTitles.title}}</a></div>
                                     </div>
                                 </div>
                             {% else %}
@@ -89,8 +89,8 @@
                 </div>
 
                 <div id="list-of-operators" class="list-group col horizontal-list-container">
-                    <div class="list-group-item" data="and">AND</div>
-                    <div class="list-group-item" data="or">OR</div>
+                    <div class="list-group-item" data="AND">AND</div>
+                    <div class="list-group-item" data="OR">OR</div>
                     <div class="list-group-item" data="(">(</div>
                     <div class="list-group-item" data=")">)</div>
                     <div class="list-group-item" data="!">!</div>

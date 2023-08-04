@@ -122,4 +122,13 @@ class Step extends Model
         return $this->hasMany($classMapper->getClassMapping('task'));
     }
 
+    public function questions()
+    {
+        /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+        $classMapper = static::$ci->classMapper;
+
+        return $this->hasMany($classMapper->getClassMapping('question'));
+    }
+
+
 }

@@ -1,23 +1,21 @@
 <?php
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
-use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\NotFoundException as NotFoundException;
+use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\Core\Controller\SimpleController;
+use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\ImageUploadAndDelivery;
 use UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses\TranslationsUtilities;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
+use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
-use UserFrosting\Sprinkle\FormGenerator\Form;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question;
 
 class AnswerController extends SimpleController
 {

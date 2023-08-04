@@ -117,7 +117,8 @@
         },
         "js/modals/logics": {
             "scripts": [
-                "userfrosting/js/modals/logics.js"
+                "userfrosting/js/modals/logics.js",
+                "vendor/sweetalert2/dist/sweetalert2.all.min.js"
             ],
             "options": {
                 "result": {
@@ -129,7 +130,8 @@
         },
         "css/modals/logics": {
             "styles": [
-                "userfrosting/css/modals/logics.css"
+                "userfrosting/css/modals/logics.css",
+                "vendor/sweetalert2/dist/sweetalert2.min.css"
             ]
         },
         "js/modals/subTasks": {

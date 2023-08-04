@@ -93,16 +93,16 @@
             "placeholder" : "INFO_DESCRIPTION"
         }
     },
-    "task_id" : {
+    "step_id" : {
         "validators" : {},
         "required" : {
-            "message" : "VALIDATE.TASK"
+            "message" : "VALIDATE.STEP"
         },
         "form" : {
             "type" : "select",
-            "label" : "TASK",
+            "label" : "STEP",
             "icon" : "fa-th-list",
-            "placeholder" : "TASK"
+            "placeholder" : "STEP"
         }
     }
 	

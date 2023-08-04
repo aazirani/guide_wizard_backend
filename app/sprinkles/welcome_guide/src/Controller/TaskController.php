@@ -592,11 +592,7 @@ class TaskController extends SimpleController
     }
 
     public static function deleteObject($task, $classMapper, $userActivityLogger, $currentUser){
-
-        $questions = $classMapper->staticMethod('question', 'where', 'task_id', $task->id)->get();
-        foreach ($questions as $question) {
-            QuestionController::deleteObject($question, $classMapper, $userActivityLogger, $currentUser);
-        }
+        
         $subTasks = $classMapper->staticMethod('subTask', 'where', 'task_id', $task->id)->get();
         foreach ($subTasks as $subTask) {
             SubTaskController::deleteObject($subTask, $classMapper, $userActivityLogger, $currentUser);

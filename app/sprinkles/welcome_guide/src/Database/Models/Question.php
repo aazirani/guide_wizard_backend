@@ -28,7 +28,7 @@ class Question extends Model
         "is_multiple_choice", 
         "info_url", 
         "info_description", 
-        "task_id",
+        "step_id",
         "creator_id"
     ];
 
@@ -87,12 +87,12 @@ class Question extends Model
     /**
      * Joins the object's task, so we can do things like sort, search, paginate, etc.
      */
-    public function scopeJoinTask($query)
+    public function scopeJoinStep($query)
     {
         return $query
-        ->leftJoin('tasks as task', 'questions.task_id', '=', 'task.id')
-        ->leftJoin('texts as task_text_text', 'task.text', '=', 'task_text_text.id')
-        ->leftJoin('translations as task_text_translation', 'task_text_text.id', '=', 'task_text_translation.text_id');
+        ->leftJoin('steps as step', 'questions.step_id', '=', 'step.id')
+        ->leftJoin('texts as step_name_text', 'step.name', '=', 'step_name_text.id')
+        ->leftJoin('translations as step_name_translation', 'step_name_text.id', '=', 'step_name_translation.text_id');
     }
 
     /**
@@ -111,12 +111,12 @@ class Question extends Model
         return $this->belongsTo($classMapper->getClassMapping('user') , 'creator_id');
     }
 
-    public function task()
+    public function step()
     {
         /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
         $classMapper = static ::$ci->classMapper;
 
-        return $this->belongsTo($classMapper->getClassMapping('task') , 'task_id');
+        return $this->belongsTo($classMapper->getClassMapping('step') , 'step_id');
     }
 
     public function answers()

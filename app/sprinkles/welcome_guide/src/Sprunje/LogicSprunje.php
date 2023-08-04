@@ -3,8 +3,8 @@ namespace UserFrosting\Sprinkle\WelcomeGuide\Sprunje;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Facades\Debug;
-use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
 use UserFrosting\Sprinkle\Core\Facades\Translator;
+use UserFrosting\Sprinkle\Core\Sprunje\Sprunje;
 
 /**
  * Implements Sprunje for the module API.

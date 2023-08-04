@@ -88,9 +88,9 @@ class AppController extends SimpleController
                 ->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
                     $query->whereIn('id', $subTaskIds);
                 })
-                ->orWhereHas('tasks.questions')
+                ->orWhereHas('questions')
                 ->with([
-                    'tasks.questions.answers',
+                    'questions.answers',
                     'tasks.subTasks' => function ($query) use ($subTaskIds) {
                         $query->whereIn('id', $subTaskIds);
                     },

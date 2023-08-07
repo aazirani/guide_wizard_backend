@@ -1,0 +1,52 @@
+{
+    "name" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "NAME",
+            "icon" : "fa-th-list",
+            "placeholder" : "NAME"
+        }
+    },
+    "description" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "DESCRIPTION",
+            "icon" : "fa-th-list",
+            "placeholder" : "DESCRIPTION"
+        }
+    },
+    "image" : {
+        "validators" : {},
+        "form" : {
+            "type" : "file",
+            "label" : "IMAGE",
+            "icon" : "fa-image",
+            "placeholder" : "IMAGE"
+        }
+    },
+    "order" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "2", "3", "4", "5", "6", "7", "8"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.ORDER"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "ORDER",
+            "options" : {
+                "2" : "2",
+                "3" : "3",
+                "4" : "4",
+                "5" : "5",
+                "6" : "6",
+                "7" : "7",
+                "8" : "8"
+            }
+        }
+    }
+}

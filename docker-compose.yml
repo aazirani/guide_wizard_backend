@@ -36,6 +36,7 @@ services:
       - backend
 
   ufmysql:
+    platform: linux/x86_64
     image: mysql:5.7
     networks:
       - backend

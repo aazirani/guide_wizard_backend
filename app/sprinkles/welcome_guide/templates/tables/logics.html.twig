@@ -1,0 +1,92 @@
+{# This partial template renders a table of all customers, to be populated with rows via an AJAX request.
+ # This extends a generic template for paginated tables.
+ #
+ # Note that this template contains a "skeleton" table with an empty table body, and then a block of Handlebars templates which are used
+ # to render the table cells with the data from the AJAX request.
+#}
+
+{% extends "tables/table-paginated.html.twig" %}
+
+{% block table %}
+    <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="[[0, 1]]">
+        <thead>
+            <tr>
+				<th class="sorter-metatext" data-column-name="name" data-column-template="#logic-table-column-name" data-priority="1">{{translate("NAME")}} <i class="fa fa-sort"></i></th>
+                <th class="sorter-metatext" data-column-name="expression" data-column-template="#logic-table-column-expression" data-priority="1">{{translate("EXPRESSION")}} <i class="fa fa-sort"></i></th>
+				
+
+                {% if 'creator' in table.columns %}
+                    <th class="sorter-metatext" data-column-name="creator" data-column-template="#logic-table-column-creator" data-priority="1">{{translate('USER')}} <i class="fa fa-sort"></i></th>
+                {% endif %}
+				<th class="sorter-metanum" data-filter="false" data-column-name="created_at" data-column-template="#logic-table-column-created-at" data-priority="1">{{translate('CREATED_AT')}} <i class="fa fa-sort"></i></th>
+				<th data-column-name="actions" data-column-template="#logic-table-column-actions" data-sorter="false" data-filter="false" data-priority="1">{{translate("ACTIONS")}}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block table_cell_templates %}
+    {# This contains a series of <script> blocks, each of which is a client-side Handlebars template.
+     # Note that these are NOT Twig templates, although the syntax is similar.  We wrap them in the `verbatim` tag,
+     # so that Twig will output them directly into the DOM instead of trying to treat them like Twig templates.
+     #
+     # These templates require handlebars-helpers.js, moment.js
+    #}
+    {% verbatim %}
+    <script id="logic-table-column-name" type="text/x-handlebars-template">
+        <td data-id="{{row.id}}">
+				{{row.name}}
+        </td>
+    </script>
+    <script id="logic-table-column-expression" type="text/x-handlebars-template">
+        <td>
+            {{row.expression}}
+        </td>
+    </script>
+	<script id="logic-table-column-creator" type="text/x-handlebars-template">
+        <td data-logic="{{row.creator.last_name}}">
+            {{#if row.creator }}
+                <strong>
+                    <a href="{{site.uri.public}}/users/u/{{row.creator.user_name}}">{{row.creator.first_name}} {{row.creator.last_name}} ({{row.creator.user_name}})</a>
+                </strong>
+                <div class="js-copy-container">
+                    <span class="js-copy-target">{{row.creator.email}}</span>
+                    <button class="btn btn-xs uf-copy-trigger js-copy-trigger"><i class="fa fa-copy"></i></button>
+                </div>
+            {{ else }}
+                <i>{% endverbatim %}{{translate("USER.DELETED")}}{% verbatim %}</i>
+            {{/if }}
+        </td>
+    </script>
+	<script id="logic-table-column-created-at" type="text/x-handlebars-template">
+        {{#if row.created_at }}
+        <td data-num="{{dateFormat row.created_at format='x'}}">
+            {{dateFormat row.created_at format="dddd"}}<br>{{dateFormat row.created_at format="MMM Do, YYYY h:mm a"}}
+        </td>
+        {{ else }}
+        <td data-num="0">
+            <i>{% endverbatim %}{{translate("UNKNOWN")}}{% verbatim %}</i>
+        </td>
+        {{/if }}
+    </script>
+    <script id="logic-table-column-actions" type="text/x-handlebars-template">
+        <td class="uf-table-fit-width">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">{% endverbatim %}{{translate("ACTIONS")}}{% verbatim %}<span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right-responsive" role="menu">
+                    <li>
+		<a href="#" class="js-displayForm-table" data-toggle="modal" data-formUrl="api/logics/{{row.id}}/edit"><i class="fa fa-edit"></i> {% endverbatim %}{{translate("LOGIC.EDIT")}}{% verbatim %}</a>
+                    </li>
+                    <li>
+						<a href="#" class="js-displayConfirm-table" data-confirm-title="{% endverbatim %}{{translate("LOGIC.DELETE")}}{% verbatim %}" data-confirm-message="{% endverbatim %}{{translate("LOGIC.DELETE_CONFIRM")}}{% verbatim %}" data-confirm-button="{% endverbatim %}{{translate("LOGIC.DELETE_YES")}}{% verbatim %}" data-post-url="api/logics/{{row.id}}" data-post-method="DELETE" data-toggle="modal">
+						<i class="fa fa-trash-alt"></i> {% endverbatim %}{{translate("LOGIC.DELETE")}}{% verbatim %}
+						</a>
+                    </li>
+                </ul>
+            </div>
+        </td>			
+    </script>
+    {% endverbatim %}
+{% endblock %}

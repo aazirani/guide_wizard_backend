@@ -83,3 +83,6 @@ api/
 # Igore npm lockfile
 build/package-lock.json
 build/package.lock
+
+# Ignore the files for the FormGenerator UF Plugin
+app/sprinkles/FormGenerator/*

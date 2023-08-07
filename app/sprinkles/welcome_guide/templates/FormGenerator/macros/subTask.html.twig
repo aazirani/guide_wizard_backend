@@ -1,0 +1,70 @@
+{% macro generate(input) %}
+
+
+
+
+
+{% block stylesheets_page %}
+<!-- Page-specific CSS asset bundle -->
+{{ assets.css('css/modals/subTasks') | raw }}
+{% endblock %}
+
+<!-- Use Bootstrap Collapse component to create an expandable container -->
+<div class="panel-group" id="expandable-container" role="tablist" aria-multiselectable="true">
+
+    <!-- Single Panel containing all the elements -->
+    <div class="panel panel-default">
+    <div class="panel-heading expandable-panel-heading" role="tab" id="heading-subTasks">
+        <h4 class="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#expandable-container" href="#collapse-subTasks" aria-expanded="false" aria-controls="collapse-subTasks">
+                <div class="expandable-title">
+                    <span><i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;{{translate("SUB_TASK_SELECTOR")}}</span>
+                    <i class="fa fa-chevron-down chevron-icon"></i>
+                </div>
+            </a>
+        </h4>
+    </div>
+    <div id="collapse-subTasks" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-subTasks">
+        <div class="panel-body">
+            <div class="input-group" style="margin-bottom: 7px;">
+                <span class="input-group-addon"><i class="fa fa-list fa-fw"></i></span>
+                <select class="form-control js-select2" id="taskSelect">
+                    <option value="">{{translate("SELECT_A_TASK")}}</option>
+                    {% set uniqueTasks = [] %}
+                    {% for taskId, taskTitles in input.subTaskOptionElements %}
+                        {% if taskTitles.task not in uniqueTasks %}
+                            {% set uniqueTasks = uniqueTasks|merge([taskTitles.task]) %}
+                            <option value="{{taskTitles.task}}">{{taskTitles.task}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="input-group" style="margin-bottom: 7px;">
+                <span class="input-group-addon"><i class="fa fa-filter fa-fw"></i></span>
+                <input autocomplete="off" class="form-control" type="text" id="searchFieldSubTasks" placeholder="{{translate("SEARCH_FOR_A_SUB_TASK")}}" label="{{translate("SEARCH_FOR_A_SUB_TASK")}}" icon="fa-filter">
+            </div>
+
+            <div class="grid-container" id="list-of-subtasks">
+                {% for subTaskId, subTaskTitles in input.subTaskOptionElements %}
+                <div class="grid-group-item tinted" data="{{subTaskId}}">
+                    <div class="item-content">
+                        <div class="task-text" style="display: none;">{{subTaskTitles.task}}</div>   
+                        <div class="subtask-title">{{subTaskTitles.title}}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+{% block scripts_page %}
+<!-- Include Page-specific JS -->
+{{ assets.js('js/modals/subTasks') | raw }}
+{% endblock %}
+
+{% endmacro %}

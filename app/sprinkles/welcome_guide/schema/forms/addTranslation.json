@@ -1,0 +1,39 @@
+{
+    "text_id" : {
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.TEXT"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "TEXT",
+            "icon" : "fa-th-list",
+            "placeholder" : "TEXT"
+        }
+    },
+    "translated_text" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.TRANSLATED_TEXT"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "TRANSLATED_TEXT",
+            "icon" : "fa-th-list",
+            "placeholder" : "TRANSLATED_TEXT"
+        }
+    },
+    "language_id" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.LANGUAGE"
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "LANGUAGE",
+            "icon" : "fa-th-list",
+            "placeholder" : "LANGUAGE"
+        }
+    }
+}

@@ -1,0 +1,97 @@
+{
+    "title" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "TITLE",
+            "icon" : "fa-th-list",
+            "placeholder" : "TITLE"
+        }
+    },
+    "sub_title" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "SUB_TITLE",
+            "icon" : "fa-th-list",
+            "placeholder" : "SUB_TITLE"
+        }
+    },
+    "type" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "TEXT", "IMAGE"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.TYPE"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "TYPE",
+            "options" : {
+                "TEXT" : "Text",
+                "IMAGE" : "Image"
+            }
+        }
+    },
+    "axis_count" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "1", "2", "3", "4"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.AXIS_COUNT"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "AXIS_COUNT",
+            "options" : {
+                "1" : "1",
+                "2" : "2",
+                "3" : "3",
+                "4" : "4"
+            }
+        }
+    },
+    "is_multiple_choice" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "0", "1"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.IS_MULTIPLE_CHOICE"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "IS_MULTIPLE_CHOICE",
+            "options" : {
+                "0" : "NO",
+                "1" : "YES"
+            }
+        }
+    },
+    "info_url" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "INFO_URL",
+            "icon" : "fa-th-list",
+            "placeholder" : "INFO_URL"
+        }
+    },
+    "info_description" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "INFO_DESCRIPTION",
+            "icon" : "fa-th-list",
+            "placeholder" : "INFO_DESCRIPTION"
+        }
+    }
+	
+}

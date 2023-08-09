@@ -546,7 +546,7 @@ class QuestionController extends SimpleController
     private static function saveAnswerOrder($data, $classMapper)
     {
         $orderedAnswers = explode(",", $data['answersOrder']);
-        if (!empty($orderedAnswers) && !count($orderedAnswers) == 0) {
+        if (!empty($orderedAnswers)) {
             // Fetch all sub-tasks at once
             $answers = $classMapper->createInstance('answer')
                 ->whereIn('id', $orderedAnswers)
@@ -557,6 +557,9 @@ class QuestionController extends SimpleController
 
             // Loop over the ids and update the order
             foreach ($orderedAnswers as $index => $id) {
+                if (empty($answers[$id])) {
+                    continue;
+                }
                 $answers[$id]->order = $index + 1;
             }
 

@@ -609,7 +609,7 @@ class TaskController extends SimpleController
     private static function saveSubTaskOrder($data, $classMapper)
     {
         $orderedSubTasks = explode(",", $data['subTasksOrder']);
-        if (!empty($orderedSubTasks) && !count($orderedSubTasks) == 0) {
+        if (!empty($orderedSubTasks)) {
             // Fetch all sub-tasks at once
             $subTasks = $classMapper->createInstance('subTask')
                 ->whereIn('id', $orderedSubTasks)
@@ -620,6 +620,9 @@ class TaskController extends SimpleController
 
             // Loop over the ids and update the order
             foreach ($orderedSubTasks as $index => $id) {
+                if (empty($subTasks[$id])) {
+                    continue;
+                }
                 $subTasks[$id]->order = $index + 1;
             }
 

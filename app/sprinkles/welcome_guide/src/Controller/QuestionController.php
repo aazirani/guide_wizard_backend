@@ -557,6 +557,9 @@ class QuestionController extends SimpleController
 
             // Loop over the ids and update the order
             foreach ($orderedAnswers as $index => $id) {
+                if (empty($answers[$id])) {
+                    continue;
+                }
                 $answers[$id]->order = $index + 1;
             }
 

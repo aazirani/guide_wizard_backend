@@ -620,6 +620,9 @@ class TaskController extends SimpleController
 
             // Loop over the ids and update the order
             foreach ($orderedSubTasks as $index => $id) {
+                if (empty($subTasks[$id])) {
+                    continue;
+                }
                 $subTasks[$id]->order = $index + 1;
             }
 

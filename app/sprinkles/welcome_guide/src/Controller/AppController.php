@@ -85,10 +85,12 @@ class AppController extends SimpleController
         $sprunje = $classMapper->createInstance('apps_step_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query) use ($subTaskIds) {
             return $query
-                ->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
-                    $query->whereIn('id', $subTaskIds);
+                ->where(function ($q) use ($subTaskIds) {
+                    $q->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
+                        $query->whereIn('id', $subTaskIds);
+                    })
+                        ->orWhereHas('questions');
                 })
-                ->orWhereHas('questions')
                 ->with([
                     'questions.answers' => function ($query) {
                         $query->where('is_enabled', 1)

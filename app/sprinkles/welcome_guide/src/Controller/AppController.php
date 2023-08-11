@@ -98,13 +98,15 @@ class AppController extends SimpleController
                     'questions',
                     'tasks' => function ($query) use ($subTaskIds) {
                         $query->whereHas('subTasks', function ($subQuery) use ($subTaskIds) {
-                            $subQuery->whereIn('id', $subTaskIds);
+                            $subQuery->whereIn('id', $subTaskIds)
+                                ->orderBy('order', 'asc');
                         });
                     },
                     'tasks.subTasks' => function ($query) use ($subTaskIds) {
-                        $query->whereIn('id', $subTaskIds);
+                        $query->whereIn('id', $subTaskIds)
+                            ->orderBy('order', 'asc');
                     }
-                ]);
+                ])->orderBy('order', 'asc');
         });
 
         //set cache headers in order to stop specially IE to cache the result

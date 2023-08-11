@@ -104,7 +104,6 @@ class AppController extends SimpleController
                 ->orderBy('order', 'asc');
         });
 
-
         //set cache headers in order to stop specially IE to cache the result
         return $sprunje->toResponse($response);
     }

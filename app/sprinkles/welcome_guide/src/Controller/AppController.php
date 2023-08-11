@@ -86,22 +86,25 @@ class AppController extends SimpleController
         $sprunje->extendQuery(function ($query) use ($subTaskIds) {
             return $query
                 ->where(function ($q) use ($subTaskIds) {
-                    $q->whereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
-                        $query->whereIn('id', $subTaskIds);
-                    })
-                        ->orWhereHas('questions');
+                    // Condition for steps with at least one question
+                    $q->whereHas('questions')
+                        // Condition for steps with at least one task with a subTask in $subTaskIds
+                        ->orWhereHas('tasks.subTasks', function ($query) use ($subTaskIds) {
+                            $query->whereIn('id', $subTaskIds);
+                        });
                 })
+                // Load only those tasks which have a subTask in $subTaskIds
                 ->with([
-                    'questions.answers' => function ($query) {
-                        $query->where('is_enabled', 1)
-                            ->orderBy('order', 'asc');
+                    'questions',
+                    'tasks' => function ($query) use ($subTaskIds) {
+                        $query->whereHas('subTasks', function ($subQuery) use ($subTaskIds) {
+                            $subQuery->whereIn('id', $subTaskIds);
+                        });
                     },
                     'tasks.subTasks' => function ($query) use ($subTaskIds) {
-                        $query->whereIn('id', $subTaskIds)
-                            ->orderBy('order', 'asc');
-                    },
-                ])
-                ->orderBy('order', 'asc');
+                        $query->whereIn('id', $subTaskIds);
+                    }
+                ]);
         });
 
         //set cache headers in order to stop specially IE to cache the result

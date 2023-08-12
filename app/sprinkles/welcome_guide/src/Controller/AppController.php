@@ -95,7 +95,7 @@ class AppController extends SimpleController
                 })
                 // Load only those tasks which have a subTask in $subTaskIds
                 ->with([
-                    'questions',
+                    'questions.answers',
                     'tasks' => function ($query) use ($subTaskIds) {
                         $query->whereHas('subTasks', function ($subQuery) use ($subTaskIds) {
                             $subQuery->whereIn('id', $subTaskIds)

@@ -1,0 +1,10 @@
+{
+    "title": {
+        "form": {
+            "type": "translation",
+            "label": "TITLE",
+            "icon": "fa-th-list",
+            "placeholder": "TITLE"
+        }
+    }
+}

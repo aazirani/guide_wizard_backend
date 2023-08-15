@@ -70,7 +70,10 @@ class ServicesProvider
             $classMapper->setClassMapping('translation', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation');
             $classMapper->setClassMapping('translation_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TranslationSprunje');
 
-			return $classMapper;
+            $classMapper->setClassMapping('textSetting', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\TextSetting');
+            $classMapper->setClassMapping('textSetting_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TextSettingSprunje');
+
+            return $classMapper;
         });
     }
 }

@@ -225,7 +225,7 @@ class QuestionController extends SimpleController
 
             // Store new question to database
             $question->save();
-            TranslationsUtilities::saveTranslations($question, "Question", $params, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($question, "Question", $params, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger, true);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($question->title, $classMapper);
 
@@ -498,7 +498,7 @@ class QuestionController extends SimpleController
 
             $question->step_id = QuestionController::getQuestionsStepId($classMapper);
 
-            TranslationsUtilities::saveTranslations($question, "Question", $post, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($question, "Question", $post, $classMapper, $currentUser, $this->getTranslationsVariables($question), $userActivityLogger, true);
 
             QuestionController::saveAnswerOrder($data, $classMapper);
 

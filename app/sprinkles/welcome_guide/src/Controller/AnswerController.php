@@ -237,7 +237,7 @@ class AnswerController extends SimpleController
 
             // Store new answer to database
             $answer->save();
-            TranslationsUtilities::saveTranslations($answer, "Answer", $params, $classMapper, $currentUser, $this->getTranslationsVariables($answer), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($answer, "Answer", $params, $classMapper, $currentUser, $this->getTranslationsVariables($answer), $userActivityLogger, true);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($answer->title, $classMapper);
 
@@ -518,7 +518,7 @@ class AnswerController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($answer, "Answer", $post, $classMapper, $currentUser, $this->getTranslationsVariables($answer), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($answer, "Answer", $post, $classMapper, $currentUser, $this->getTranslationsVariables($answer), $userActivityLogger, true);
 
             // Create activity record
             $this

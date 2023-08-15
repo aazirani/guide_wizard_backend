@@ -1,0 +1,6 @@
+---
+textSetting_id:
+    validators:
+        required:
+            label: "&TEXT_SETTING"
+            message: VALIDATE.REQUIRED

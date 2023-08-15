@@ -229,7 +229,7 @@ class SubTaskController extends SimpleController
             // Store new subTask to database
             $subTask->save();
 
-            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($subTask), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($subTask), $userActivityLogger, true);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($subTask->title, $classMapper);
 
@@ -491,7 +491,7 @@ class SubTaskController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($subTask), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($subTask, "Sub Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($subTask), $userActivityLogger, true);
 
             // Create activity record
             $this

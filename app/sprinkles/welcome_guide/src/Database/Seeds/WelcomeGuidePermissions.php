@@ -354,6 +354,20 @@ class WelcomeGuidePermissions extends BaseSeed
 				'conditions' => 'always()',
 				'description' => 'Delete task.'
 			]),
+
+            //text_settings
+			'view_textSettings' => new Permission([
+                'slug' => 'view_textSettings',
+				'name' => 'View view_textSettings',
+				'conditions' => 'always()',
+				'description' => 'View a page containing a list of all textSettings.'
+			]),
+			'update_textSetting_field' => new Permission([
+                'slug' => 'update_textSetting_field',
+				'name' => 'Update update_textSetting_field',
+				'conditions' => 'always()',
+				'description' => 'Edit textSetting.'
+			]),
         ];
     }
 

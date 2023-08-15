@@ -212,6 +212,29 @@ return [
         "CLONE" => "Clone Task",
         "EDIT" => "Edit Task"
     ],
+    "TEXT_SETTING" => [
+        1 => "Text Setting",
+        2 => "Text Settings",
+
+        "PAGE" => "A list of all text settings",
+        "CREATE" => "New Text Setting",
+        "CREATED" => "Text Setting <strong>{{name}}</strong> was successfully created",
+
+        "SELECTED" => [
+            1 => "Selected Text Setting",
+            2 => "Selected Text Settings"
+        ],
+        "DELETE" => "Delete Text Setting",
+        "DELETE_CONFIRM" => "Are you sure you want to delete this text setting?",
+        "DELETE_YES" => "Yes, delete the text setting",
+
+        "DETAILS_UPDATED" => "Details for Text Setting <strong>{{name}}</strong> were updated",
+
+        "DELETION_SUCCESSFUL" => "Text Setting <strong>{{name}}</strong> was successfully deleted.",
+
+        "CLONE" => "Clone Text Setting",
+        "EDIT" => "Edit Text Setting"
+    ],
     "TITLE" => "Title",
     "SUB_TITLE" => "Sub Title",
     "TYPE" => "Type",

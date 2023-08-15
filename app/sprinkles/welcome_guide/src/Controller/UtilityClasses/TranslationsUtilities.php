@@ -5,7 +5,7 @@ use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
 use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation;
 
 class TranslationsUtilities{
-    public static function addTranslations($params, $arrayOfObjectToReceiveWithKeyAsKey, $classMapper, $currentUserId, $objectName, $object, $userActivityLogger, $currentUser): array
+    public static function addTranslations($params, $arrayOfObjectToReceiveWithKeyAsKey, $classMapper, $currentUserId, $objectName, $object, $userActivityLogger, $currentUser, $updateTechnicalName): array
     {
         foreach ($arrayOfObjectToReceiveWithKeyAsKey as $key => $valueOfKey){
             $translationsWereUpdatedFlag = false;
@@ -14,7 +14,11 @@ class TranslationsUtilities{
             if(!$text){
                 $text = $classMapper->createInstance('text');
             }
-            $text->technical_name = $objectName."_".$object->id."_".$key;
+            
+            if($updateTechnicalName || !isset($text->technical_name)){
+                $text->technical_name = $objectName."_".$object->id."_".$key;
+            }
+            
             $text->creator_id = $currentUserId;
 
             $text->save();
@@ -99,9 +103,9 @@ class TranslationsUtilities{
         }
     }
 
-    public static function saveTranslations($object, $objectName, $params, $classMapper, $currentUser, $arrayOfObjectWithKeyAsKey, $userActivityLogger){
+    public static function saveTranslations($object, $objectName, $params, $classMapper, $currentUser, $arrayOfObjectWithKeyAsKey, $userActivityLogger, $updateTechnicalName){
 
-        $textIds = TranslationsUtilities::addTranslations($params, $arrayOfObjectWithKeyAsKey, $classMapper, $currentUser->id, $objectName, $object, $userActivityLogger, $currentUser);
+        $textIds = TranslationsUtilities::addTranslations($params, $arrayOfObjectWithKeyAsKey, $classMapper, $currentUser->id, $objectName, $object, $userActivityLogger, $currentUser, $updateTechnicalName);
 
         foreach ($arrayOfObjectWithKeyAsKey as $key => $value) {
             $object->{$key} = $textIds[$key];

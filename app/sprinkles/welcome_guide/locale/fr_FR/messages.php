@@ -212,6 +212,29 @@ return [
         "CLONE" => "Cloner la tâche",
         "EDIT" => "Modifier la tâche"
     ],
+    "TEXT_SETTING" => [
+        1 => "Paramètre de texte",
+        2 => "Paramètres de texte",
+
+        "PAGE" => "Une liste de tous les paramètres de texte",
+        "CREATE" => "Nouveau paramètre de texte",
+        "CREATED" => "Le paramètre de texte <strong>{{name}}</strong> a été créé avec succès",
+
+        "SELECTED" => [
+            1 => "Paramètre de texte sélectionné",
+            2 => "Paramètres de texte sélectionnés"
+        ],
+        "DELETE" => "Supprimer le paramètre de texte",
+        "DELETE_CONFIRM" => "Êtes-vous sûr de vouloir supprimer ce paramètre de texte?",
+        "DELETE_YES" => "Oui, supprimer le paramètre de texte",
+
+        "DETAILS_UPDATED" => "Les détails du paramètre de texte <strong>{{name}}</strong> ont été mis à jour",
+
+        "DELETION_SUCCESSFUL" => "Le paramètre de texte <strong>{{name}}</strong> a été supprimé avec succès.",
+
+        "CLONE" => "Cloner le paramètre de texte",
+        "EDIT" => "Éditer le paramètre de texte"
+    ],
     "TITLE" => "Titre",
     "SUB_TITLE" => "Sous-titre",
     "TYPE" => "Type",

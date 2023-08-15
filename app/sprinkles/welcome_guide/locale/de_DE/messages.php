@@ -212,6 +212,29 @@ return [
         "CLONE" => "Aufgabe klonen",
         "EDIT" => "Aufgabe bearbeiten"
     ],
+    "TEXT_SETTING" => [
+        1 => "Text-Einstellung",
+        2 => "Text-Einstellungen ",
+
+        "PAGE" => "Eine Liste aller Text-Einstellungen",
+        "CREATE" => "Neue Text-Einstellung",
+        "CREATED" => "Text-Einstellung <strong>{{name}}</strong> wurde erfolgreich erstellt",
+
+        "SELECTED" => [
+            1 => "Ausgewählte Text-Einstellung",
+            2 => "Ausgewählte Text-Einstellungen"
+        ],
+        "DELETE" => "Text-Einstellung löschen",
+        "DELETE_CONFIRM" => "Sind Sie sicher, dass Sie diese Text-Einstellung löschen möchten?",
+        "DELETE_YES" => "Ja, Text-Einstellung löschen",
+
+        "DETAILS_UPDATED" => "Details für Text-Einstellung <strong>{{name}}</strong> wurden aktualisiert",
+
+        "DELETION_SUCCESSFUL" => "Text-Einstellung <strong>{{name}}</strong> wurde erfolgreich gelöscht.",
+
+        "CLONE" => "Text-Einstellung klonen",
+        "EDIT" => "Text-Einstellung bearbeiten"
+    ],
     "TITLE" => "Titel",
     "SUB_TITLE" => "Untertitel",
     "TYPE" => "Typ",

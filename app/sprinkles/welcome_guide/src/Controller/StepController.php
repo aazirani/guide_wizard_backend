@@ -221,7 +221,7 @@ class StepController extends SimpleController
             $step = $classMapper->createInstance('step', $data);
             $step->save();
 
-            TranslationsUtilities::saveTranslations($step, "Step", $params, $classMapper, $currentUser, $this->getTranslationsVariables($step), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($step, "Step", $params, $classMapper, $currentUser, $this->getTranslationsVariables($step), $userActivityLogger, true);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($step->name, $classMapper);
 
@@ -499,7 +499,7 @@ class StepController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($step, "Step", $post, $classMapper, $currentUser, $this->getTranslationsVariables($step), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($step, "Step", $post, $classMapper, $currentUser, $this->getTranslationsVariables($step), $userActivityLogger, true);
 
             // Create activity record
             $this

@@ -7,6 +7,11 @@
         <a href="{{site.uri.public}}/languages"><i class="fa fa-globe"></i> <span>{{ translate("LANGUAGE", 2) }}</span></a>
     </li>
     {% endif %}
+    {% if checkAccess('view_textSettings') %}
+    <li>
+        <a href="{{site.uri.public}}/textSettings"><i class="fa fa-paragraph"></i> <span>{{ translate("TEXT_SETTING", 2) }}</span></a>
+    </li>
+    {% endif %}
     {% if checkAccess('view_steps') %}
     <li>
         <a href="{{site.uri.public}}/steps"><i class="fa fa-shoe-prints"></i> <span>{{ translate("STEP", 2) }}</span></a>

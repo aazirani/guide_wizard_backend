@@ -228,7 +228,7 @@ class TaskController extends SimpleController
             // Store new task to database
             $task->save();
 
-            TranslationsUtilities::saveTranslations($task, "Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($task), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($task, "Task", $params, $classMapper, $currentUser, $this->getTranslationsVariables($task), $userActivityLogger, true);
 
             $text = TranslationsUtilities::getTranslationTextBasedOnMainLanguage($task->text, $classMapper);
 
@@ -505,7 +505,7 @@ class TaskController extends SimpleController
                 }
             }
 
-            TranslationsUtilities::saveTranslations($task, "Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($task), $userActivityLogger);
+            TranslationsUtilities::saveTranslations($task, "Task", $post, $classMapper, $currentUser, $this->getTranslationsVariables($task), $userActivityLogger, true);
 
             TaskController::saveSubTaskOrder($data, $classMapper);
 

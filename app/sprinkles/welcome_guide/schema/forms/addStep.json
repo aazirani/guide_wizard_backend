@@ -24,6 +24,11 @@
             "placeholder" : "IMAGE"
         }
     },
+    "image_remove" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    },
     "order" : {
         "validators" : {
             "member_of" : {

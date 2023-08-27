@@ -2,18 +2,58 @@
 
 {% if input.value %}
 <div class="form-group">
-<img src="steps/image/{{input.value}}" style="max-height:200px;max-width:200px;height:auto;width:auto;"></img>
+    <img id="alreadyUploadedImage_{{input.id}}" src="steps/image/{{input.value}}" style="max-height:200px;max-width:200px;height:auto;width:auto;"></img>
 </div>
 {% endif %}
 
-    {% if input.icon %}
-    <div class="input-group">
-        <span class="input-group-addon"><i class="fa {{input.icon}} fa-fw"></i></span>
+{% if input.icon %}
+<div class="input-group">
+    <span class="input-group-addon"><i class="fa {{input.icon}} fa-fw"></i></span>
     {% else %}
     <div class="form-group">
-    {% endif %}
+        {% endif %}
         <input{% for type,value in input %} {{type}}="{{value}}"{% endfor %}></input>
+        <span class="input-group-btn">
+            <button class="btn btn-danger" type="button" id="removeImageBtn_{{input.id}}"><span class="glyphicon glyphicon-remove" aria-hidden="true">
+            </span> Remove Image</button>
+        </span>
     </div>
-    
-    
+
+    {% block scripts_page %}
+    <!-- Include Page-specific JS -->
+    <script>
+        $(document).ready(function() {
+            // Show/hide the remove button based on whether an image is present
+            if ($("#alreadyUploadedImage_{{input.id}}").length || $(this).val() !== "") {
+                $("#{{input.id}}_remove").val("0");
+                $("#removeImageBtn_{{input.id}}").show();
+            } else {
+                $("#{{input.id}}_remove").val("1");
+                $("#removeImageBtn_{{input.id}}").hide();
+            }
+
+            // Remove the image and update button visibility on button click
+            $("#removeImageBtn_{{input.id}}").click(function() {
+                $("#{{input.id}}_remove").val("1");
+                $("#alreadyUploadedImage_{{input.id}}").remove();
+                $("#{{input.id}}").replaceWith($("#{{input.id}}").val('').clone(true));
+                $("#removeImageBtn_{{input.id}}").hide();
+            });
+
+            // Show/hide the uploaded image container and remove button on file input change
+            $("#{{input.id}}").change(function() {
+                if ($("#alreadyUploadedImage_{{input.id}}").length || $(this).val() !== "") {
+                    $("#{{input.id}}_remove").val("0");
+                    $("#removeImageBtn_{{input.id}}").show();
+                } else {
+                    $("#{{input.id}}_remove").val("1");
+                    $("#removeImageBtn_{{input.id}}").hide();
+                }
+            });
+        });
+
+    </script>
+    {% endblock %}
+
 {% endmacro %}
+

@@ -219,7 +219,7 @@ class AnswerController extends SimpleController
         $data['creator_id'] = $currentUser->id;
 
         //uploading images
-		$data['image'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', null);
+		$data['image'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', null, $data);
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
@@ -507,12 +507,12 @@ class AnswerController extends SimpleController
         Capsule::transaction(function () use ($data, $answer, $currentUser, $classMapper, $post, $text, $userActivityLogger)
         {
 
-            $answer->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $answer->image);
+            $answer->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $answer->image, $data);
 
             // Update the object and generate success messages
             foreach ($data as $name => $value)
             {
-                if ($value != $answer->$name)
+                if ($value != $answer->$name && $name != 'image_remove')
                 {
                     $answer->$name = $value;
                 }

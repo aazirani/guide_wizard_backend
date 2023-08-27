@@ -216,8 +216,8 @@ class TaskController extends SimpleController
         $data['creator_id'] = $currentUser->id;
 
         //uploading images
-        $data['image_1'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', null);
-        $data['image_2'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_2', null);
+        $data['image_1'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', null, $data);
+        $data['image_2'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_2', null, $data);
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
@@ -495,12 +495,12 @@ class TaskController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($data, $task, $currentUser, $classMapper, $post, $text, $userActivityLogger) {
 
-            $task->image_1 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', $task->image_1);
-            $task->image_2 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_2', $task->image_2);
+            $task->image_1 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_1', $task->image_1, $data);
+            $task->image_2 = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image_2', $task->image_2, $data);
 
             // Update the object and generate success messages
             foreach ($data as $name => $value) {
-                if ($value != $task->$name && $name != 'subTasksOrder') {
+                if ($value != $task->$name && $name != 'subTasksOrder' && $name != 'image_1_remove' && $name != 'image_2_remove') {
                     $task->$name = $value;
                 }
             }

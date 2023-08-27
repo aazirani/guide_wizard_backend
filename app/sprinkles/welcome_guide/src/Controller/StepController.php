@@ -212,7 +212,7 @@ class StepController extends SimpleController
         $userActivityLogger = $this->ci->userActivityLogger;
 
         //uploading images
-        $data['image'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', null);
+        $data['image'] = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', null, $data);
 
         // All checks passed!  log events/activities, create customer
         // Begin transaction - DB will be rolled back if an exception occurs
@@ -490,11 +490,12 @@ class StepController extends SimpleController
         // Begin transaction - DB will be rolled back if an exception occurs
         Capsule::transaction(function () use ($data, $step, $currentUser, $classMapper, $post, $text, $userActivityLogger) {
 
-            $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image);
+
+            $step->image = ImageUploadAndDelivery::uploadImageAndRemovePreviousOne('image', $step->image, $data);
 
             // Update the object and generate success messages
             foreach ($data as $name => $value) {
-                if ($value != $step->$name) {
+                if ($value != $step->$name && $name != 'image_remove') {
                     $step->$name = $value;
                 }
             }

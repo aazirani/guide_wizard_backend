@@ -37,6 +37,11 @@
             "placeholder" : "IMAGE_1"
         }
     },
+    "image_1_remove" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    },
     "image_2" : {
         "validators" : {},
         "form" : {
@@ -44,6 +49,11 @@
             "label" : "IMAGE_2",
             "icon" : "fa-image",
             "placeholder" : "IMAGE_2"
+        }
+    },
+    "image_2_remove" : {
+        "form" : {
+            "type" : "hidden"
         }
     },
     "subTasks" : {

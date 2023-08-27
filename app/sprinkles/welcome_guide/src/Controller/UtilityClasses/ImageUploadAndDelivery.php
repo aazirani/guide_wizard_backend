@@ -1,17 +1,23 @@
 <?php
+
 namespace UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses;
 
-class ImageUploadAndDelivery{
-    
-    public static function getFullImagePath($filename){
-        return "../app/sprinkles/welcome_guide/uploads/images/".$filename;
+class ImageUploadAndDelivery
+{
+
+    public static function getFullImagePath($filename)
+    {
+        return "../app/sprinkles/welcome_guide/uploads/images/" . $filename;
     }
-    public static function deleteImageFile($filename){
+
+    public static function deleteImageFile($filename)
+    {
         $fileToBeDeleted = ImageUploadAndDelivery::getFullImagePath($filename);
         unlink($fileToBeDeleted);
     }
 
-    private static function uploadImageFileToServer($file){
+    private static function uploadImageFileToServer($file)
+    {
         //generate unique file name
         $new_filename = md5(uniqid(rand(), true) . microtime());
         $file->setName($new_filename);
@@ -43,22 +49,26 @@ class ImageUploadAndDelivery{
             return $errors;
         }
     }
-    
-    public static function uploadImageAndRemovePreviousOne($nameOfFileInPostObject, $nameOfPreviousImageFile){
+
+    public static function uploadImageAndRemovePreviousOne($nameOfFileInPostObject, $nameOfPreviousImageFile, $data)
+    {
+        if (!empty($nameOfPreviousImageFile) && !empty($data[$nameOfFileInPostObject . '_remove']) && $data[$nameOfFileInPostObject . '_remove']) {
+            ImageUploadAndDelivery::deleteImageFile($nameOfPreviousImageFile);
+            return null;
+        }
         if (!empty($_FILES[$nameOfFileInPostObject]) && !empty($_FILES[$nameOfFileInPostObject]['name'])) {
             $storage = new \Upload\Storage\FileSystem(ImageUploadAndDelivery::getFullImagePath(''));
             //upload new file
-                $file1 = new \Upload\File($nameOfFileInPostObject, $storage);
-                $succUp = ImageUploadAndDelivery::uploadImageFileToServer($file1);
-                if (isset($succUp['name'])) {
-                    if(isset($nameOfPreviousImageFile)){
-                        //delete previous file
-                        ImageUploadAndDelivery::deleteImageFile($nameOfPreviousImageFile);
-                    }
-                    return $succUp['name'];
+            $file1 = new \Upload\File($nameOfFileInPostObject, $storage);
+            $succUp = ImageUploadAndDelivery::uploadImageFileToServer($file1);
+            if (isset($succUp['name'])) {
+                if (isset($nameOfPreviousImageFile)) {
+                    //delete previous file
+                    ImageUploadAndDelivery::deleteImageFile($nameOfPreviousImageFile);
                 }
+                return $succUp['name'];
+            }
         }
         return $nameOfPreviousImageFile;
     }
-    
 }

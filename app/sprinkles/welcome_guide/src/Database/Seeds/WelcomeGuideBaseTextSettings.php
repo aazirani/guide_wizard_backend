@@ -45,7 +45,7 @@ class WelcomeGuideBaseTextSettings extends BaseSeed
             "textSetting_steps", "textSetting_in_progress", "textSetting_description", "textSetting_url_dialog_title",
             "textSetting_url_dialog_message", "textSetting_cancel", "textSetting_open_link", "textSetting_could_not_load",
             "textSetting_update_steps", "textSetting_getting_updates", "textSetting_next_stage_check_internet",
-            "textSetting_update_finished"
+            "textSetting_update_finished", "textSetting_done_task"
         ];
 
         $values = [
@@ -53,17 +53,21 @@ class WelcomeGuideBaseTextSettings extends BaseSeed
             "Deadline", "Continue", "No Internet Connection", "Can't Reach The Server!", "Try Again",
             "Steps require an update. Please verify your internet connection.", "Welcome Guide", "Steps",
             "In Progress", "Description", "Open URL", "Do you want to open", "Cancel", "Open Link", "Couldn't load",
-            "Update steps", "Updating", "Check your Internet Connection and Try Again", "Updating Finished"
+            "Update steps", "Updating", "Check your Internet Connection and Try Again", "Updating Finished", "Done"
         ];
+
+        $alreadyAddedTechnicalNames = Text::whereIn('technical_name', $keys)->pluck('technical_name')->toArray();
 
         $importData = [];
         for ($i = 0; $i < count($keys); $i++) {
-            $importData[] = [
-                'technical_name' => $keys[$i],
+            if (!in_array($keys[$i], $alreadyAddedTechnicalNames)) {
+                $importData[] = [
+                    'technical_name' => $keys[$i],
                 'translated_text' => $values[$i],
                 'creator_id' => '1',
-                'language_id' => $englishLanguage->id,
-            ];
+                'language_id' => $englishLanguage->id
+                ];
+            }
         }
 
         WelcomeGuideBaseTextSettings::importTextsAndTextSettings($importData);

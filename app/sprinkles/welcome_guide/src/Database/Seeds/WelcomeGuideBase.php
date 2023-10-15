@@ -22,11 +22,16 @@ class WelcomeGuideBase extends BaseSeed
      */
     public function run()
     {
+        // We require the default welcome guide roles and permissions
+        Seeder::execute('WelcomeGuidePermissions');
         $englishLanguage = $this->seedEnglishLanguage();
+        // We require the default settings texts
+        Seeder::execute('WelcomeGuideBaseTextSettings');
         $this->seedQuestionStep($englishLanguage);
     }
 
-    protected function seedEnglishLanguage(){
+    protected function seedEnglishLanguage()
+    {
         $english = new Language([
             'language_code' => 'en',
             'language_name' => 'English',
@@ -37,7 +42,7 @@ class WelcomeGuideBase extends BaseSeed
         $english->save();
         return $english;
     }
-    
+
     protected function seedQuestionStep($englishLanguage)
     {
 
@@ -46,7 +51,7 @@ class WelcomeGuideBase extends BaseSeed
             'creator_id' => '1'
         ]);
         $textName->save();
-        
+
         $textNameTranslation = new Translation([
             'text_id' => $textName->id,
             'translated_text' => 'Questions',
@@ -54,8 +59,8 @@ class WelcomeGuideBase extends BaseSeed
             'creator_id' => '1'
         ]);
         $textNameTranslation->save();
-        
-        
+
+
         $textDescription = new Text([
             'technical_name' => 'Step_1_description',
             'creator_id' => '1'
@@ -68,8 +73,8 @@ class WelcomeGuideBase extends BaseSeed
             'creator_id' => '1'
         ]);
         $textDescriptionTranslation->save();
-        
-        
+
+
         $step = new Step([
             'name' => $textName->id,
             'description' => $textDescription->id,
@@ -77,7 +82,7 @@ class WelcomeGuideBase extends BaseSeed
             'creator_id' => '1'
         ]);
         $step->save();
-        
+
         return $step;
 
     }

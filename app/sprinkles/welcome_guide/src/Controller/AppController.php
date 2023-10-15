@@ -110,7 +110,8 @@ class AppController extends SimpleController
         });
 
         //set cache headers in order to stop specially IE to cache the result
-        return $sprunje->toResponse($response);
+        return $sprunje->toResponse($response)
+            ->withHeader('Access-Control-Allow-Origin', '*');
     }
 
     public function getTranslations($request, $response, $args)
@@ -132,16 +133,22 @@ class AppController extends SimpleController
         $sprunje = $classMapper->createInstance('text_sprunje', $classMapper, $params);
         $sprunje->extendQuery(function ($query) {
             return $query
-                ->with('translations.language');
+                ->whereHas('translations.language', function ($query) {
+                    $query->where('is_active', 1);
+                })
+                ->with(['translations' => function ($query) {
+                    $query->whereHas('language', function ($query) {
+                        $query->where('is_active', 1);
+                    })->with('language');
+                }]);
         });
         //set cache headers in order to stop specially IE to cache the result
-        return $sprunje->toResponse($response);
+        return $sprunje->toResponse($response)
+            ->withHeader('Access-Control-Allow-Origin', '*');
     }
 
     public function getLastUpdatedAt($request, $response, $args)
     {
-
-
         $classMapper = $this->ci->classMapper;
 
         $typesForObjects = [
@@ -158,7 +165,6 @@ class AppController extends SimpleController
             ->whereIn('type', $typesForObjects)
             ->max('occurred_at');
 
-
         $typesForTranslations = [
             'language_created', 'language_updated', 'language_deleted',
             'text_created', 'text_updated', 'text_deleted'
@@ -168,11 +174,18 @@ class AppController extends SimpleController
             ->whereIn('type', $typesForTranslations)
             ->max('occurred_at');
 
-
         $data = [
             'last_updated_at_content' => $lastUpdatedForContent,
             'last_updated_at_technical_names' => $lastUpdatedForTranslations
         ];
+
+        // Set the response header to allow all origins
+        header("Access-Control-Allow-Origin: *");
+
+        // Set the response content type to JSON
+        header("Content-Type: application/json");
+
+        // Encode the data as JSON and return it
         return json_encode($data);
     }
 

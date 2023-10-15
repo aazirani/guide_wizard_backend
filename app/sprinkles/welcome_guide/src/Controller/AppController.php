@@ -180,13 +180,15 @@ class AppController extends SimpleController
         ];
 
         // Set the response header to allow all origins
-        header("Access-Control-Allow-Origin: *");
+        $response = $response->withHeader('Access-Control-Allow-Origin', '*');
 
         // Set the response content type to JSON
-        header("Content-Type: application/json");
+        $response = $response->withHeader('Content-Type', 'application/json');
 
         // Encode the data as JSON and return it
-        return json_encode($data);
+        $response->getBody()->write(json_encode($data));
+
+        return $response;
     }
 
 }

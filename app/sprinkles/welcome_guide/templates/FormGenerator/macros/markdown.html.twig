@@ -1,0 +1,43 @@
+{% macro generate(input) %}
+
+{% for option, label in input.options %}
+
+<div class="form-group has-feedback">
+    <div class="input-group" style="width: 100%;">
+        <label for="field_files_{{option}}"´>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{label}}</label>
+        <textarea autocomplete="off" class="form-control" name="{{input.name}}_{{option}}" id="field_translations_{{option}}" type="text" label="{{label}}""></textarea>
+    </div>
+</div>
+
+<script>
+    var simplemde = new SimpleMDE({
+        element: $('textarea[name="{{input.name}}_{{option}}"]')[0],
+        initialValue: {{ attribute(input.translations, input.name ~ '_' ~ option)|json_encode|raw }},
+        autoDownloadFontAwesome: false,
+        autofocus: true,
+        placeholder: '{{translate(input.label)}}',
+        promptURLs: true,
+        spellChecker: false,
+        toolbar: ["bold", "italic",
+        {
+            name: "heading",
+            action: SimpleMDE.toggleHeadingSmaller,
+            className: "fa fa-heading",
+            title: "Heading",
+        },"|", "quote", "unordered-list", "ordered-list", "|", "clean-block", "link",
+        {
+            name: "image",
+            action: SimpleMDE.drawImage,
+            className: "fa fa-image",
+            title: "Insert Image",
+        }
+        , "table", "horizontal-rule", "|", "preview", "guide"]
+    });
+   
+    simplemde.togglePreview();
+    
+</script>
+
+{% endfor %}
+
+{% endmacro %}

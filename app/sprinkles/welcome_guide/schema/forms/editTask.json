@@ -1,0 +1,72 @@
+{
+    "text" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "TEXT",
+            "icon" : "fa-th-list",
+            "placeholder" : "TEXT"
+        }
+    },
+    "step_id" : {
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.STEP"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "STEP",
+            "icon" : "fa-th-list",
+            "placeholder" : "STEP"
+        }
+    },
+    "description" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "DESCRIPTION",
+            "icon" : "fa-th-list",
+            "placeholder" : "DESCRIPTION"
+        }
+    },
+    "image_1" : {
+        "validators" : {},
+        "form" : {
+            "type" : "file",
+            "label" : "IMAGE_1",
+            "icon" : "fa-image",
+            "placeholder" : "IMAGE_1"
+        }
+    },
+    "image_1_remove" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    },
+    "image_2" : {
+        "validators" : {},
+        "form" : {
+            "type" : "file",
+            "label" : "IMAGE_2",
+            "icon" : "fa-image",
+            "placeholder" : "IMAGE_2"
+        }
+    },
+    "image_2_remove" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    },
+    "subTasks" : {
+        "form" : {
+            "type" : "reorder",
+            "label" : "SUB_TASKS_ORDER",
+            "icon" : "fa-th-list",
+            "placeholder" : "SUB_TASKS_ORDER"
+        }
+    },
+    "subTasksOrder" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    }
+}

@@ -220,16 +220,16 @@ Follow the setup wizard to:
 
 ### Step 4: Install Guide Wizard Sprinkle
 
-```bash
-# Clone Guide Wizard sprinkle into the sprinkles directory
-git clone https://github.com/aazirani/guide_wizard_backend.git app/sprinkles/guide_wizard
+The Guide Wizard sprinkle is this repository itself. Simply clone it into your UserFrosting sprinkles directory:
 
-# Alternative: Copy your existing Guide Wizard sprinkle
-# cp -r /path/to/your/guide_wizard_sprinkle app/sprinkles/guide_wizard
+```bash
+cd app/sprinkles
+git clone https://github.com/aazirani/guide_wizard_backend.git guide_wizard
+cd ../..
 ```
 
-### Step 5: Configure Sprinkles and Dependencies
-Edit `app/sprinkles.json` to include the `guide_wizard` sprinkle and FormGenerator dependency:
+### Step 5: Configure Sprinkles
+Edit `app/sprinkles.json` to register the `guide_wizard` sprinkle and FormGenerator dependency:
 
 ```json
 {
@@ -237,7 +237,7 @@ Edit `app/sprinkles.json` to include the `guide_wizard` sprinkle and FormGenerat
         "core",
         "account",
         "admin",
-		"FormGenerator",
+        "FormGenerator",
         "guide_wizard"
     ],
     "require": {
@@ -246,36 +246,25 @@ Edit `app/sprinkles.json` to include the `guide_wizard` sprinkle and FormGenerat
 }
 ```
 
-> **Note**: FormGenerator will be automatically downloaded and installed by Composer when you run the update commands in the next step.
+> **Note**: FormGenerator is required by Guide Wizard and must be included in sprinkles.json.
 
-### Step 6: Update Dependencies and Database
+### Step 6: Install Dependencies and Run Setup
 
 ```bash
-# Update composer autoloader and install FormGenerator automatically
+# Install/update all dependencies (including FormGenerator from the sprinkle)
 composer update
 
-# Alternative: Run bakery bake to update dependencies and run migrations
+# Run the setup wizard - this will configure database and create admin user
 php bakery bake
-
-# Install/update Node.js dependencies
-npm install
-
-# If you didn't use 'php bakery bake', run migrations manually
-php bakery migrate
 ```
 
-> **Note**: `composer update` will automatically download and install FormGenerator 4.0.x based on the requirement in sprinkles.json. The `php bakery bake` command will also handle dependency updates and run migrations.
+The `php bakery bake` command will:
+- Prompt for database configuration
+- Run all migrations
+- Seed the database with initial data (languages, permissions, sample content)
+- Create your admin user account
 
-### Step 7: Build Assets
-```bash
-# Compile frontend assets
-npm run dev
-
-# For production
-npm run production
-```
-
-### Step 8: Set Web Server Document Root
+### Step 7: Set Web Server Document Root
 Configure your web server to point to the `public/` directory:
 
 **Apache Virtual Host Example:**
@@ -312,21 +301,10 @@ server {
 }
 ```
 
-### Step 9: Access Your Installation
+### Step 8: Access Your Installation
 - **Frontend**: `http://guidewizard-backend.local/`
 - **Admin Panel**: `http://guidewizard-backend.local/admin`
 - **API Base**: `http://guidewizard-backend.local/api/`
-
-## 🔧 Development Setup
-
-For development, you can use PHP's built-in server:
-
-```bash
-# Start development server
-php -S localhost:8080 -t public/
-
-# Access at: http://localhost:8080
-```
 
 ## 🔧 Configuration
 
@@ -516,16 +494,16 @@ composer install
 
 **Sprinkle Not Loading**:
 - Verify `app/sprinkles.json` includes `guide_wizard` in the `base` array
-- Verify `app/sprinkles.json` includes `"lcharette/uf_formgenerator": "^4.0.0"` in the `require` object
 - Ensure the sprinkle directory exists: `app/sprinkles/guide_wizard/`
-- Check that `composer.json` exists in the sprinkle directory
+- Check that `composer.json` exists in the sprinkle directory (should be there by default)
 - Run `composer update` after modifying sprinkles.json
 
 **FormGenerator Issues**:
-- Ensure sprinkles.json has the correct requirement: `"lcharette/uf_formgenerator": "^4.0.0"`
-- FormGenerator 5.x is not compatible with UserFrosting 4.6
+- Ensure sprinkles.json includes `"lcharette/uf_formgenerator": "^4.0.0"` in the `require` object
+- Ensure sprinkles.json includes `FormGenerator` in the `base` array before `guide_wizard`
+- FormGenerator 5.x is not compatible with UserFrosting 4.6 (must use 4.0.x)
 - Check that FormGenerator was installed: `composer show lcharette/uf_formgenerator`
-- If FormGenerator is missing, run `composer update` or `php bakery bake`
+- If FormGenerator is missing, run `composer update`
 
 **Bakery Command Issues**:
 ```bash
@@ -545,13 +523,18 @@ php bakery debug
 ```bash
 # Fix file permissions (Linux/macOS)
 chmod -R 775 app/logs app/cache app/sessions app/storage
-chown -R www-data:www-data app/logs app/cache app/sessions app/storage
+chmod -R 775 app/sprinkles/guide_wizard/uploads
+chown -R www-data:www-data app/logs app/cache app/sessions app/storage app/sprinkles/guide_wizard/uploads
+
+# Create upload directory if it doesn't exist
+mkdir -p app/sprinkles/guide_wizard/uploads/images
 
 # Windows (run as administrator)
 icacls app\logs /grant "IIS_IUSRS:(OI)(CI)F"
 icacls app\cache /grant "IIS_IUSRS:(OI)(CI)F"
 icacls app\sessions /grant "IIS_IUSRS:(OI)(CI)F"
 icacls app\storage /grant "IIS_IUSRS:(OI)(CI)F"
+icacls app\sprinkles\guide_wizard\uploads /grant "IIS_IUSRS:(OI)(CI)F"
 ```
 
 **Database Connection Issues**:

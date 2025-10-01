@@ -5,7 +5,7 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  *
- * German message token translations for the 'welcome guide' sprinkle.
+ * German message token translations for the 'guide wizard' sprinkle.
  *
  * @package userfrosting\i18n\de_DE
  */

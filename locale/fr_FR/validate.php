@@ -5,7 +5,7 @@
  * @link      https://github.com/userfrosting/UserFrosting
  * @license   https://github.com/userfrosting/UserFrosting/blob/master/licenses/UserFrosting.md (MIT License)
  *
- * French message token translations for the 'welcome guide' sprinkle.
+ * French message token translations for the 'guide wizard' sprinkle.
  *
  * @package userfrosting\i18n\fr_FR
  */

@@ -34,7 +34,7 @@ guide_wizard_backend/
 │   │   ├── core/              # UserFrosting core
 │   │   ├── account/           # User management
 │   │   ├── admin/             # Admin interface
-│   │   └── welcome_guide/     # Guide Wizard custom sprinkle
+│   │   └── guide_wizard/      # Guide Wizard custom sprinkle
 │   │       ├── config/        # Configuration files
 │   │       ├── routes/        # API route definitions
 │   │       ├── src/
@@ -90,6 +90,93 @@ guide_wizard_backend/
 
 ## ⚡ Installation Guide
 
+### 🐳 Easy Install with Docker (Recommended)
+
+The easiest way to get started with Guide Wizard Backend is using our Docker setup. This handles all dependencies, UserFrosting installation, database configuration, and initial seeding automatically.
+
+#### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed
+- Git
+
+#### Quick Start
+
+1. **Clone this repository**
+   ```bash
+   git clone https://github.com/aazirani/guide_wizard_backend.git
+   cd guide_wizard_backend/docker-setup
+   ```
+
+2. **Configure environment variables (optional)**
+
+   Edit `.env` to customize database credentials and domain:
+   ```bash
+   DB_NAME=guidewizard_database
+   DB_USER=guidewizard_user
+   DB_PASSWORD=your_secure_password
+   ```
+
+3. **Start the containers**
+   ```bash
+   docker-compose up -d --build
+   ```
+
+4. **Run the installation script**
+   ```bash
+   docker exec guidewizard-php install-guidewizard.sh
+   ```
+
+   This will:
+   - Clone UserFrosting 4.6
+   - Install the Guide Wizard sprinkle
+   - Install all Composer dependencies (including FormGenerator 4.0)
+   - Configure the database connection
+   - Run migrations and create database tables
+   - Seed the database with initial data
+   - Create an admin user (you'll be prompted for credentials)
+
+5. **Access your application**
+   - **Frontend**: http://localhost:8080
+   - **Admin Panel**: http://localhost:8080/admin
+   - **API Base**: http://localhost:8080/api/
+
+#### Managing Your Installation
+
+**View logs:**
+```bash
+docker-compose logs -f
+```
+
+**Access the PHP container:**
+```bash
+docker exec -it guidewizard-php bash
+```
+
+**Stop the containers:**
+```bash
+docker-compose down
+```
+
+**Restart the containers:**
+```bash
+docker-compose restart
+```
+
+**Run UserFrosting commands:**
+```bash
+docker exec guidewizard-php bash -c "cd /var/www/html && php bakery [command]"
+```
+
+#### Production Deployment
+
+For production deployment, you can:
+1. Update the `.env` file with your production domain
+2. Remove the port mapping and use the external `websites-network` in `docker-compose.yml`
+3. Set up SSL using Let's Encrypt (instructions in `docker-setup/README.md`)
+
+---
+
+### 📦 Manual Installation
+
 Guide Wizard is a **UserFrosting 4.6 sprinkle** and requires a complete UserFrosting 4.6 installation first.
 
 ### Step 1: Install UserFrosting 4.6
@@ -135,14 +222,14 @@ Follow the setup wizard to:
 
 ```bash
 # Clone Guide Wizard sprinkle into the sprinkles directory
-git clone [your-guide-wizard-repo-url] app/sprinkles/welcome_guide
+git clone https://github.com/aazirani/guide_wizard_backend.git app/sprinkles/guide_wizard
 
 # Alternative: Copy your existing Guide Wizard sprinkle
-# cp -r /path/to/your/guide_wizard_sprinkle app/sprinkles/welcome_guide
+# cp -r /path/to/your/guide_wizard_sprinkle app/sprinkles/guide_wizard
 ```
 
 ### Step 5: Configure Sprinkles and Dependencies
-Edit `app/sprinkles.json` to include the `welcome_guide` sprinkle and FormGenerator dependency:
+Edit `app/sprinkles.json` to include the `guide_wizard` sprinkle and FormGenerator dependency:
 
 ```json
 {
@@ -151,7 +238,7 @@ Edit `app/sprinkles.json` to include the `welcome_guide` sprinkle and FormGenera
         "account",
         "admin",
 		"FormGenerator",
-        "welcome_guide"
+        "guide_wizard"
     ],
     "require": {
         "lcharette/uf_formgenerator": "^4.0.0"
@@ -340,7 +427,7 @@ php bakery test --coverage-html coverage/
 
 ### Test Structure
 ```
-app/sprinkles/welcome_guide/tests/
+app/sprinkles/guide_wizard/tests/
 ├── Integration/           # API integration tests
 ├── Unit/                 # Unit tests for models and services
 └── TestCase.php          # Base test class
@@ -428,9 +515,9 @@ composer install
 ```
 
 **Sprinkle Not Loading**:
-- Verify `app/sprinkles.json` includes `welcome_guide` in the `base` array
+- Verify `app/sprinkles.json` includes `guide_wizard` in the `base` array
 - Verify `app/sprinkles.json` includes `"lcharette/uf_formgenerator": "^4.0.0"` in the `require` object
-- Ensure the sprinkle directory exists: `app/sprinkles/welcome_guide/`
+- Ensure the sprinkle directory exists: `app/sprinkles/guide_wizard/`
 - Check that `composer.json` exists in the sprinkle directory
 - Run `composer update` after modifying sprinkles.json
 

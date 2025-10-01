@@ -1,6 +1,6 @@
 <?php
 /**
- * French message token translations for the 'welcome guide' sprinkle.
+ * French message token translations for the 'guide wizard' sprinkle.
  *
  * @package userfrosting\i18n\fr_FR
  */

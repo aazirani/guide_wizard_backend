@@ -1,6 +1,6 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Seeds;
+namespace UserFrosting\Sprinkle\GuideWizard\Database\Seeds;
 
 use UserFrosting\Sprinkle\Account\Database\Models\Permission;
 use UserFrosting\Sprinkle\Account\Database\Models\Role;
@@ -10,7 +10,7 @@ use UserFrosting\Sprinkle\Core\Facades\Seeder;
 /**
  * Seeder for the default permissions.
  */
-class WelcomeGuidePermissions extends BaseSeed
+class GuideWizardPermissions extends BaseSeed
 {
     /**
      * {@inheritdoc}
@@ -18,8 +18,8 @@ class WelcomeGuidePermissions extends BaseSeed
     public function run()
     {
 
-        // We require the default welcome guide roles
-        Seeder::execute('WelcomeGuideRoles');
+        // We require the default guide wizard roles
+        Seeder::execute('GuideWizardRoles');
 
         // Get and save permissions
         $permissions = $this->getPermissions();
@@ -400,9 +400,9 @@ class WelcomeGuidePermissions extends BaseSeed
      */
     protected function syncPermissionsRole(array $permissions)
     {
-        $roleWelcomeGuideViewer = Role::where('slug', 'welcome-guide-viewer')->first();
-        if ($roleWelcomeGuideViewer) {
-            $roleWelcomeGuideViewer->permissions()->sync([
+        $roleGuideWizardViewer = Role::where('slug', 'guide-wizard-viewer')->first();
+        if ($roleGuideWizardViewer) {
+            $roleGuideWizardViewer->permissions()->sync([
                 $permissions['view_answers']->id,
                 $permissions['view_languages']->id,
                 $permissions['view_logics']->id,
@@ -414,9 +414,9 @@ class WelcomeGuidePermissions extends BaseSeed
             ]);
         }
 
-        $roleWelcomeGuideAdmin = Role::where('slug', 'welcome-guide-admin')->first();
-        if ($roleWelcomeGuideAdmin) {
-            $roleWelcomeGuideAdmin->permissions()->sync([
+        $roleGuideWizardAdmin = Role::where('slug', 'guide-wizard-admin')->first();
+        if ($roleGuideWizardAdmin) {
+            $roleGuideWizardAdmin->permissions()->sync([
                 $permissions['create_answer']->id,
                 $permissions['update_answer_field']->id,
                 $permissions['delete_answer']->id,

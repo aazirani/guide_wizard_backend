@@ -1,6 +1,6 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
+namespace UserFrosting\Sprinkle\GuideWizard\Controller;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -12,7 +12,7 @@ use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use UserFrosting\Sprinkle\FormGenerator\Form;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Logic;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Logic;
 use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\HttpException;

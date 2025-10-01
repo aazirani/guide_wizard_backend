@@ -1,6 +1,6 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Seeds;
+namespace UserFrosting\Sprinkle\GuideWizard\Database\Seeds;
 
 use UserFrosting\Sprinkle\Account\Database\Models\Role;
 use UserFrosting\Sprinkle\Core\Database\Seeder\BaseSeed;
@@ -8,7 +8,7 @@ use UserFrosting\Sprinkle\Core\Database\Seeder\BaseSeed;
 /**
  * Seeder for the default roles.
  */
-class WelcomeGuideRoles extends BaseSeed
+class GuideWizardRoles extends BaseSeed
 {
     /**
      * {@inheritdoc}
@@ -47,14 +47,14 @@ class WelcomeGuideRoles extends BaseSeed
                 'description' => 'This role is meant for "group administrators", who can basically do anything with users in their own group, except other administrators of that group.',
             ]),
             new Role([
-                'slug'        => 'welcome-guide-admin',
-                'name'        => 'Welcome Guide Administrator',
-                'description' => 'This role is meant for " welcome guide administrators", who can basically do anything with welcome guide objects.',
+                'slug'        => 'guide-wizard-admin',
+                'name'        => 'Guide Wizard Administrator',
+                'description' => 'This role is meant for "guide wizard administrators", who can basically do anything with guide wizard objects.',
             ]),
             new Role([
-                'slug'        => 'welcome-guide-viewer',
-                'name'        => 'Welcome Guide Viewer',
-                'description' => 'This role is meant for " welcome guide viewers", who can basically only view the welcome guide objects.',
+                'slug'        => 'guide-wizard-viewer',
+                'name'        => 'Guide Wizard Viewer',
+                'description' => 'This role is meant for "guide wizard viewers", who can basically only view the guide wizard objects.',
             ]),
         ];
     }

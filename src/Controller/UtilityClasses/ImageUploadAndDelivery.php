@@ -1,13 +1,13 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses;
+namespace UserFrosting\Sprinkle\GuideWizard\Controller\UtilityClasses;
 
 class ImageUploadAndDelivery
 {
 
     public static function getFullImagePath($filename)
     {
-        return "../app/sprinkles/welcome_guide/uploads/images/" . $filename;
+        return "../app/sprinkles/guide_wizard/uploads/images/" . $filename;
     }
 
     public static function deleteImageFile($filename)

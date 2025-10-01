@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Site configuration file for welcome guide
+ * Site configuration file for guide wizard
  */
 
 return [

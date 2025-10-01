@@ -1,6 +1,6 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410;
+namespace UserFrosting\Sprinkle\GuideWizard\Database\Migrations\v410;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;

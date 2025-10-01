@@ -1,8 +1,8 @@
 <?php
-namespace UserFrosting\Sprinkle\WelcomeGuide\Controller\UtilityClasses;
+namespace UserFrosting\Sprinkle\GuideWizard\Controller\UtilityClasses;
 
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Language;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Translation;
 
 class TranslationsUtilities{
     public static function addTranslations($params, $arrayOfObjectToReceiveWithKeyAsKey, $classMapper, $currentUserId, $objectName, $object, $userActivityLogger, $currentUser, $updateTechnicalName): array

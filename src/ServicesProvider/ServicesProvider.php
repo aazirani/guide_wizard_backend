@@ -1,6 +1,6 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\ServicesProvider;
+namespace UserFrosting\Sprinkle\GuideWizard\ServicesProvider;
 
 use Birke\Rememberme\Authenticator as RememberMe;
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -42,36 +42,36 @@ class ServicesProvider
          * Mappings added: User, Group, Role, Permission, Activity, PasswordReset, Verification
          */
         $container->extend('classMapper', function ($classMapper, $c) {
-            $classMapper->setClassMapping('answer', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Answer');
-            $classMapper->setClassMapping('answer_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\AnswerSprunje');
+            $classMapper->setClassMapping('answer', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Answer');
+            $classMapper->setClassMapping('answer_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\AnswerSprunje');
 
-            $classMapper->setClassMapping('language', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language');
-            $classMapper->setClassMapping('language_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\LanguageSprunje');
+            $classMapper->setClassMapping('language', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Language');
+            $classMapper->setClassMapping('language_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\LanguageSprunje');
 
-            $classMapper->setClassMapping('logic', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Logic');
-            $classMapper->setClassMapping('logic_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\LogicSprunje');
+            $classMapper->setClassMapping('logic', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Logic');
+            $classMapper->setClassMapping('logic_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\LogicSprunje');
 
-            $classMapper->setClassMapping('question', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Question');
-            $classMapper->setClassMapping('question_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\QuestionSprunje');
+            $classMapper->setClassMapping('question', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Question');
+            $classMapper->setClassMapping('question_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\QuestionSprunje');
 
-            $classMapper->setClassMapping('step', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step');
-            $classMapper->setClassMapping('step_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\StepSprunje');
-            $classMapper->setClassMapping('apps_step_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\AppsStepSprunje');
+            $classMapper->setClassMapping('step', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Step');
+            $classMapper->setClassMapping('step_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\StepSprunje');
+            $classMapper->setClassMapping('apps_step_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\AppsStepSprunje');
 
-            $classMapper->setClassMapping('subTask', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\SubTask');
-            $classMapper->setClassMapping('subTask_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\SubTaskSprunje');
+            $classMapper->setClassMapping('subTask', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\SubTask');
+            $classMapper->setClassMapping('subTask_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\SubTaskSprunje');
 
-            $classMapper->setClassMapping('task', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Task');
-            $classMapper->setClassMapping('task_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TaskSprunje');
+            $classMapper->setClassMapping('task', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Task');
+            $classMapper->setClassMapping('task_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\TaskSprunje');
 
-            $classMapper->setClassMapping('text', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text');
-            $classMapper->setClassMapping('text_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TextSprunje');
+            $classMapper->setClassMapping('text', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Text');
+            $classMapper->setClassMapping('text_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\TextSprunje');
 
-            $classMapper->setClassMapping('translation', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation');
-            $classMapper->setClassMapping('translation_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TranslationSprunje');
+            $classMapper->setClassMapping('translation', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\Translation');
+            $classMapper->setClassMapping('translation_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\TranslationSprunje');
 
-            $classMapper->setClassMapping('textSetting', 'UserFrosting\Sprinkle\WelcomeGuide\Database\Models\TextSetting');
-            $classMapper->setClassMapping('textSetting_sprunje', 'UserFrosting\Sprinkle\WelcomeGuide\Sprunje\TextSettingSprunje');
+            $classMapper->setClassMapping('textSetting', 'UserFrosting\Sprinkle\GuideWizard\Database\Models\TextSetting');
+            $classMapper->setClassMapping('textSetting_sprunje', 'UserFrosting\Sprinkle\GuideWizard\Sprunje\TextSettingSprunje');
 
             return $classMapper;
         });

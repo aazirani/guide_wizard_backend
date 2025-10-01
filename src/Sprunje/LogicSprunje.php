@@ -1,5 +1,5 @@
 <?php
-namespace UserFrosting\Sprinkle\WelcomeGuide\Sprunje;
+namespace UserFrosting\Sprinkle\GuideWizard\Sprunje;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Facades\Debug;

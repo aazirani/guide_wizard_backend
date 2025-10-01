@@ -1,21 +1,21 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Seeds;
+namespace UserFrosting\Sprinkle\GuideWizard\Database\Seeds;
 
 use UserFrosting\Sprinkle\Account\Database\Models\Permission;
 use UserFrosting\Sprinkle\Account\Database\Models\Role;
 use UserFrosting\Sprinkle\Core\Database\Seeder\BaseSeed;
 use UserFrosting\Sprinkle\Core\Facades\Seeder;
 use UserFrosting\Sprinkle\Core\Util\ClassMapper;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Setting;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\TextSetting;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Setting;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Text;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\TextSetting;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Translation;
 
 /**
  * Seeder for the basics.
  */
-class WelcomeGuideBaseTextSettings extends BaseSeed
+class GuideWizardBaseTextSettings extends BaseSeed
 {
     /**
      * {@inheritdoc}
@@ -51,7 +51,7 @@ class WelcomeGuideBaseTextSettings extends BaseSeed
         $values = [
             "Next question", "Next Step", "Close", "Read More", "Task", "Tasks", "Question", "Questions",
             "Deadline", "Continue", "No Internet Connection", "Can't Reach The Server!", "Try Again",
-            "Steps require an update. Please verify your internet connection.", "Welcome Guide", "Steps",
+            "Steps require an update. Please verify your internet connection.", "Guide Wizard", "Steps",
             "In Progress", "Description", "Open URL", "Do you want to open", "Cancel", "Open Link", "Couldn't load",
             "Update steps", "Updating", "Check your Internet Connection and Try Again", "Updating Finished", "Done"
         ];
@@ -70,7 +70,7 @@ class WelcomeGuideBaseTextSettings extends BaseSeed
             }
         }
 
-        WelcomeGuideBaseTextSettings::importTextsAndTextSettings($importData);
+        GuideWizardBaseTextSettings::importTextsAndTextSettings($importData);
     }
 
     static function importTextsAndTextSettings($importData)

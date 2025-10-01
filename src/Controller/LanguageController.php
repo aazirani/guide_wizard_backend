@@ -1,5 +1,5 @@
 <?php
-namespace UserFrosting\Sprinkle\WelcomeGuide\Controller;
+namespace UserFrosting\Sprinkle\GuideWizard\Controller;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

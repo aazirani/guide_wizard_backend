@@ -1,6 +1,6 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Models;
+namespace UserFrosting\Sprinkle\GuideWizard\Database\Models;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
@@ -10,7 +10,7 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
  *
  * Represents a setting object as stored in the database.
  *
- * @package WelcomeGuide
+ * @package GuideWizard
  * @see http://www.userfrosting.com/tutorials/lesson-3-data-model/
  *
  */

@@ -1,6 +1,6 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410;
+namespace UserFrosting\Sprinkle\GuideWizard\Database\Migrations\v410;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
@@ -22,8 +22,8 @@ class AnswersTable extends Migration
      */
     public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\UsersTable',
-        '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\QuestionsTable',
-        '\UserFrosting\Sprinkle\WelcomeGuide\Database\Migrations\v410\TextsTable'
+        '\UserFrosting\Sprinkle\GuideWizard\Database\Migrations\v410\QuestionsTable',
+        '\UserFrosting\Sprinkle\GuideWizard\Database\Migrations\v410\TextsTable'
     ];
     /**
      * {@inheritDoc}

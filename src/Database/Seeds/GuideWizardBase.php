@@ -1,32 +1,32 @@
 <?php
 
-namespace UserFrosting\Sprinkle\WelcomeGuide\Database\Seeds;
+namespace UserFrosting\Sprinkle\GuideWizard\Database\Seeds;
 
 use UserFrosting\Sprinkle\Account\Database\Models\Permission;
 use UserFrosting\Sprinkle\Account\Database\Models\Role;
 use UserFrosting\Sprinkle\Core\Database\Seeder\BaseSeed;
 use UserFrosting\Sprinkle\Core\Facades\Seeder;
 use UserFrosting\Sprinkle\Core\Util\ClassMapper;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Language;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Step;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Text;
-use UserFrosting\Sprinkle\WelcomeGuide\Database\Models\Translation;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Language;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Step;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Text;
+use UserFrosting\Sprinkle\GuideWizard\Database\Models\Translation;
 
 /**
  * Seeder for the basics.
  */
-class WelcomeGuideBase extends BaseSeed
+class GuideWizardBase extends BaseSeed
 {
     /**
      * {@inheritdoc}
      */
     public function run()
     {
-        // We require the default welcome guide roles and permissions
-        Seeder::execute('WelcomeGuidePermissions');
+        // We require the default guide wizard roles and permissions
+        Seeder::execute('GuideWizardPermissions');
         $englishLanguage = $this->seedEnglishLanguage();
         // We require the default settings texts
-        Seeder::execute('WelcomeGuideBaseTextSettings');
+        Seeder::execute('GuideWizardBaseTextSettings');
         $this->seedQuestionStep($englishLanguage);
     }
 

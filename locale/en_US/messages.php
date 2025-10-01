@@ -1,6 +1,6 @@
 <?php
 /**
- * US English message token translations for the 'welcome guide' sprinkle.
+ * US English message token translations for the 'guide wizard' sprinkle.
  *
  * @package userfrosting\i18n\en_US
  */

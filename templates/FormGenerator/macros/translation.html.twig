@@ -1,0 +1,15 @@
+{% macro generate(input) %}
+
+{% for option, label in input.options %}
+
+<div class="form-group has-feedback">
+    <div class="input-group">
+        <span class="input-group-addon"><i style="font-weight: 500;" class="fa">{{label}}</i></span>
+        <input autocomplete="off" class="form-control" value="{{attribute(input.translations, input.name ~ '_' ~ option)}}" name="{{input.name}}_{{option}}" id="field_translations_{{option}}" type="text" label="{{label}}" icon="fa-th-list" placeholder="{{translate(input.label)}}">
+</div>
+
+</div>
+
+{% endfor %}
+
+{% endmacro %}

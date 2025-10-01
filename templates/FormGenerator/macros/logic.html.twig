@@ -1,0 +1,111 @@
+{% macro generate(input) %}
+
+
+
+
+
+{% block stylesheets_page %}
+<!-- Page-specific CSS asset bundle -->
+{{ assets.css('css/modals/logics') | raw }}
+{% endblock %}
+
+<div class="input-group" style="margin-bottom: 15px;">
+    <span class="input-group-addon"><i class="fa fa-code fa-fw"></i></span>
+    <input autocomplete="off" class="form-control" value="{{input.value}}" name="expression" id="field_expression" type="text" label="{{translate("EXPRESSION")}}" icon="fa-code" placeholder="{{translate("EXPRESSION")}}" readonly>
+</div>
+
+
+<!-- Use Bootstrap Collapse component to create an expandable container -->
+<div class="panel-group" id="expandable-container-expression-builder" role="tablist" aria-multiselectable="true">
+
+    <!-- Single Panel containing all the elements -->
+    <div class="panel panel-default">
+        <div class="panel-heading expandable-panel-heading" role="tab" id="heading-elements">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#expandable-container" href="#collapse-elements" aria-expanded="false" aria-controls="collapse-elements">
+                    <div class="expandable-title">
+                        <span><i class="fa fa-magic"></i>&nbsp;&nbsp;&nbsp;{{translate("DRAG_AND_DROP_EXPRESSION_BUILDER")}}</span>
+                        <i class="fa fa-chevron-down chevron-icon"></i>
+                    </div>
+                </a>
+            </h4>
+        </div>
+        <div id="collapse-elements" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-elements">
+            <div class="panel-body">
+
+                <div class="input-group" style="margin-bottom: 7px;">
+                    <span class="input-group-addon"><i class="fa fa-question fa-fw"></i></span>
+                    <select class="form-control js-select2" id="questionSelect">
+                        <option value="">{{translate("SELECT_A_QUESTION")}}</option>
+                        {% set uniqueQuestions = [] %}
+                        {% for answerId, answerTitles in input.answers %}
+                            {% if answerTitles.question not in uniqueQuestions %}
+                                {% set uniqueQuestions = uniqueQuestions|merge([answerTitles.question]) %}
+                                <option value="{{answerTitles.question}}">{{answerTitles.question}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                <div class="input-group" style="margin-bottom: 7px;">
+                    <span class="input-group-addon"><i class="fa fa-filter fa-fw"></i></span>
+                    <input autocomplete="off" class="form-control" type="text" id="searchField" placeholder="{{translate("SEARCH_FOR_AN_ANSWER")}}" label="{{translate("SEARCH_FOR_AN_ANSWER")}}" icon="fa-filter">
+                </div>
+
+                <div class="scroll-container">
+                    <div class="scroll-content">
+                        <div id="list-of-answers" class="list-group col horizontal-list-container" style="margin-bottom: 15px;">
+                            {% for answerId, answerTitles in input.answers %}
+                            <div class="list-group-item tinted" data="{{answerId}}">
+                                <div class="item-content">
+                                    <div class="question-text" style="display: none;">{{answerTitles.question}}</div>   
+                                    <div class="answer-title"><a id="myLink" href="#" onclick="showAnswerData('{{answerTitles.title}}', '{{answerTitles.question}}');">{{answerTitles.title}}</a></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-container">
+                    <div class="scroll-content">
+                        <div id="expression-list" class="list-group col list-group col horizontal-list-container expression-list">
+                            {% for key, value in input.expressionElements %}    
+                        {% for answerId, answerTitles in value %}
+                            {% if answerId matches '/^\\d+$/' %}
+                                <div class="list-group-item tinted" data="{{ answerId }}">
+                                    <div class="item-content">
+                                        <div class="question-text" style="display: none;">{{ answerTitles.question }}</div>   
+                                        <div class="answer-title"><a id="myLink" href="#" onclick="showAnswerData('{{answerTitles.title}}', '{{answerTitles.question}}');">{{answerTitles.title}}</a></div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="list-group-item" data="{{answerId}}">{{answerId}}</div>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="list-of-operators" class="list-group col horizontal-list-container">
+                    <div class="list-group-item" data="AND">AND</div>
+                    <div class="list-group-item" data="OR">OR</div>
+                    <div class="list-group-item" data="(">(</div>
+                    <div class="list-group-item" data=")">)</div>
+                    <div class="list-group-item" data="!">!</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% block scripts_page %}
+<!-- Include Page-specific JS -->
+{{ assets.js('js/modals/logics') | raw }}
+{% endblock %}
+
+{% endmacro %}

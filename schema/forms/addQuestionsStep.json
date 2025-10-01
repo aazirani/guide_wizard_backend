@@ -1,0 +1,32 @@
+{
+    "name": {
+        "form": {
+            "type": "translation",
+            "label": "NAME",
+            "icon": "fa-th-list",
+            "placeholder": "NAME"
+        }
+    },
+    "description": {
+        "form": {
+            "type": "translation",
+            "label": "DESCRIPTION",
+            "icon": "fa-th-list",
+            "placeholder": "DESCRIPTION"
+        }
+    },
+    "image": {
+        "validators": {},
+        "form": {
+            "type": "file",
+            "label": "IMAGE",
+            "icon": "fa-image",
+            "placeholder": "IMAGE"
+        }
+    },
+    "image_remove" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    }
+}

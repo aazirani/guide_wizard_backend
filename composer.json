@@ -1,75 +1,20 @@
 {
-    "name": "userfrosting/userfrosting",
-    "type": "project",
-    "description": "A secure, modern user management system for PHP.",
-    "keywords": ["php user management", "usercake", "bootstrap"],
-    "homepage": "https://github.com/userfrosting/UserFrosting",
-    "license" : "MIT",
+    "name": "collegiality/welcome_guide",
+    "type": "userfrosting-sprinkle",
+    "description": "A software designed to show information to international students based on their answers to some questions.",
+    "license" : "",
     "authors" : [
         {
-            "name": "Alexander Weissman",
-            "homepage": "https://alexanderweissman.com"
-        },
-        {
-            "name": "Louis Charette",
-            "homepage": "https://bbqsoftwares.com"
-        },
-        {
-            "name": "Jordan Mele",
-            "email": "SiliconSoldier@outlook.com.au",
-            "homepage": "https://djmm.me"
+            "name": "Collegiality UG (haftungsbeschränkt)",
+            "homepage": "http://collegiality.de"
         }
     ],
-    "config": {
-        "vendor-dir": "app/vendor",
-        "allow-plugins": {
-            "composer/installers": true,
-            "wikimedia/composer-merge-plugin": true
-        }
-    },
-    "require": {
-        "php": "^7.3 | ^8.0",
-        "ext-gd": "*",
-        "composer/installers": "^1.4.0",
-        "userfrosting/framework": "^4.6",
-        "symfony/console": "^5.1",
-        "wikimedia/composer-merge-plugin": "^2.1.0"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.13",
-        "phpunit/phpunit": "^9.5",
-        "mockery/mockery": "^1.2",
-        "league/factory-muffin": "^3.0",
-        "league/factory-muffin-faker": "^2.0"
-    },
-    "extra": {
-        "merge-plugin": {
-            "include": [
-                "app/sprinkles.json",
-                "app/sprinkles/*/composer.json"
-            ],
-            "recurse": true,
-            "replace": false,
-            "merge-dev": true,
-            "merge-extra": false
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
+	"require": {
+		"codeguy/upload": "^1.3.2"
+	},
     "autoload": {
-        "files" : [
-            "app/defines.php"
-        ],
         "psr-4": {
-            "UserFrosting\\System\\": "app/system/"
+            "UserFrosting\\Sprinkle\\WelcomeGuide\\": "src/"
         }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "UserFrosting\\Tests\\": "app/tests/"
-        }
-    },
-    "scripts": {
-        "test" : "phpunit --colors=always"
     }
 }

@@ -1,0 +1,57 @@
+{
+    "question_id" : {
+        "validators" : {
+            "required" : {
+                "message" : "VALIDATE.QUESTION"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "QUESTION",
+            "icon" : "fa-th-list",
+            "placeholder" : "QUESTION"
+        }
+    },
+    "title" : {
+        "form" : {
+            "type" : "translation",
+            "label" : "TITLE",
+            "icon" : "fa-th-list",
+            "placeholder" : "TITLE"
+        }
+    },
+    "image" : {
+        "validators" : {},
+        "form" : {
+            "type" : "file",
+            "label" : "IMAGE",
+            "icon" : "fa-image",
+            "placeholder" : "IMAGE"
+        }
+    },
+    "image_remove" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    },
+    "is_enabled" : {
+        "validators" : {
+            "member_of" : {
+                "values" : [
+                    "1", "0"
+                ]
+            },
+            "required" : {
+                "message" : "VALIDATE.IS_ENABLED"
+            }
+        },
+        "form" : {
+            "type" : "select",
+            "label" : "IS_ENABLED",
+            "options" : {
+                "1" : "YES",
+                "0" : "NO"
+            }
+        }
+    }
+}

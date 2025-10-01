@@ -1,0 +1,57 @@
+{% extends "pages/abstract/dashboard.html.twig" %}
+
+{% block stylesheets_page %}
+    <!-- Page-specific CSS asset bundle -->
+    {{ assets.css('css/form-widgets') | raw }}
+    {{ assets.css('css/markdown') | raw }}
+{% endblock %}
+
+{# Overrides blocks in head of base template #}
+{% block page_title %}{{ translate("SUB_TASK", 2) }}{% endblock %}
+
+{% block page_description %}{{ translate("SUB_TASK.PAGE") }}.{% endblock %}
+
+{% block body_matter %}
+    <div class="row">
+        <div class="col-md-12">
+            <div id="widget-subTasks" class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><i class="fa fa-tasks fa-fw"></i> {{translate('SUB_TASK', 2)}}</h3>
+                    {% include "tables/table-tool-menu.html.twig" %}
+                </div>
+                <div class="box-body table-responsive">
+                    {% include "tables/subTasks.html.twig" with {
+                            "table" : {
+                                "id" : "table-subTasks",
+                                "columns" : ["creator"]
+                            }
+                        }
+                    %}
+                </div>
+				{% if checkAccess('create_subTask') %}
+                <div class="box-footer">
+                    <button type="button" class="btn btn-success js-displayForm" data-toggle="modal" data-formUrl="api/subTasks/new">
+                        <i class="fa fa-plus-square"></i>  {{ translate("SUB_TASK.CREATE")}}
+                    </button>
+					
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts_page %}
+    <!-- Include validation rules -->
+    <script>
+    {% include "pages/partials/page.js.twig" %}
+    </script>
+
+    <!-- Include form widgets JS -->
+    {{ assets.js('js/form-widgets') | raw }}
+
+    <!-- Include page-specific JS -->
+    {{ assets.js('js/pages/subTasks') | raw }}
+	
+	{{ assets.js('js/FormGenerator') | raw }}
+
+{% endblock %}

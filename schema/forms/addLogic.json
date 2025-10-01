@@ -1,0 +1,35 @@
+{
+    "name" : {
+        "validators" : {},
+        "required" : {
+            "message" : "VALIDATE.NAME"
+        },
+        "form" : {
+            "type" : "text",
+            "label" : "NAME",
+            "icon" : "fa-pencil-ruler",
+            "placeholder" : "NAME"
+        }
+    },
+    "expression" : {
+        "form" : {
+            "type" : "logic",
+            "label" : "EXPRESSION",
+            "icon" : "fa-th-list",
+            "placeholder" : "EXPRESSION"
+        }
+    },
+    "subTaskOptions" : {
+        "form" : {
+            "type" : "subTask",
+            "label" : "SUB_TASK",
+            "icon" : "fa-th-list",
+            "placeholder" : "SUB_TASK"
+        }
+    },
+    "subTasks" : {
+        "form" : {
+            "type" : "hidden"
+        }
+    }
+}

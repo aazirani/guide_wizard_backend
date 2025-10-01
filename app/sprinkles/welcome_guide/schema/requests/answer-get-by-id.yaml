@@ -1,6 +1,0 @@
----
-answer_id:
-  validators:
-    required:
-      label: "&ANSWER"
-      message: VALIDATE.REQUIRED

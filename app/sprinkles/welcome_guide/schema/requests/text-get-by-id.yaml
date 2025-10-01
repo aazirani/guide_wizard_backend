@@ -1,6 +1,0 @@
----
-text_id:
-  validators:
-    required:
-      label: "&TEXT"
-      message: VALIDATE.REQUIRED

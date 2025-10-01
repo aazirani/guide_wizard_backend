@@ -1,6 +1,0 @@
----
-step_id:
-  validators:
-    required:
-      label: "&STEP"
-      message: VALIDATE.REQUIRED

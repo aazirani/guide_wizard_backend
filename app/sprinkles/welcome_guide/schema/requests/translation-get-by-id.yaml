@@ -1,6 +1,0 @@
----
-translation_id:
-  validators:
-    required:
-      label: "&TRANSLATION"
-      message: VALIDATE.REQUIRED

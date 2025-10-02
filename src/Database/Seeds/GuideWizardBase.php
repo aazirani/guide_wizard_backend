@@ -2,11 +2,8 @@
 
 namespace UserFrosting\Sprinkle\GuideWizard\Database\Seeds;
 
-use UserFrosting\Sprinkle\Account\Database\Models\Permission;
-use UserFrosting\Sprinkle\Account\Database\Models\Role;
 use UserFrosting\Sprinkle\Core\Database\Seeder\BaseSeed;
 use UserFrosting\Sprinkle\Core\Facades\Seeder;
-use UserFrosting\Sprinkle\Core\Util\ClassMapper;
 use UserFrosting\Sprinkle\GuideWizard\Database\Models\Language;
 use UserFrosting\Sprinkle\GuideWizard\Database\Models\Step;
 use UserFrosting\Sprinkle\GuideWizard\Database\Models\Text;
@@ -27,6 +24,7 @@ class GuideWizardBase extends BaseSeed
         $englishLanguage = $this->seedEnglishLanguage();
         // We require the default settings texts
         Seeder::execute('GuideWizardBaseTextSettings');
+        // Create the first step (Questions)
         $this->seedQuestionStep($englishLanguage);
     }
 
@@ -45,7 +43,6 @@ class GuideWizardBase extends BaseSeed
 
     protected function seedQuestionStep($englishLanguage)
     {
-
         $textName = new Text([
             'technical_name' => 'Step_1_name',
             'creator_id' => '1'
@@ -60,12 +57,12 @@ class GuideWizardBase extends BaseSeed
         ]);
         $textNameTranslation->save();
 
-
         $textDescription = new Text([
             'technical_name' => 'Step_1_description',
             'creator_id' => '1'
         ]);
         $textDescription->save();
+
         $textDescriptionTranslation = new Translation([
             'text_id' => $textDescription->id,
             'translated_text' => 'Answer some questions',
@@ -73,7 +70,6 @@ class GuideWizardBase extends BaseSeed
             'creator_id' => '1'
         ]);
         $textDescriptionTranslation->save();
-
 
         $step = new Step([
             'name' => $textName->id,
@@ -84,7 +80,6 @@ class GuideWizardBase extends BaseSeed
         $step->save();
 
         return $step;
-
     }
 
 }

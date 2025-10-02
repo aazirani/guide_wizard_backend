@@ -135,7 +135,13 @@ echo "✅ Database migrations completed"
 echo ""
 echo "📦 Step 9: Seeding database with Guide Wizard base data..."
 php bakery seed GuideWizardBase
-echo "✅ Database seeded successfully"
+echo "✅ Base data seeded successfully"
+
+# Step 10: Seed the database with test data
+echo ""
+echo "📦 Step 10: Seeding database with test data..."
+php bakery seed GuideWizardTestData
+echo "✅ Test data seeded successfully"
 
 # Final summary
 echo ""
@@ -146,7 +152,8 @@ echo "   ✅ UserFrosting 4.6 installed"
 echo "   ✅ Guide Wizard sprinkle installed"
 echo "   ✅ FormGenerator 4.0 installed"
 echo "   ✅ Database configured and migrated"
-echo "   ✅ Frontend assets compiled"
+echo "   ✅ Base data seeded"
+echo "   ✅ Test data seeded"
 echo ""
 echo "🌐 Your application should now be accessible via your configured domain"
 echo ""

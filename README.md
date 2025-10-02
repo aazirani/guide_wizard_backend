@@ -2,6 +2,16 @@
 
 A sophisticated backend system that powers the Guide Wizard mobile application. Built on UserFrosting PHP framework, this system provides intelligent content personalization, multilingual support, and comprehensive admin management for creating adaptive step-by-step guides.
 
+**🌐 Website**: [https://aazirani.github.io/guidewizard/](https://aazirani.github.io/guidewizard/)
+
+## 🌟 Live Implementations
+
+Guide Wizard is currently being used by:
+
+- **[Bazm](http://bazm.me)** - Wedding planning checklist ([checklist.bazm.me](http://checklist.bazm.me))
+
+**Using Guide Wizard?** Let me know and I'll list your implementation here! Open an issue or contact me to be featured.
+
 ## 🚀 Features
 
 ### Core Backend Functionality
@@ -634,8 +644,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## 🔗 Related Projects
 
-- **Mobile App**: [Guide Wizard Flutter App Repository]
-- **Website**: [Guide Wizard Website]
+- **Mobile App**: [Guide Wizard Flutter App](https://github.com/aazirani/guide_wizard) - The Flutter mobile application that consumes this API
 
 ## 📞 Support
 

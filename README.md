@@ -4,6 +4,20 @@ A sophisticated backend system that powers the Guide Wizard mobile application. 
 
 **🌐 Website**: [https://aazirani.github.io/guidewizard/](https://aazirani.github.io/guidewizard/)
 
+## 🖥️ Screenshots
+
+<p align="center">
+  <img src="screenshots/list_of_steps_guide_wizard_backend-2048x1350.png" width="400" alt="Steps Management">
+  <img src="screenshots/list_of_questions_guide_wizard_backend-2048x1350.png" width="400" alt="Questions Management">
+</p>
+<p align="center">
+  <img src="screenshots/list_of_tasks_guide_wizard_backend-2048x1350.png" width="400" alt="Tasks Management">
+  <img src="screenshots/edit_steps_guide_wizard_backend-2048x1350.png" width="400" alt="Step Editor">
+</p>
+<p align="center">
+  <img src="screenshots/edit_tasks_guide_wizard_backend-2048x1350.png" width="400" alt="Task Editor">
+</p>
+
 ## 🌟 Live Implementations
 
 Guide Wizard is currently being used by:

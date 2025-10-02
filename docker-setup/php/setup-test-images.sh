@@ -31,21 +31,23 @@ if command -v convert &> /dev/null; then
         -gravity center -annotate +0+0 "Professional" \
         "$UPLOAD_DIR/professional_answer.jpg"
 
-    # Task image 1 (University registration)
+    # Task image (Registration Process)
     convert -size 800x600 xc:lightyellow \
         -pointsize 40 -fill darkred \
-        -gravity center -annotate +0+-50 "University" \
-        -pointsize 30 -fill black \
-        -gravity center -annotate +0+50 "Registration Office" \
-        "$UPLOAD_DIR/university_registration.jpg"
+        -gravity center -annotate +0+0 "Registration Process" \
+        "$UPLOAD_DIR/registration_process.jpg"
 
-    # Task image 2 (Job center)
-    convert -size 800x600 xc:lightcyan \
-        -pointsize 40 -fill darkblue \
-        -gravity center -annotate +0+-50 "Job Center" \
-        -pointsize 30 -fill black \
-        -gravity center -annotate +0+50 "Employment Services" \
-        "$UPLOAD_DIR/job_center.jpg"
+    # Step 1 image (Questions)
+    convert -size 600x400 xc:lavender \
+        -pointsize 50 -fill purple \
+        -gravity center -annotate +0+0 "Questions" \
+        "$UPLOAD_DIR/step_questions.jpg"
+
+    # Step 2 image (Tasks)
+    convert -size 600x400 xc:lightcoral \
+        -pointsize 50 -fill darkred \
+        -gravity center -annotate +0+0 "Your Tasks" \
+        "$UPLOAD_DIR/step_tasks.jpg"
 
     echo "✅ Sample images created successfully with ImageMagick"
 else
@@ -57,8 +59,9 @@ else
     # Using placeholder.com for sample images
     curl -o student_answer.jpg "https://via.placeholder.com/400x300/87CEEB/00008B?text=Student" 2>&1 || echo "Failed to download student image"
     curl -o professional_answer.jpg "https://via.placeholder.com/400x300/90EE90/006400?text=Professional" 2>&1 || echo "Failed to download professional image"
-    curl -o university_registration.jpg "https://via.placeholder.com/800x600/FFFFE0/8B0000?text=University+Registration" 2>&1 || echo "Failed to download university image"
-    curl -o job_center.jpg "https://via.placeholder.com/800x600/E0FFFF/00008B?text=Job+Center" 2>&1 || echo "Failed to download job center image"
+    curl -o registration_process.jpg "https://via.placeholder.com/800x600/FFFFE0/8B0000?text=Registration+Process" 2>&1 || echo "Failed to download registration image"
+    curl -o step_questions.jpg "https://via.placeholder.com/600x400/E6E6FA/800080?text=Questions" 2>&1 || echo "Failed to download questions step image"
+    curl -o step_tasks.jpg "https://via.placeholder.com/600x400/F08080/8B0000?text=Your+Tasks" 2>&1 || echo "Failed to download tasks step image"
 
     echo "✅ Sample images downloaded successfully"
 fi
@@ -73,7 +76,8 @@ ls -lh "$UPLOAD_DIR"
 
 echo ""
 echo "Image filenames for seeder:"
-echo "  - student_answer.jpg"
-echo "  - professional_answer.jpg"
-echo "  - university_registration.jpg"
-echo "  - job_center.jpg"
+echo "  - student_answer.jpg (Answer 1)"
+echo "  - professional_answer.jpg (Answer 2)"
+echo "  - registration_process.jpg (Task)"
+echo "  - step_questions.jpg (Step 1)"
+echo "  - step_tasks.jpg (Step 2)"

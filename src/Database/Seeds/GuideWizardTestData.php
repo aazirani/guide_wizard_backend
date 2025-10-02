@@ -63,8 +63,8 @@ class GuideWizardTestData extends BaseSeed
         $question = new Question([
             'step_id' => $step->id,
             'title' => $questionTitleText->id,
-            'type' => 'radio',
-            'axis_count' => 1,
+            'type' => 'IMAGE',
+            'axis_count' => 2,
             'is_multiple_choice' => false,
             'creator_id' => '1'
         ]);
@@ -155,6 +155,7 @@ class GuideWizardTestData extends BaseSeed
             'name' => $textName->id,
             'description' => $textDescription->id,
             'order' => '2',
+            'image' => 'step_tasks.jpg',
             'creator_id' => '1'
         ]);
         $step->save();
@@ -198,8 +199,7 @@ class GuideWizardTestData extends BaseSeed
             'step_id' => $step->id,
             'text' => $taskTextText->id,
             'description' => $taskDescriptionText->id,
-            'image_1' => 'university_registration.jpg',
-            'image_2' => 'job_center.jpg',
+            'image_1' => 'registration_process.jpg',
             'creator_id' => '1'
         ]);
         $task->save();

@@ -75,6 +75,7 @@ class GuideWizardBase extends BaseSeed
             'name' => $textName->id,
             'description' => $textDescription->id,
             'order' => '1',
+            'image' => 'step_questions.jpg',
             'creator_id' => '1'
         ]);
         $step->save();

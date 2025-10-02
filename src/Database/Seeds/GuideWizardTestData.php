@@ -44,40 +44,41 @@ class GuideWizardTestData extends BaseSeed
 
     protected function seedQuestionWithAnswers($step, $englishLanguage)
     {
-        // Create question text
-        $questionTextName = new Text([
-            'technical_name' => 'Question_1_text',
+        // Create question title text
+        $questionTitleText = new Text([
+            'technical_name' => 'Question_1_title',
             'creator_id' => '1'
         ]);
-        $questionTextName->save();
+        $questionTitleText->save();
 
-        $questionTranslation = new Translation([
-            'text_id' => $questionTextName->id,
+        $questionTitleTranslation = new Translation([
+            'text_id' => $questionTitleText->id,
             'translated_text' => 'What is your current status?',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
         ]);
-        $questionTranslation->save();
+        $questionTitleTranslation->save();
 
         // Create the question
         $question = new Question([
             'step_id' => $step->id,
-            'text' => $questionTextName->id,
-            'order' => '1',
-            'question_type' => 'single_choice',
+            'title' => $questionTitleText->id,
+            'type' => 'radio',
+            'axis_count' => 1,
+            'is_multiple_choice' => false,
             'creator_id' => '1'
         ]);
         $question->save();
 
         // Create Answer 1
-        $answer1TextName = new Text([
-            'technical_name' => 'Answer_1_text',
+        $answer1TitleText = new Text([
+            'technical_name' => 'Answer_1_title',
             'creator_id' => '1'
         ]);
-        $answer1TextName->save();
+        $answer1TitleText->save();
 
         $answer1Translation = new Translation([
-            'text_id' => $answer1TextName->id,
+            'text_id' => $answer1TitleText->id,
             'translated_text' => 'I am a student',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
@@ -86,21 +87,21 @@ class GuideWizardTestData extends BaseSeed
 
         $answer1 = new Answer([
             'question_id' => $question->id,
-            'text' => $answer1TextName->id,
-            'order' => '1',
+            'title' => $answer1TitleText->id,
+            'order' => 1,
             'creator_id' => '1'
         ]);
         $answer1->save();
 
         // Create Answer 2
-        $answer2TextName = new Text([
-            'technical_name' => 'Answer_2_text',
+        $answer2TitleText = new Text([
+            'technical_name' => 'Answer_2_title',
             'creator_id' => '1'
         ]);
-        $answer2TextName->save();
+        $answer2TitleText->save();
 
         $answer2Translation = new Translation([
-            'text_id' => $answer2TextName->id,
+            'text_id' => $answer2TitleText->id,
             'translated_text' => 'I am a professional',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
@@ -109,8 +110,8 @@ class GuideWizardTestData extends BaseSeed
 
         $answer2 = new Answer([
             'question_id' => $question->id,
-            'text' => $answer2TextName->id,
-            'order' => '2',
+            'title' => $answer2TitleText->id,
+            'order' => 2,
             'creator_id' => '1'
         ]);
         $answer2->save();
@@ -162,28 +163,28 @@ class GuideWizardTestData extends BaseSeed
     protected function seedTaskWithSubtask($step, $answers, $englishLanguage)
     {
         // Create task text
-        $taskTextName = new Text([
-            'technical_name' => 'Task_1_name',
+        $taskTextText = new Text([
+            'technical_name' => 'Task_1_text',
             'creator_id' => '1'
         ]);
-        $taskTextName->save();
+        $taskTextText->save();
 
-        $taskNameTranslation = new Translation([
-            'text_id' => $taskTextName->id,
+        $taskTextTranslation = new Translation([
+            'text_id' => $taskTextText->id,
             'translated_text' => 'Registration Process',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
         ]);
-        $taskNameTranslation->save();
+        $taskTextTranslation->save();
 
-        $taskTextDescription = new Text([
+        $taskDescriptionText = new Text([
             'technical_name' => 'Task_1_description',
             'creator_id' => '1'
         ]);
-        $taskTextDescription->save();
+        $taskDescriptionText->save();
 
         $taskDescriptionTranslation = new Translation([
-            'text_id' => $taskTextDescription->id,
+            'text_id' => $taskDescriptionText->id,
             'translated_text' => 'Complete your registration based on your status',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
@@ -193,9 +194,8 @@ class GuideWizardTestData extends BaseSeed
         // Create the task
         $task = new Task([
             'step_id' => $step->id,
-            'name' => $taskTextName->id,
-            'description' => $taskTextDescription->id,
-            'order' => '1',
+            'text' => $taskTextText->id,
+            'description' => $taskDescriptionText->id,
             'creator_id' => '1'
         ]);
         $task->save();
@@ -208,44 +208,50 @@ class GuideWizardTestData extends BaseSeed
         ]);
         $logicStudent->save();
 
-        // Create subtask for students
-        $subtaskStudentTextName = new Text([
-            'technical_name' => 'SubTask_1_name',
+        // Attach the answer to the logic
+        $logicStudent->answers()->attach($answers[0]->id);
+
+        // Create subtask for students - title
+        $subtaskStudentTitleText = new Text([
+            'technical_name' => 'SubTask_1_title',
             'creator_id' => '1'
         ]);
-        $subtaskStudentTextName->save();
+        $subtaskStudentTitleText->save();
 
-        $subtaskStudentNameTranslation = new Translation([
-            'text_id' => $subtaskStudentTextName->id,
+        $subtaskStudentTitleTranslation = new Translation([
+            'text_id' => $subtaskStudentTitleText->id,
             'translated_text' => 'Register at University',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
         ]);
-        $subtaskStudentNameTranslation->save();
+        $subtaskStudentTitleTranslation->save();
 
-        $subtaskStudentTextDescription = new Text([
-            'technical_name' => 'SubTask_1_description',
+        // Create subtask for students - markdown
+        $subtaskStudentMarkdownText = new Text([
+            'technical_name' => 'SubTask_1_markdown',
             'creator_id' => '1'
         ]);
-        $subtaskStudentTextDescription->save();
+        $subtaskStudentMarkdownText->save();
 
-        $subtaskStudentDescriptionTranslation = new Translation([
-            'text_id' => $subtaskStudentTextDescription->id,
+        $subtaskStudentMarkdownTranslation = new Translation([
+            'text_id' => $subtaskStudentMarkdownText->id,
             'translated_text' => 'Visit the university registration office to complete your enrollment',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
         ]);
-        $subtaskStudentDescriptionTranslation->save();
+        $subtaskStudentMarkdownTranslation->save();
 
         $subtaskStudent = new SubTask([
             'task_id' => $task->id,
-            'name' => $subtaskStudentTextName->id,
-            'description' => $subtaskStudentTextDescription->id,
-            'logic_id' => $logicStudent->id,
-            'order' => '1',
+            'title' => $subtaskStudentTitleText->id,
+            'markdown' => $subtaskStudentMarkdownText->id,
+            'order' => 1,
             'creator_id' => '1'
         ]);
         $subtaskStudent->save();
+
+        // Attach logic to subtask
+        $subtaskStudent->logics()->attach($logicStudent->id, ['creator_id' => '1']);
 
         // Create logic for professional answer (answer 2)
         $logicProfessional = new Logic([
@@ -255,44 +261,50 @@ class GuideWizardTestData extends BaseSeed
         ]);
         $logicProfessional->save();
 
-        // Create subtask for professionals
-        $subtaskProfessionalTextName = new Text([
-            'technical_name' => 'SubTask_2_name',
+        // Attach the answer to the logic
+        $logicProfessional->answers()->attach($answers[1]->id);
+
+        // Create subtask for professionals - title
+        $subtaskProfessionalTitleText = new Text([
+            'technical_name' => 'SubTask_2_title',
             'creator_id' => '1'
         ]);
-        $subtaskProfessionalTextName->save();
+        $subtaskProfessionalTitleText->save();
 
-        $subtaskProfessionalNameTranslation = new Translation([
-            'text_id' => $subtaskProfessionalTextName->id,
+        $subtaskProfessionalTitleTranslation = new Translation([
+            'text_id' => $subtaskProfessionalTitleText->id,
             'translated_text' => 'Register at Job Center',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
         ]);
-        $subtaskProfessionalNameTranslation->save();
+        $subtaskProfessionalTitleTranslation->save();
 
-        $subtaskProfessionalTextDescription = new Text([
-            'technical_name' => 'SubTask_2_description',
+        // Create subtask for professionals - markdown
+        $subtaskProfessionalMarkdownText = new Text([
+            'technical_name' => 'SubTask_2_markdown',
             'creator_id' => '1'
         ]);
-        $subtaskProfessionalTextDescription->save();
+        $subtaskProfessionalMarkdownText->save();
 
-        $subtaskProfessionalDescriptionTranslation = new Translation([
-            'text_id' => $subtaskProfessionalTextDescription->id,
+        $subtaskProfessionalMarkdownTranslation = new Translation([
+            'text_id' => $subtaskProfessionalMarkdownText->id,
             'translated_text' => 'Visit the local job center to register as a job seeker',
             'language_id' => $englishLanguage->id,
             'creator_id' => '1'
         ]);
-        $subtaskProfessionalDescriptionTranslation->save();
+        $subtaskProfessionalMarkdownTranslation->save();
 
         $subtaskProfessional = new SubTask([
             'task_id' => $task->id,
-            'name' => $subtaskProfessionalTextName->id,
-            'description' => $subtaskProfessionalTextDescription->id,
-            'logic_id' => $logicProfessional->id,
-            'order' => '2',
+            'title' => $subtaskProfessionalTitleText->id,
+            'markdown' => $subtaskProfessionalMarkdownText->id,
+            'order' => 2,
             'creator_id' => '1'
         ]);
         $subtaskProfessional->save();
+
+        // Attach logic to subtask
+        $subtaskProfessional->logics()->attach($logicProfessional->id, ['creator_id' => '1']);
 
         return $task;
     }

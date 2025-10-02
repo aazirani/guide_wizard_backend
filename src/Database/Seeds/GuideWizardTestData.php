@@ -89,6 +89,7 @@ class GuideWizardTestData extends BaseSeed
             'question_id' => $question->id,
             'title' => $answer1TitleText->id,
             'order' => 1,
+            'image' => 'student_answer.jpg',
             'creator_id' => '1'
         ]);
         $answer1->save();
@@ -112,6 +113,7 @@ class GuideWizardTestData extends BaseSeed
             'question_id' => $question->id,
             'title' => $answer2TitleText->id,
             'order' => 2,
+            'image' => 'professional_answer.jpg',
             'creator_id' => '1'
         ]);
         $answer2->save();
@@ -196,6 +198,8 @@ class GuideWizardTestData extends BaseSeed
             'step_id' => $step->id,
             'text' => $taskTextText->id,
             'description' => $taskDescriptionText->id,
+            'image_1' => 'university_registration.jpg',
+            'image_2' => 'job_center.jpg',
             'creator_id' => '1'
         ]);
         $task->save();

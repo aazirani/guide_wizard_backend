@@ -14,11 +14,11 @@ return [
         'smtp' => true
     ],
     'site' => [
-        'author' => 'Collegiality',
+        'author' => 'Amin Azirani',
         'title' => 'Guide Wizard',
         // URLs
         'uri' => [
-            'author' => 'http://collegiality.de'
+            'author' => 'https://aminazirani.com'
         ]
     ],
     'php' => [

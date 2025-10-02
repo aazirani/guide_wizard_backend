@@ -1,12 +1,12 @@
 {
     "name": "aazirani/guide_wizard",
     "type": "userfrosting-sprinkle",
-    "description": "A software designed to show information to international students based on their answers to some questions.",
-    "license" : "",
+    "description": "A backend system for creating personalized, step-by-step guides with intelligent logic-based content delivery.",
+    "license" : "MIT",
     "authors" : [
         {
-            "name": "Collegiality UG (haftungsbeschränkt)",
-            "homepage": "http://collegiality.de"
+            "name": "Amin Azirani",
+            "homepage": "https://aminazirani.com"
         }
     ],
 	"require": {

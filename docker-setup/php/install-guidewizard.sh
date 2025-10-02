@@ -134,7 +134,7 @@ echo "✅ Database migrations completed"
 # Step 9: Create sample test images
 echo ""
 echo "📦 Step 9: Creating sample test images..."
-bash /docker-setup/setup-test-images.sh
+bash /usr/local/bin/setup-test-images.sh
 echo "✅ Sample images created successfully"
 
 # Step 10: Seed the database with GuideWizardBase

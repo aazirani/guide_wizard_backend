@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
+    imagemagick \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions required by UserFrosting
@@ -36,9 +37,10 @@ RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT" > /usr/local/etc/
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy installation script
+# Copy installation scripts
 COPY install-guidewizard.sh /usr/local/bin/install-guidewizard.sh
-RUN chmod +x /usr/local/bin/install-guidewizard.sh
+COPY setup-test-images.sh /usr/local/bin/setup-test-images.sh
+RUN chmod +x /usr/local/bin/install-guidewizard.sh /usr/local/bin/setup-test-images.sh
 
 # Create npm cache directory and set permissions
 RUN mkdir -p /var/www/.npm && \
